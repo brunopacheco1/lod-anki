@@ -33,13 +33,20 @@ export class Cli {
         command.version(pkg.version, "-v, --version")
             .usage("<command> [options]");
 
-        command.command("fetch <dictionary>")
+            command.command("fetch <dictionary>")
             .description("fetch dictionary words definitions and mp3 from LOD.lu")
             .action(async (dictionaryPath: any) => {
                 const dictionaryFile = path.join(process.cwd(), dictionaryPath);
                 const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
-                const lodKeys = await this.lodCrawler.fetch(dictionary, command.opts().output);
-                const parsedWords = await this.wordExtractor.extract(lodKeys);
+                await this.lodCrawler.fetch(dictionary, command.opts().output);
+            });
+        
+        command.command("extract <dictionary>")
+            .description("extract dictionary words definitions to JSON")
+            .action(async (dictionaryPath: any) => {
+                const dictionaryFile = path.join(process.cwd(), dictionaryPath);
+                const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
+                await this.wordExtractor.extract(dictionary, command.opts().output);
             });
 
         command.parse(argv);
