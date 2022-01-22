@@ -13,12 +13,12 @@ export interface Word {
 }
 
 export interface WordDetails {
-    auxiliaryVerb: string,
-    pastParticiple: string,
-    nounGender: string,
-    plural: string,
-    variationOf: string,
-    variationOfLodKey: string
+    auxiliaryVerb?: string,
+    pastParticiple?: string,
+    nounGender?: string,
+    plural?: string,
+    variationOf?: string,
+    variationOfLodKey?: string
 }
 
 export interface WordMeaning {
@@ -30,12 +30,12 @@ export interface WordMeaning {
 }
 
 export interface WordMeaningDetails {
-    polyLex: string,
-    verbGroup: string,
+    polyLex?: string,
+    verbGroup?: string,
 }
 
 export interface WordTranslation {
     language: string,
     translation: string,
-    complement: string,
+    complement?: string,
 }
