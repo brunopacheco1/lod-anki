@@ -7,12 +7,16 @@ export interface Dictionary {
 export interface Word {
     id: string,
     word: string,
+    types: WordType[]
+}
+
+export interface WordType {
     type: string,
-    wordDetails: WordDetails,
+    details: WordTypeDetails,
     meanings: WordMeaning[]
 }
 
-export interface WordDetails {
+export interface WordTypeDetails {
     auxiliaryVerb?: string,
     pastParticiple?: string,
     nounGender?: string,
@@ -22,16 +26,14 @@ export interface WordDetails {
 }
 
 export interface WordMeaning {
-    id: string,
-    lodKey: string,
     index: number,
+    lodKey: string,
     details: WordMeaningDetails,
     translations: WordTranslation[]
 }
 
 export interface WordMeaningDetails {
     polyLex?: string,
-    verbGroup?: string,
 }
 
 export interface WordTranslation {
