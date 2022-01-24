@@ -40,10 +40,10 @@ export class WordExtractorImpl implements WordExtractor {
                         continue word_loop;
                     }
 
-                    const meanings = this.readMeanings(lodKey, lodTempFolder);
-                    const wordFound = this.extractWord(meanings);
+                    const meaningsHtml = this.readMeaningsHtml(lodKey, lodTempFolder);
+                    const wordFound = this.extractWord(meaningsHtml);
                     const wordFoundKey = this.keyGenerator.generateWordKey(wordFound);
-                    const wordTypes = this.extractWordTypes(meanings);
+                    const wordTypes = this.extractWordTypes(lodKey, meaningsHtml);
 
                     const wordObj: Word = {
                         id: wordFoundKey,
@@ -81,7 +81,7 @@ export class WordExtractorImpl implements WordExtractor {
         return !existsMeanings || existsWord;
     }
 
-    private readMeanings(lodKey: string, lodTempFolder: string): JSDOM {
+    private readMeaningsHtml(lodKey: string, lodTempFolder: string): JSDOM {
         const file = path.join(lodTempFolder, `${lodKey.toLowerCase()}_meanings.html`);
         const html = fs.readFileSync(file);
         return new JSDOM(`<div id="article">${html}</div>`);
@@ -95,21 +95,20 @@ export class WordExtractorImpl implements WordExtractor {
         return element.textContent.trim();
     }
 
-    private extractWordTypes(dom: JSDOM): WordType[] {
-        const element = dom.window.document.querySelector("div#article > span:nth-child(2)");
+    private extractWordTypes(lodKey: string, meaningsHtml: JSDOM): WordType[] {
+        const element = meaningsHtml.window.document.querySelector("div#article > span:nth-child(2)");
         if(!element || !element.textContent) {
-            throw new Error("Word Type not found.");
+            throw new Error(`WordType element not found for ${lodKey}`);
         }
         const rawType = element.textContent.trim().toLowerCase();
 
         let notTranslatedType = rawType;
-        let notTranslatedGender: string | null = null;
+        let notTranslatedGender: string | undefined = undefined;
         if(rawType.includes(" ")) {
             [notTranslatedGender, notTranslatedType] = rawType.split(" ");
         }
 
         let typeKeys: string[];
-        console.log(notTranslatedType);
         switch(notTranslatedType) {
             case "adjektiv": typeKeys = ["adjective"]; break;
             case "partikel": typeKeys = ["particle"]; break;
@@ -119,21 +118,41 @@ export class WordExtractorImpl implements WordExtractor {
             case "verbpartikel": typeKeys = ["verb particle"]; break;
             case "hëllefsverb": typeKeys = ["auxiliary verb"]; break;
             case "modalverb": typeKeys = ["modal verb"]; break;
-            case "verb": typeKeys = ["transitive verb", "reflexive verb", "intransitive verb", "transitive impersonal verb"]; break;
-            default: throw new Error("Word Type not found.");
+            case "verb": typeKeys = ["transitive verb", "reflexive verb", "intransitive verb", "transitive impersonal verb", "intransitive impersonal verb"]; break;
+            default: throw new Error(`WordType[${notTranslatedType}] not found for ${lodKey}`);
+        }
+        
+        let nounGender: string | undefined = undefined;
+        let plural: string | undefined = undefined;
+        if("substantiv" === notTranslatedType) {
+            switch(notTranslatedGender) {
+                case "weiblecht": nounGender = "feminine"; break;
+                case "männlecht": nounGender = "masculine"; break;
+                default: nounGender = "neutral"; break;
+            }
+
+            const pluralEl = meaningsHtml.window.document.querySelector("div#article > span.text_gen > span.mentioun_adress");
+            if(!pluralEl || !pluralEl.textContent) {
+                throw new Error(`Plural not found for ${lodKey}`);
+            }
+            const popupEl = pluralEl.querySelector("span.popuptext");
+            if(!!popupEl) {
+                popupEl.remove();
+            }
+            plural = pluralEl.textContent.trim();
         }
 
         let auxiliaryVerb: string | undefined = undefined;
         let pastParticiple: string | undefined = undefined;
         if(["hëllefsverb", "modalverb", "verb"].includes(notTranslatedType)) {
-            const auxiliaryVerbEl = dom.window.document.querySelector("div#article > span:nth-child(3)");
+            const auxiliaryVerbEl = meaningsHtml.window.document.querySelector("div#article > span:nth-child(3)");
             if(!auxiliaryVerbEl || !auxiliaryVerbEl.textContent) {
-                throw new Error("Auxiliary Verb not found.");
+                throw new Error(`Auxiliary verb not found for ${lodKey}`);
             }
             auxiliaryVerb = auxiliaryVerbEl.textContent.trim().split(" ")[1];
-            const pastParticipleEl = dom.window.document.querySelector("div#article > span:nth-child(6)");
+            const pastParticipleEl = meaningsHtml.window.document.querySelector("div#article > span:nth-child(6)");
             if(!pastParticipleEl || !pastParticipleEl.textContent) {
-                throw new Error("Past Participle not found.");
+                throw new Error(`Past participle not found for ${lodKey}`);
             }
             pastParticiple = pastParticipleEl.textContent.trim();
         }
@@ -144,13 +163,8 @@ export class WordExtractorImpl implements WordExtractor {
             const typeDetails: WordTypeDetails = {};
 
             if(key === "noun") {
-                let gender: string;
-                switch(notTranslatedGender) {
-                    case "weiblecht": gender = "feminine"; break;
-                    case "männlecht": gender = "masculine"; break;
-                    default: gender = "neutral"; break;
-                }
-                typeDetails.nounGender = gender;
+                typeDetails.nounGender = nounGender;
+                typeDetails.plural =  plural;
             }
 
             if(key.endsWith("verb")) {
@@ -165,6 +179,45 @@ export class WordExtractorImpl implements WordExtractor {
             });
         }
 
+        this.extractMeanings(lodKey, meaningsHtml, types, typeKeys);
+
         return types;
+    }
+
+    private extractMeanings(lodKey: string, meaningsHtml: JSDOM, wordTypes: WordType[], extractedTypes: string[]): void {
+        let blocks = meaningsHtml.window.document.querySelectorAll("div#article > div.tl_block");
+        if(blocks.length === 0) {
+            blocks = meaningsHtml.window.document.querySelectorAll("div#article");
+        }
+
+        blocks.forEach(block => {
+            let blockWordTypes = [extractedTypes[0]];
+            let notTranslatedBlockWordType : string = block.querySelector(":scope > span.info_gramm_tl")?.textContent?.trim() || "";
+            if(!!notTranslatedBlockWordType) {
+                notTranslatedBlockWordType += block.querySelector(":scope > span.text_gen")?.textContent?.trim() || "";
+                switch(notTranslatedBlockWordType) {
+                    case "intransitiv": blockWordTypes = ["intransitive verb"]; break;
+                    case "transitiv": blockWordTypes = ["transitive verb"]; break;
+                    case "reflexiv": blockWordTypes = ["reflexive verb"]; break;
+                    case "intransitiv- onperséinlech": blockWordTypes = ["intransitive impersonal verb"]; break;
+                    case "intransitiv- och onperséinlech": blockWordTypes = ["intransitive verb", "intransitive impersonal verb"]; break;
+                    case "transitiv- onperséinlech": blockWordTypes = ["transitive impersonal verb"]; break;
+                    default: throw new Error(`WordType[${notTranslatedBlockWordType}] not found for ${lodKey}`);
+                }
+            }
+
+            for(const blockWordType of blockWordTypes) {
+                const wordType = wordTypes.find(it => it.type === blockWordType);
+                if(!wordType) {
+                    throw new Error(`WordType[${notTranslatedBlockWordType}] not found for ${lodKey}`);
+                }
+
+                const meanings = block.querySelectorAll(":scope > div.uds_block");
+
+                meanings.forEach(meaning => {
+                    console.log(meaning.textContent);
+                });
+            }
+        });
     }
 }
