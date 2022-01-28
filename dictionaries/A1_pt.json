@@ -1,5 +1,19 @@
 {
     "name": "Lëtzebuergesch x Português - A1",
-    "words": ["goen", "ginn", "sinn", "soen", "Mamm", "Papp", "à propos", "well", "Meedchen", "kënnen", "einfach", "wierklech", "gutt"],
+    "words": [
+        "goen", 
+        "ginn", 
+        "sinn", 
+        "soen", 
+        "Mamm", 
+        "Papp", 
+        "à propos", 
+        "well", 
+        "Meedchen", 
+        "kënnen", 
+        "einfach", 
+        "wierklech", 
+        "gutt"
+    ],
     "language": "PT"
 }
