@@ -23,7 +23,8 @@ export class LodCrawlerImpl implements LodCrawler {
     ) { }
 
     public async fetch(dictionary: Dictionary, outputDirectory: string): Promise<void> {
-        const lodTempFolder = path.join(outputDirectory, CONSTANTS.LOD_TEMP_FOLDER);
+        const lodMeaningsFolder = path.join(outputDirectory, CONSTANTS.LOD_MEANINGS_FOLDER);
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
         const driver = await new Builder().forBrowser("safari").build();
 
         for (const word of dictionary.words) {
@@ -32,7 +33,7 @@ export class LodCrawlerImpl implements LodCrawler {
                 for (let index = 1;; index++) {
                     const lodKey = this.keyGenerator.generateLodKey(word, index);
                     
-                    if(this.wordExists(lodKey, lodTempFolder)) {
+                    if(this.wordExists(lodKey, lodMeaningsFolder, lodAudiosFolder)) {
                         console.warn(`${lodKey} fetched before.`);
                         continue;
                     }
@@ -42,8 +43,8 @@ export class LodCrawlerImpl implements LodCrawler {
                         break;
                     }
 
-                    await this.persistHtml(lodKey, meanings, lodTempFolder, CONSTANTS.MEANINGS_SUFFIX);
-                    await this.persistMp3(lodKey, lodTempFolder);
+                    await this.persistHtml(lodKey, meanings, lodMeaningsFolder, CONSTANTS.MEANINGS_SUFFIX);
+                    await this.persistMp3(lodKey, lodAudiosFolder);
 
                     console.log(`${lodKey} was fetched.`);
                 }
@@ -55,9 +56,9 @@ export class LodCrawlerImpl implements LodCrawler {
         await driver.quit();
     }
 
-    private wordExists(lodKey: string, outputDirectory: string): boolean {
-        const existsMp3 = fs.existsSync(path.join(outputDirectory, `${lodKey.toLowerCase()}.mp3`));
-        const existsMeanings = fs.existsSync(path.join(outputDirectory, `${lodKey.toLowerCase()}${CONSTANTS.MEANINGS_SUFFIX}`));
+    private wordExists(lodKey: string, lodMeaningsFolder: string, lodAudiosFolder: string): boolean {
+        const existsMp3 = fs.existsSync(path.join(lodAudiosFolder, `${lodKey.toLowerCase()}.mp3`));
+        const existsMeanings = fs.existsSync(path.join(lodMeaningsFolder, `${lodKey.toLowerCase()}${CONSTANTS.MEANINGS_SUFFIX}`));
         return existsMeanings && existsMp3;
     }
 
