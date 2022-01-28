@@ -215,7 +215,35 @@ export class WordExtractorImpl implements WordExtractor {
                 const meanings = block.querySelectorAll(":scope > div.uds_block");
 
                 meanings.forEach(meaning => {
-                    console.log(meaning.textContent);
+                    const translations = meaning.querySelectorAll(":scope > span.et");
+                    const complements = meaning.querySelectorAll(":scope > span.et + span.text_gen");
+                    translations.forEach(translation => {
+                        const language = translation.getAttribute("lang")!.toUpperCase();
+                        const text = translation.textContent;
+                        let complement = "";
+                        if(translation.childElementCount < translation.parentElement!.children.length - 1) {
+                            const textGen = translation.parentElement!.children[translation.childElementCount + 1];
+                            if(textGen.className === "text_gen" && !!textGen!.textContent) {
+                                complement = ` [${complement}]`;
+                            }
+                        }
+
+                        //console.log(`${language} - ${text}${complement}`);
+                    });
+
+                    translations.forEach(translation => {
+                        const language = translation.getAttribute("lang")!.toUpperCase();
+                        const text = translation.textContent;
+                        let complement = "";
+                        if(translation.childElementCount < translation.parentElement!.children.length - 1) {
+                            const textGen = translation.parentElement!.children[translation.childElementCount + 1];
+                            if(textGen.className === "text_gen" && !!textGen!.textContent) {
+                                complement = ` [${complement}]`;
+                            }
+                        }
+
+                        //console.log(`${language} - ${text}${complement}`);
+                    });
                 });
             }
         });
