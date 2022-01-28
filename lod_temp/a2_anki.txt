@@ -1,0 +1,85 @@
+ech huelen eng <span class=cloze>[...]</span>, well ech de Kapp wéi hunn.;ech huelen eng <span class=cloze>Pëll</span>, well ech de Kapp wéi hunn.<br> 
+ech huelen eng Pëll, well ech de <span class=cloze>[...]</span> wéi hunn.;ech huelen eng Pëll, well ech de <span class=cloze>Kapp</span> wéi hunn.<br> 
+eng / d'Gare (F), d'Garen [sound:gare1.mp3];train station
+en / den Depart (M), d'Departen [sound:depart1.mp3];departure
+e / de Quai (M), d'Quaien [sound:quai1.mp3];platform
+eng / d'éischt Klass (F);first class
+eng / d'zweet Klass (F);second class
+e / de Billjee (M), d'Billjeeën [sound:billjee1.mp3];ticket
+no lénks [sound:lenks1.mp3];to the left
+no riets [sound:riets1.mp3];to the right
+richtaus [sound:richtaus1.mp3];ahead
+en / den Zentrum (M), d'Zentrumen / d'Zentren [sound:zemtrum1.mp3];center
+e / de Busarrêt (M), d'Busarrêten [sound:busarret1.mp3];bus stop
+e / de Plang (M), d'Pläng [sound:plang1.mp3];plan
+Hie geet duerch de Park;He goes through the park
+Hie geet iwwert d'Plaz;He goes across the square
+Hie get laanscht d'Post;He goes by the Post
+eng / d'Kraizung (F), d'Krdizungen [sound:kraizung1.mp3];cross
+en / den Zeebrasträifen (M), d'Zeebrasträifen [sound:zeebrastraifen1.mp3];zebra crossing
+eng / d'Strooss (F), d'Stroossen [sound:strooss1.mp3];street
+op der rietser Sait;on the right side
+op der lénkser Säit;on the left side
+erof [sound:erof1.mp3];FIX_IT
+erop [sound:erop1.mp3];FIX_IT
+d'Plëss (F) [sound:pless1.mp3];FIX_IT
+de Knuedler (M) [sound:knuedler1.mp3];Guillaume II Square
+eng Alstad (F), d'Alstied [sound:alstad1.mp3];old town
+e / de Café (M), d'Caféen [sound:cafe1.mp3];pub
+e / de Blummebuttek (M), d'Blummebutteker [sound:blummebuttek1.mp3];flower shop
+en / den Zeitungsbuttek (M), d'Zeitungsbutteker [sound:1.mp3];newspaper shop
+eng / d'Parfümerie (F), d'Parfümerien [sound:zeitungsbuttek1.mp3];perfume shop
+eng / d'Apdikt (F), d'Apdikten [sound:apdikt1.mp3];pharmacy
+eng / d'Bibliotheik (F), d'Bibliothéiken [sound:bibliotheik1.mp3];library
+eng / d'Bank (F), d'Banken [sound:bank1.mp3];bank
+e / de Bancomat (M), d'Bancomaten [sound:bancomat1.mp3];cash machine
+eng / d'Post (F) [sound:post1.mp3];post office
+e / de Bierger-Center (M);FIX_IT
+e / de Bäcker (M), d'Bäckeren [sound:backer1.mp3];bakery
+e / de Coiffer (M), d'Coifferen [sound:coiffer1.mp3];hairdresser
+eng / d'Estheticienne (F), d'Estheticiennen [sound:estheticienne1.mp3];beautician
+e / de Policebüro (M), d'Policebüroen [sound:policeburo1.mp3];police office
+eng / d'Gemeng (F), d'Gemengen [sound:gemeng1.mp3];commune
+e / de Maart (M), d'Maert [sound:maart1.mp3];market
+eng / d'Tankstell (F), d'Tankstellen [sound:tankstell1.mp3];petrol station
+en / den Touristebüro (M), d'Touristebüroen [sound:touristeburo1.mp3];turism office
+eng / d'Schwamm (F), d'Schwämmen [sound:schwamm1.mp3];swimming pool
+fir d'éischt;first
+dann [sound:dann1.mp3];then
+duerno [sound:duerno1.mp3];after
+zum Schluss;to finish
+eng / d'Carte d'identité (F), d'Carte-d'identitéen [sound:cartedidentite1.mp3];identity card
+e / d'Buch (N), d'Bicher [sound:buch1.mp3];book
+e / d'Héierbuch (N), d'Héierbicher [sound:heierbuch1.mp3];FIX_IT
+eng / d'Zaitschrëft (F), d'Zaitschrëften [sound:zaitschreft1.mp3];magazine
+e / de Film (M), d'Filmer [sound:film1.mp3];film
+e / de Concert (M), d'Concerten [sound:concert1.mp3];concert
+e / de Kont (M), d'Konten [sound:kont1.mp3];account
+e / de Pak (M), d'Pack [sound:pak1.mp3];package
+e / de Formulaire (M), d'Formulairen [sound:formulaire1.mp3];form
+eng / d'Memberskaart (F), d'Memberskaarten [sound:memberskaart1.mp3];membership card
+Wuer?;Where
+eng / d'Reservation (F), d'Reservatiounen [sound:reservation1.mp3];booking
+eng / d'Plaz (F), d'Plazen [sound:plaz1.mp3];place / square
+Et deet mir leed.;I apologize.
+Et ass keng Plaz méi fräi.;There is no free place.
+eng / d'Entrée (F), d'Entréeën [sound:entree1.mp3];entree
+e / de Plat (M), d'Platen [sound:plat1.mp3];plate
+e / de Vegetarier (M), d'Vegetarier [sound:vegetarier1.mp3];vegetarian
+Weini ass op?;When does it open?
+d'Effnungszäiten [sound:effnungszaiten1.mp3];business hours
+Et ass Op.;It is open.
+24 Stonnen op 24; 24/24h
+siwen Deeg an der Woch;Seven days a week
+vun ... bis ...;from ... to ...
+annerhallef Stonn;half hour
+all Dag;all day
+de ganzen Dag;the whole day
+Wat méchs du dann hei an der Stad?;What do you do then here in the city?
+e / de Rendez-vous (M), d'Rendez-vousen [sound:rendezvous1.mp3];appointment
+e / de Kaddo (M), d'Kaddoen [sound:kaddo1.mp3];gift / present
+e / de Gebuertsdag (M), d'Gebuertsdeeg [sound:gebuertsdag1.mp3];birthday
+e / de Bicherbuttek (M), d'Bicherbutteker [sound:bicherbuttek1.mp3];book shop
+e / de Kleederbuttek (M), d'Kleederbutteker [sound:kleederbuttek1.mp3];clothes shop
+e / de Wee (M), d'Weeër [sound:wee1.mp3];way
+en / den Eck (M), d'Ecker [sound:eck1.mp3];corner
