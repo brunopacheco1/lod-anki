@@ -106,5 +106,4 @@ dist
 package-lock.json
 node_modules
 lib
-lod_temp
 .DS_Store
