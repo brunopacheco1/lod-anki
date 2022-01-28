@@ -10,7 +10,7 @@ export interface KeyGenerator {
 export class KeyGeneratorImpl implements KeyGenerator {
 
     public generateLodKey(word: string, index: number): string {
-        return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "").trim().toUpperCase() + index;
+        return word.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "").replace(/\'+/g, "").replace(/\-+/g, "").trim().toUpperCase() + index;
     }
 
     public generateWordKey(word: string): string {

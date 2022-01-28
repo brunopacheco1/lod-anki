@@ -26,14 +26,8 @@ export interface WordTypeDetails {
 }
 
 export interface WordMeaning {
-    index: number,
     lodKey: string,
-    details: WordMeaningDetails,
     translations: WordTranslation[]
-}
-
-export interface WordMeaningDetails {
-    polyLex?: string,
 }
 
 export interface WordTranslation {
