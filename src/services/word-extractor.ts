@@ -22,8 +22,8 @@ export class WordExtractorImpl implements WordExtractor {
 
     public async extract(dictionary: Dictionary, outputDirectory: string): Promise<void> {
         const extractedWords = new Map<string, Word>();
-        const lodTempFolder = path.join(outputDirectory, CONSTANTS.LOD_TEMP_FOLDER);
-        const wordTempFolder = path.join(outputDirectory, CONSTANTS.WORD_TEMP_FOLDER);
+        const lodMeaningsFolder = path.join(outputDirectory, CONSTANTS.LOD_MEANINGS_FOLDER);
+        const wordTempFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
         
         word_loop:
         for (const word of dictionary.words) {
@@ -35,12 +35,12 @@ export class WordExtractorImpl implements WordExtractor {
 
                     const lodKey = this.keyGenerator.generateLodKey(word, index);
                     
-                    if(this.cannotExtractWord(lodKey, wordKey, lodTempFolder, wordTempFolder)) {
+                    if(this.cannotExtractWord(lodKey, wordKey, lodMeaningsFolder, wordTempFolder)) {
                         console.warn(`${lodKey} extracted before or the word hasn't been fetched from LOD.`);
                         continue word_loop;
                     }
 
-                    const meaningsHtml = this.readMeaningsHtml(lodKey, lodTempFolder);
+                    const meaningsHtml = this.readMeaningsHtml(lodKey, lodMeaningsFolder);
                     const wordFound = this.extractWord(meaningsHtml);
                     const wordFoundKey = this.keyGenerator.generateWordKey(wordFound);
                     const wordTypes = this.extractWordTypes(lodKey, meaningsHtml);
