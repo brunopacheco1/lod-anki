@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import kleur from "kleur";
 import figlet from "figlet";
 import { TYPES } from "../types";
-import { LodCrawler } from "../services/lod-crawler";
+import { LodAudioCrawler } from "../services/lod-audio-crawler";
 import { WordExtractor } from "../services/word-extractor";
 import * as fs from "fs";
 import * as path from "path";
@@ -16,7 +16,7 @@ export class Cli {
     private readonly _MINIMUM_ARG_SIZE = 2;
 
     constructor(
-        @inject(TYPES.LodCrawler) private readonly lodCrawler: LodCrawler,
+        @inject(TYPES.LodAudioCrawler) private readonly lodCrawler: LodAudioCrawler,
         @inject(TYPES.WordExtractor) private readonly wordExtractor: WordExtractor) { }
 
     public main(argv: string[]): void {
@@ -33,20 +33,25 @@ export class Cli {
         command.version(pkg.version, "-v, --version")
             .usage("<command> [options]");
 
-            command.command("fetch <dictionary>")
-            .description("fetch dictionary words definitions and mp3 from LOD.lu")
-            .action(async (dictionaryPath: any) => {
-                const dictionaryFile = path.join(process.cwd(), dictionaryPath);
-                const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
-                await this.lodCrawler.fetch(dictionary, command.opts().output);
+        command.command("fetchaudio <wordList>")
+            .description("fetch mp3 from a text file containing the words you want to fecth")
+            .action(async (wordList: any) => {
+                const wordListFile = path.join(process.cwd(), wordList);
+                const wordListArray: string[] = fs.readFileSync(wordListFile).toString().split("\n");
+                await this.lodCrawler.fetch(wordListArray, command.opts().output);
             });
-        
-        command.command("extract <dictionary>")
-            .description("extract dictionary words definitions to JSON")
+
+        command.command("extract <wordList>")
+            .description("extract wordList definitions to JSON")
+            .action(async (wordList: any) => {
+                const wordListFile = path.join(process.cwd(), wordList);
+                const wordListArray: string[] = fs.readFileSync(wordListFile).toString().split("\n");
+                await this.wordExtractor.extract(wordListArray, command.opts().output);
+            });
+
+        command.command("generate <dictionary>")
+            .description("generate anki dictionary from a JSON")
             .action(async (dictionaryPath: any) => {
-                const dictionaryFile = path.join(process.cwd(), dictionaryPath);
-                const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
-                await this.wordExtractor.extract(dictionary, command.opts().output);
             });
 
         command.parse(argv);
