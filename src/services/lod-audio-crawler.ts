@@ -53,9 +53,7 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
                 response.on("data", (data) => { body += data });
                 response.on("end", () => {
                     this.outputStream.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
-                    setTimeout(() => {
-                        resolve();
-                    }, 0);
+                    resolve();
                 });
             });
         });
