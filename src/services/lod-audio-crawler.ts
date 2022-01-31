@@ -26,7 +26,6 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
         for (const word of lodWordList) {
             try {
                 const lodKey = word.trim();
-                console.log(`Fetching [${lodKey}]...`)
                 if (this.audioExists(lodKey, lodAudiosFolder)) {
                     console.warn(`${lodKey} fetched before.`);
                     continue;
@@ -50,12 +49,13 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
             https.get(`https://www.lod.lu/audio/${lodKey.toLowerCase()}.mp3`, (response) => {
                 response.setEncoding("base64");
                 let body = "";
+                response.on("error", reject);
                 response.on("data", (data) => { body += data });
                 response.on("end", () => {
                     this.outputStream.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
                     setTimeout(() => {
                         resolve();
-                    }, 100);
+                    }, 0);
                 });
             });
         });
