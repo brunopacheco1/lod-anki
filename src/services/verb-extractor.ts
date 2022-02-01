@@ -18,19 +18,15 @@ export class VerbExtractorImpl implements VerbExtractor {
         return {
             id: this.keyGenerator.generateWordKey(word),
             word: word,
-            types: [this.extractType(lodKey, word, structure)]
-        };
-    }
-
-    private extractType(lodKey: string, word: string, structure: any): WordType {
-        return {
-            type: "verb",
-            details: {
-                variationOf: this.extractVariantOf(structure),
-                auxiliaryVerb: this.extractAuxiliaryVerb(structure),
-                pastParticiples: this.extractPastParticiples(structure)
-            },
-            meanings: this.extractMeanings(lodKey, word, structure)
+            types: [{
+                type: "verb",
+                details: {
+                    variationOf: this.extractVariantOf(structure),
+                    auxiliaryVerb: this.extractAuxiliaryVerb(structure),
+                    pastParticiples: this.extractPastParticiples(structure)
+                },
+                meanings: this.extractMeanings(lodKey, word, structure)
+            }]
         };
     }
 
@@ -62,6 +58,8 @@ export class VerbExtractorImpl implements VerbExtractor {
         const meaningsStructure = structure["lod:TRAITEMENT-LING-VRB"];
         if (!!meaningsStructure) {
             for (const meaningStructure of meaningsStructure) {
+                // TODO <lod:REFLEX-PRONOM lod:REFPRON="INTRANSITIF"/>
+                // TODO <lod:EMPLOI-IMPERS lod:EMPLOI-IMPERS="VRB-EMPL-IMPERS-IMPOSS"/>
                 const translationStructures = meaningStructure["lod:UNITE-TRAD"];
                 for (const translationStructure of translationStructures) {
                     const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];

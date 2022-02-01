@@ -34,23 +34,21 @@ export class Cli {
             .usage("<command> [options]");
 
         command.command("fetchaudio <wordList>")
-            .description("fetch mp3 from a text file containing the words you want to fecth")
+            .description("fetch mp3 of all words")
             .action(async (wordList: any) => {
                 const wordListFile = path.join(process.cwd(), wordList);
                 const wordListArray: string[] = fs.readFileSync(wordListFile).toString().split("\n");
                 await this.lodCrawler.fetch(wordListArray, command.opts().output);
             });
 
-        command.command("extract <wordList>")
-            .description("extract wordList definitions to JSON")
-            .action(async (wordList: any) => {
-                const wordListFile = path.join(process.cwd(), wordList);
-                const wordListArray: string[] = fs.readFileSync(wordListFile).toString().split("\n");
-                await this.wordExtractor.extract(wordListArray, command.opts().output);
+        command.command("extract")
+            .description("extract LOD definitions to JSON")
+            .action(async () => {
+                await this.wordExtractor.extract(command.opts().output);
             });
 
         command.command("generate <dictionary>")
-            .description("generate anki dictionary from a JSON")
+            .description("generate anki dictionary")
             .action(async (dictionaryPath: any) => {
             });
 
