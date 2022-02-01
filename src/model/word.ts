@@ -27,11 +27,13 @@ export interface WordTypeDetails {
 
 export interface WordMeaning {
     lodKey: string,
-    translations: WordTranslation[]
+    translations: WordTranslation[],
+    examples?: string[],
+    synonyms?: string[]
 }
 
 export interface WordTranslation {
     language: string,
-    translation: string,
+    translation?: string,
     complement?: string,
 }

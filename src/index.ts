@@ -7,11 +7,13 @@ import { WordExtractor, WordExtractorImpl } from "./services/word-extractor";
 import { LodAudioCrawler, LodAudioCrawlerImpl } from "./services/lod-audio-crawler";
 import { FileOutputStream, FileOutputStreamImpl } from "./services/file-output-stream";
 import { KeyGenerator, KeyGeneratorImpl } from "./services/key-generator";
+import { NounExtractor, NounExtractorImpl } from "./services/noun-extractor";
 
 export function init(): Cli {
     const container: Container = new Container();
 
     container.bind<KeyGenerator>(TYPES.KeyGenerator).to(KeyGeneratorImpl).inSingletonScope();
+    container.bind<NounExtractor>(TYPES.NounExtractor).to(NounExtractorImpl).inSingletonScope();
     container.bind<WordExtractor>(TYPES.WordExtractor).to(WordExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileOutputStream>(TYPES.FileOutputStream).to(FileOutputStreamImpl).inSingletonScope();
