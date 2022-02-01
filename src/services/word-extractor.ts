@@ -12,7 +12,7 @@ import { AdverbExtractor } from "./adverb-extractor";
 import { VerbExtractor } from "./verb-extractor";
 
 export interface WordExtractor {
-    extract(wordList: string[], outputDirectory: string): Promise<void>;
+    extract(outputDirectory: string): Promise<void>;
 }
 
 @injectable()
@@ -26,7 +26,7 @@ export class WordExtractorImpl implements WordExtractor {
         @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor
     ) { }
 
-    public async extract(wordList: string[], outputDirectory: string): Promise<void> {
+    public async extract(outputDirectory: string): Promise<void> {
         const extractedWords = new Map<string, Word>();
         const parser = new xml2js.Parser({ attrkey: "attributes" });
         try {
@@ -52,9 +52,7 @@ export class WordExtractorImpl implements WordExtractor {
                 }
             }
 
-
             const wordsJsonFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
-
             extractedWords.forEach(word => {
                 this.persistJson(word.id, wordsJsonFolder, Buffer.from(JSON.stringify(word)).toString("base64"));
             });

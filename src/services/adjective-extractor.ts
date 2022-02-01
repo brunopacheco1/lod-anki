@@ -40,23 +40,25 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
     private extractMeanings(lodKey: string, word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
-        const nounTranslationStructure = structure["lod:TRAITEMENT-LING-ADJ"];
-        if (!!nounTranslationStructure) {
-            const translationStructures = nounTranslationStructure[0]["lod:UNITE-TRAD"];
-            for (const translationStructure of translationStructures) {
-                const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
+        const meaningsStructure = structure["lod:TRAITEMENT-LING-ADJ"];
+        if (!!meaningsStructure) {
+            for (const meaningStructure of meaningsStructure) {
+                const translationStructures = meaningStructure["lod:UNITE-TRAD"];
+                for (const translationStructure of translationStructures) {
+                    const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
 
-                meanings.push({
-                    lodKey: lodKey,
-                    examples: this.extractExamples(word, translation),
-                    synonyms: this.extractSynonyms(translation),
-                    translations: [
-                        this.extractTranslation("ALL", translation),
-                        this.extractTranslation("FR", translation),
-                        this.extractTranslation("PO", translation),
-                        this.extractTranslation("EN", translation)
-                    ]
-                });
+                    meanings.push({
+                        lodKey: lodKey,
+                        examples: this.extractExamples(word, translation),
+                        synonyms: this.extractSynonyms(translation),
+                        translations: [
+                            this.extractTranslation("ALL", translation),
+                            this.extractTranslation("FR", translation),
+                            this.extractTranslation("PO", translation),
+                            this.extractTranslation("EN", translation)
+                        ]
+                    });
+                }
             }
         }
         return meanings;
