@@ -3,9 +3,13 @@ import { TYPES } from "../types";
 import { FileOutputStream } from "./file-output-stream";
 import * as xml2js from "xml2js";
 import * as fs from "fs";
+import * as path from "path";
 import { CONSTANTS } from "../constants";
 import { NounExtractor } from "./noun-extractor";
 import { Word } from "../model/word";
+import { AdjectiveExtractor } from "./adjective-extractor";
+import { AdverbExtractor } from "./adverb-extractor";
+import { VerbExtractor } from "./verb-extractor";
 
 export interface WordExtractor {
     extract(wordList: string[], outputDirectory: string): Promise<void>;
@@ -16,7 +20,10 @@ export class WordExtractorImpl implements WordExtractor {
 
     constructor(
         @inject(TYPES.FileOutputStream) private readonly outputStream: FileOutputStream,
-        @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor
+        @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor,
+        @inject(TYPES.AdjectiveExtractor) private readonly adjectiveExtractor: AdjectiveExtractor,
+        @inject(TYPES.AdverbExtractor) private readonly adverbExtractor: AdverbExtractor,
+        @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor
     ) { }
 
     public async extract(wordList: string[], outputDirectory: string): Promise<void> {
@@ -31,58 +38,76 @@ export class WordExtractorImpl implements WordExtractor {
                 const article: any = items[itemIndex]["lod:ARTICLE"][0];
                 const lodKey: string = items[itemIndex]["lod:META"][0]["attributes"]["lod:ID"].trim();
 
-                let wordObj = this.extractArticle(lodKey, article);
-                if (!wordObj) continue;
+                let wordObjs = this.extractArticle(lodKey, article);
 
-                if (extractedWords.has(wordObj.id)) {
-                    const previousWordObj = extractedWords.get(wordObj.id);
-                    for (const type of wordObj.types) {
-                        const previousOtherType = previousWordObj!.types.find(otherType => otherType.type === type.type);
-                        if (!!previousOtherType) {
-                            previousOtherType.meanings = [...previousOtherType.meanings, ...type.meanings];
-                        } else {
+                for (const wordObj of wordObjs) {
+                    if (extractedWords.has(wordObj.id)) {
+                        const previousWordObj = extractedWords.get(wordObj.id);
+                        for (const type of wordObj.types) {
                             previousWordObj!.types.push(type);
                         }
+                    } else {
+                        extractedWords.set(wordObj.id, wordObj);
                     }
-                } else {
-                    extractedWords.set(wordObj.id, wordObj);
                 }
             }
 
+
+            const wordsJsonFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
+
             extractedWords.forEach(word => {
-                if (word.word === "Béier") console.log(JSON.stringify(word));
+                this.persistJson(word.id, wordsJsonFolder, Buffer.from(JSON.stringify(word)).toString("base64"));
             });
-            console.log(extractedWords.size);
         } catch (exception) {
             console.error(exception);
         }
     }
 
-    public extractArticle(lodKey: string, article: any): Word | undefined {
+    public extractArticle(lodKey: string, article: any): Word[] {
         const word: any = article["lod:ITEM-ADRESSE"][0]["_"];
-        const structure: any = article["lod:MICROSTRUCTURE"][0];
-        const type = Object.keys(structure)[0];
-        let wordObj;
-        switch (type) {
-            case "lod:MS-TYPE-SUBST":
-                wordObj = this.nounExtraxtor.extract(lodKey, word, structure[type][0]);
-                break;
-            case "lod:MS-TYPE-INTERJ": break;
-            case "lod:MS-TYPE-ADJ": break;
-            case "lod:MS-TYPE-ADV": break;
-            case "lod:MS-TYPE-PREP": break;
-            case "lod:MS-TYPE-VRB": break;
-            case "lod:MS-TYPE-PRON": break;
-            case "lod:MS-TYPE-CONJ": break;
-            case "lod:MS-TYPE-PART": break;
-            case "lod:MS-TYPE-PREP-plus-ART": break;
-            case "lod:MS-TYPE-VRBPART": break;
-            case "lod:MS-TYPE-ART": break;
-            case "lod:MS-TYPE-ELEM-COMP": break;
-            case "lod:MS-TYPE-PRONADV": break;
-            case "lod:MS-TYPE-INDEF": break;
-            default: throw new Error(`${type} not recognized.`);
+        const structures: any = article["lod:MICROSTRUCTURE"];
+
+        const words: Word[] = [];
+        for (const structure of structures) {
+            const typeKey = Object.keys(structure)[0];
+            for (const type of structure[typeKey]) {
+                let wordObj;
+                switch (typeKey) {
+                    case "lod:MS-TYPE-SUBST":
+                        wordObj = this.nounExtraxtor.extract(lodKey, word, type);
+                        break;
+                    case "lod:MS-TYPE-INTERJ": break;
+                    case "lod:MS-TYPE-ADJ":
+                        wordObj = this.adjectiveExtractor.extract(lodKey, word, type);
+                        break;
+                    case "lod:MS-TYPE-ADV":
+                        wordObj = this.adverbExtractor.extract(lodKey, word, type);
+                        break;
+                    case "lod:MS-TYPE-PREP": break;
+                    case "lod:MS-TYPE-VRB":
+                        wordObj = this.verbExtractor.extract(lodKey, word, type);
+                        break;
+                    case "lod:MS-TYPE-PRON": break;
+                    case "lod:MS-TYPE-CONJ": break;
+                    case "lod:MS-TYPE-PART": break;
+                    case "lod:MS-TYPE-PREP-plus-ART": break;
+                    case "lod:MS-TYPE-VRBPART": break;
+                    case "lod:MS-TYPE-ART": break;
+                    case "lod:MS-TYPE-ELEM-COMP": break;
+                    case "lod:MS-TYPE-PRONADV": break;
+                    case "lod:MS-TYPE-INDEF": break;
+                    default: throw new Error(`${type} not recognized.`);
+                }
+
+                if (!!wordObj) {
+                    words.push(wordObj);
+                }
+            }
         }
-        return wordObj;
+        return words;
+    }
+
+    private persistJson(wordKey: string, outputDirectory: string, body: string): void {
+        this.outputStream.write(outputDirectory, `${wordKey}.json`, body);
     }
 }

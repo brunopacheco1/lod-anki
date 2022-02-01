@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Word, WordMeaning, WordTranslation } from "../model/word";
+import { Word, WordMeaning, WordTranslation, WordUsageExample } from "../model/word";
 import { TYPES } from "../types";
 import { KeyGenerator } from "./key-generator";
 
@@ -15,22 +15,17 @@ export class NounExtractorImpl implements NounExtractor {
     ) { }
 
     public extract(lodKey: string, word: string, structure: any): Word {
-        const gender: string = this.extractGender(structure);
-        const plural: string | undefined = this.extractPlural(structure);
-        const variantOf: string | undefined = this.extractVariantOf(structure);
-        const meanings = this.extractMeanings(lodKey, structure);
-
         return {
             id: this.keyGenerator.generateWordKey(word),
             word: word,
             types: [{
                 type: "noun",
                 details: {
-                    nounGender: gender,
-                    plural: plural,
-                    variationOfLodKey: variantOf
+                    nounGender: this.extractGender(structure),
+                    plural: this.extractPlural(structure),
+                    variationOfLodKey: this.extractVariantOf(structure)
                 },
-                meanings: meanings
+                meanings: this.extractMeanings(lodKey, word, structure)
             }]
         };
     }
@@ -72,7 +67,7 @@ export class NounExtractorImpl implements NounExtractor {
         return variantOf;
     }
 
-    private extractMeanings(lodKey: string, structure: any): WordMeaning[] {
+    private extractMeanings(lodKey: string, word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
         const nounTranslationStructure = structure["lod:TRAITEMENT-LING-SUBST"];
@@ -80,21 +75,51 @@ export class NounExtractorImpl implements NounExtractor {
             const translationStructures = nounTranslationStructure[0]["lod:UNITE-TRAD"];
             for (const translationStructure of translationStructures) {
                 const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
-                const deTranslation = this.extractTranslation("ALL", translation);
-                const frTranslation = this.extractTranslation("FR", translation);
-                const ptTranslation = this.extractTranslation("PO", translation);
-                const enTranslation = this.extractTranslation("EN", translation);
-
-                // TODO lod:EXEMPLIFICATION
-                // TODO lod:SYNONYMES
 
                 meanings.push({
                     lodKey: lodKey,
-                    translations: [deTranslation, frTranslation, ptTranslation, enTranslation]
+                    examples: this.extractExamples(word, translation),
+                    synonyms: this.extractSynonyms(translation),
+                    translations: [
+                        this.extractTranslation("ALL", translation),
+                        this.extractTranslation("FR", translation),
+                        this.extractTranslation("PO", translation),
+                        this.extractTranslation("EN", translation)
+                    ]
                 });
             }
         }
         return meanings;
+    }
+
+    private extractExamples(word: string, translationStructure: any): WordUsageExample[] {
+        const examples: WordUsageExample[] = [];
+        const examplesStructure = translationStructure["lod:EXEMPLIFICATION"][0]["lod:EXEMPLE"];
+        for (const exampleStructure of examplesStructure) {
+            const usage = exampleStructure["attributes"]["lod:MARQUE-USAGE"];
+            const texts = exampleStructure["lod:TEXTE-EX"][0]["lod:TEXTE"];
+
+            // TODO improve example concatenation
+            // perhaps XML parsing is wrongly reordering the text elements.
+            examples.push({
+                example: `${texts[0]} ${word}${texts[1] || ""}`.trim(),
+                usage: usage
+            });
+        }
+        return examples;
+    }
+
+    private extractSynonyms(translationStructure: any): string[] {
+        const synonymsStructure = translationStructure["lod:SYNONYMES"][0]["lod:SYN-PRESENTS"];
+        if (!synonymsStructure) {
+            return [];
+        }
+
+        const synonyms: string[] = [];
+        for (const synonymStructure of synonymsStructure) {
+            synonyms.push(synonymStructure["lod:TERME-SYN"][0]);
+        }
+        return [];
     }
 
     private extractTranslation(languageKey: string, translationStructure: any): WordTranslation {

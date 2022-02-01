@@ -18,7 +18,8 @@ export interface WordType {
 
 export interface WordTypeDetails {
     auxiliaryVerb?: string,
-    pastParticiple?: string,
+    pastParticiples?: string[],
+    imperative?: string,
     nounGender?: string,
     plural?: string,
     variationOf?: string,
@@ -28,8 +29,13 @@ export interface WordTypeDetails {
 export interface WordMeaning {
     lodKey: string,
     translations: WordTranslation[],
-    examples?: string[],
+    examples?: WordUsageExample[],
     synonyms?: string[]
+}
+
+export interface WordUsageExample {
+    usage: string,
+    example: string
 }
 
 export interface WordTranslation {

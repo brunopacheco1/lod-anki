@@ -8,12 +8,18 @@ import { LodAudioCrawler, LodAudioCrawlerImpl } from "./services/lod-audio-crawl
 import { FileOutputStream, FileOutputStreamImpl } from "./services/file-output-stream";
 import { KeyGenerator, KeyGeneratorImpl } from "./services/key-generator";
 import { NounExtractor, NounExtractorImpl } from "./services/noun-extractor";
+import { AdjectiveExtractor, AdjectiveExtractorImpl } from "./services/adjective-extractor";
+import { AdverbExtractor, AdverbExtractorImpl } from "./services/adverb-extractor";
+import { VerbExtractor, VerbExtractorImpl } from "./services/verb-extractor";
 
 export function init(): Cli {
     const container: Container = new Container();
 
     container.bind<KeyGenerator>(TYPES.KeyGenerator).to(KeyGeneratorImpl).inSingletonScope();
     container.bind<NounExtractor>(TYPES.NounExtractor).to(NounExtractorImpl).inSingletonScope();
+    container.bind<AdjectiveExtractor>(TYPES.AdjectiveExtractor).to(AdjectiveExtractorImpl).inSingletonScope();
+    container.bind<AdverbExtractor>(TYPES.AdverbExtractor).to(AdverbExtractorImpl).inSingletonScope();
+    container.bind<VerbExtractor>(TYPES.VerbExtractor).to(VerbExtractorImpl).inSingletonScope();
     container.bind<WordExtractor>(TYPES.WordExtractor).to(WordExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileOutputStream>(TYPES.FileOutputStream).to(FileOutputStreamImpl).inSingletonScope();
