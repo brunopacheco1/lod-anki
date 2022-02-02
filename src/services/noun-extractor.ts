@@ -20,12 +20,13 @@ export class NounExtractorImpl implements NounExtractor {
             word: word,
             types: [{
                 type: "noun",
+                lodKey: lodKey,
                 details: {
                     nounGender: this.extractGender(structure),
                     plural: this.extractPlural(structure),
                     variationOfLodKey: this.extractVariantOf(structure)
                 },
-                meanings: this.extractMeanings(lodKey, word, structure)
+                meanings: this.extractMeanings(word, structure)
             }]
         };
     }
@@ -67,7 +68,7 @@ export class NounExtractorImpl implements NounExtractor {
         return variantOf;
     }
 
-    private extractMeanings(lodKey: string, word: string, structure: any): WordMeaning[] {
+    private extractMeanings(word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
         const meaningsStructure = structure["lod:TRAITEMENT-LING-SUBST"];
@@ -78,7 +79,6 @@ export class NounExtractorImpl implements NounExtractor {
                     const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
 
                     meanings.push({
-                        lodKey: lodKey,
                         examples: this.extractExamples(word, translation),
                         synonyms: this.extractSynonyms(translation),
                         translations: [

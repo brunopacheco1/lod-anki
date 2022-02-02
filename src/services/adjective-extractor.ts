@@ -20,10 +20,11 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
             word: word,
             types: [{
                 type: "adjective",
+                lodKey: lodKey,
                 details: {
                     variationOf: this.extractVariantOf(structure)
                 },
-                meanings: this.extractMeanings(lodKey, word, structure)
+                meanings: this.extractMeanings(word, structure)
             }]
         };
     }
@@ -37,7 +38,7 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
         return variantOf;
     }
 
-    private extractMeanings(lodKey: string, word: string, structure: any): WordMeaning[] {
+    private extractMeanings(word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
         const meaningsStructure = structure["lod:TRAITEMENT-LING-ADJ"];
@@ -48,7 +49,6 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
                     const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
 
                     meanings.push({
-                        lodKey: lodKey,
                         examples: this.extractExamples(word, translation),
                         synonyms: this.extractSynonyms(translation),
                         translations: [

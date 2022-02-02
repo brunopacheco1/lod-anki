@@ -1,1 +1,1 @@
-{"id":"6f3931d35f0395df82b032b8019ac57d","word":"Nazi","types":[{"type":"noun","details":{"nounGender":"M","plural":"Nazien"},"meanings":[]},{"type":"noun","details":{"nounGender":"F","plural":"Nazien","variationOfLodKey":"NAZI1"},"meanings":[]}]}
+{"id":"6f3931d35f0395df82b032b8019ac57d","word":"Nazi","types":[{"type":"noun","lodKey":"NAZI1","details":{"nounGender":"M","plural":"Nazien"},"meanings":[]},{"type":"noun","lodKey":"NAZI2","details":{"nounGender":"F","plural":"Nazien","variationOfLodKey":"NAZI1"},"meanings":[]}]}
