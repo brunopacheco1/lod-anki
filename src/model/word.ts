@@ -13,6 +13,7 @@ export interface Word {
 
 export interface WordType {
     type: string,
+    lodKey: string,
     details: WordTypeDetails,
     meanings: WordMeaning[]
 }
@@ -28,7 +29,6 @@ export interface WordTypeDetails {
 }
 
 export interface WordMeaning {
-    lodKey: string,
     translations: WordTranslation[],
     examples?: WordUsageExample[],
     synonyms?: string[]

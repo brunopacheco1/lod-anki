@@ -20,12 +20,13 @@ export class VerbExtractorImpl implements VerbExtractor {
             word: word,
             types: [{
                 type: "verb",
+                lodKey: lodKey,
                 details: {
                     variationOf: this.extractVariantOf(structure),
                     auxiliaryVerb: this.extractAuxiliaryVerb(structure),
                     pastParticiples: this.extractPastParticiples(structure)
                 },
-                meanings: this.extractMeanings(lodKey, word, structure)
+                meanings: this.extractMeanings(word, structure)
             }]
         };
     }
@@ -52,7 +53,7 @@ export class VerbExtractorImpl implements VerbExtractor {
         return structure["lod:PARTICIPE-PASSE"];
     }
 
-    private extractMeanings(lodKey: string, word: string, structure: any): WordMeaning[] {
+    private extractMeanings(word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
         const meaningsStructure = structure["lod:TRAITEMENT-LING-VRB"];
@@ -65,7 +66,6 @@ export class VerbExtractorImpl implements VerbExtractor {
                     const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
 
                     meanings.push({
-                        lodKey: lodKey,
                         examples: this.extractExamples(word, translation),
                         synonyms: this.extractSynonyms(translation),
                         translations: [

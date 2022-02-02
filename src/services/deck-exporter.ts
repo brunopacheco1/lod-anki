@@ -57,7 +57,7 @@ export class DeckExporterImpl implements DeckExporter {
             let flashcardBack = "";
             let anyContentPresent = false;
             for (const type of word.types) {
-                flashcardBack += `<b>${type.type}</b>:`;
+                flashcardBack += `<b>${type.type} [sound:${type.lodKey.toLowerCase()}.mp3]</b>:`;
                 flashcardBack += `<ul>`;
                 for (const meaning of type.meanings) {
                     const translation = meaning.translations.find(it => it.language === dictionary.language);

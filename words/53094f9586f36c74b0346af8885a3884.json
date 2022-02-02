@@ -1,1 +1,1 @@
-{"id":"53094f9586f36c74b0346af8885a3884","word":"Elf","types":[{"type":"noun","details":{"nounGender":"M","plural":"Elfen"},"meanings":[]},{"type":"noun","details":{"nounGender":"F","plural":"Elfen","variationOfLodKey":"ELFIN1"},"meanings":[]}]}
+{"id":"53094f9586f36c74b0346af8885a3884","word":"Elf","types":[{"type":"noun","lodKey":"ELF1","details":{"nounGender":"M","plural":"Elfen"},"meanings":[]},{"type":"noun","lodKey":"ELF2","details":{"nounGender":"F","plural":"Elfen","variationOfLodKey":"ELFIN1"},"meanings":[]}]}

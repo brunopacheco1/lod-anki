@@ -1,1 +1,1 @@
-{"id":"ae73fa9942efb474e22c73fc41f09f5d","word":"Popstar","types":[{"type":"noun","details":{"nounGender":"M","plural":"Popstaren"},"meanings":[]},{"type":"noun","details":{"nounGender":"F","plural":"Popstaren","variationOfLodKey":"POPSTAR1"},"meanings":[]}]}
+{"id":"ae73fa9942efb474e22c73fc41f09f5d","word":"Popstar","types":[{"type":"noun","lodKey":"POPSTAR1","details":{"nounGender":"M","plural":"Popstaren"},"meanings":[]},{"type":"noun","lodKey":"POPSTAR2","details":{"nounGender":"F","plural":"Popstaren","variationOfLodKey":"POPSTAR1"},"meanings":[]}]}

@@ -1,0 +1,61 @@
+Gare;<b>noun [sound:gare1.mp3]</b>:<ul><li>estação (de caminho de ferro)</li></ul><br><b>noun [sound:gare2.mp3]</b>:<ul><li>Luxembourg-Gare</li></ul><br>
+Depart;<b>noun [sound:depart1.mp3]</b>:<ul><li>partida [ato de partir]</li><li>(ponto de) partida [de um giro, de uma corrida]</li><li>partida [momento de partida (de uma corrida)]</li></ul><br>
+Quai;<b>noun [sound:quai1.mp3]</b>:<ul><li>cais</li><li>cais [de um porto]</li></ul><br>
+Billjee;<b>noun [sound:billjee1.mp3]</b>:<ul><li>bilhete [de entrada, de transporte]</li></ul><br>
+lénks;<b>adjective [sound:lenks1.mp3]</b>:<ul><li>esquerdo [do lado esquerdo]</li><li>de esquerda [partido, sindicato, organização]</li><li>gay</li></ul><br><b>adverb [sound:lenks2.mp3]</b>:<ul><li>(à) esquerda</li></ul><br>
+riets;<b>adjective [sound:riets1.mp3]</b>:<ul><li>direito [do lado direito]</li><li>de direita [partido político]</li></ul><br><b>adverb [sound:riets2.mp3]</b>:<ul><li>(à) direita</li></ul><br>
+riichtaus;<b>adverb [sound:riichtaus1.mp3]</b>:<ul><li>a direito</li></ul><br>
+Zentrum;<b>noun [sound:zentrum1.mp3]</b>:<ul><li>centro [de uma localidade, de uma cidade]</li><li>centro [de atividade, ponto de convergência]</li><li>circunscrição Centro [no Luxemburgo]</li></ul><br>
+Busarrêt;<b>noun [sound:busarret1.mp3]</b>:<ul><li>paragem de autocarro</li></ul><br>
+Plang;<b>noun [sound:plang1.mp3]</b>:<ul><li>plano [planta]</li><li>mapa [carta]</li><li>plano [de um texto]</li><li>plano [projeto, intenção]</li><li>plano [aspeto]</li><li>deixar em apuros</li></ul><br>
+Kräizung;<b>noun [sound:kraizung1.mp3]</b>:<ul><li>cruzamento [rodoviário]</li><li>cruzamento [método de reprodução]</li></ul><br>
+Zeebrasträifen;<b>noun [sound:zeebrastraifen1.mp3]</b>:<ul><li>passadeira [faixa para peões]</li></ul><br>
+Strooss;<b>noun [sound:strooss1.mp3]</b>:<ul><li>rua</li><li>faixa de rodagem</li></ul><br>
+Knuedler;<b>noun [sound:knuedler1.mp3]</b>:<ul><li>praça Guillaume II [lugar na cidade do Luxemburgo]</li></ul><br>
+Alstad;<b>noun [sound:alstad1.mp3]</b>:<ul><li>centro histórico</li></ul><br>
+Café;<b>noun [sound:cafe1.mp3]</b>:<ul><li>café [estabelecimento]</li></ul><br>
+Blummebuttek;<b>noun [sound:blummebuttek1.mp3]</b>:<ul><li>florista [loja]</li></ul><br>
+Parfümerie;<b>noun [sound:parfumerie1.mp3]</b>:<ul><li>perfumaria [loja, secção]</li><li>perfumaria [conjunto de perfumes]</li></ul><br>
+Apdikt;<b>noun [sound:apdikt1.mp3]</b>:<ul><li>farmácia [estabelecimento]</li></ul><br>
+Bibliothéik;<b>noun [sound:bibliotheik1.mp3]</b>:<ul><li>biblioteca [estabelecimento]</li><li>biblioteca [coleção]</li><li>biblioteca [edifício]</li><li>biblioteca</li></ul><br>
+Bank;<b>noun [sound:bank1.mp3]</b>:<ul><li>banco [instituição financeira]</li><li>banco [agência]</li></ul><br>
+Bancomat;<b>noun [sound:bancomat1.mp3]</b>:<ul><li>caixa automática</li></ul><br>
+Post;<b>noun [sound:post1.mp3]</b>:<ul><li>correio [serviço postal]</li><li>correio [estação postal]</li><li>correio [correspondência]</li></ul><br><b>noun [sound:post2.mp3]</b>:<ul><li>post</li></ul><br>
+Bäcker;<b>noun [sound:backer1.mp3]</b>:<ul><li>padeiro</li></ul><br>
+Coiffer;<b>noun [sound:coiffer1.mp3]</b>:<ul><li>cabeleireiro</li></ul><br>
+Estheticienne;<b>noun [sound:estheticienne1.mp3]</b>:<ul><li>esteticista [profissional]</li></ul><br>
+Policebüro;<b>noun [sound:policeburo1.mp3]</b>:<ul><li>posto (de polícia)</li></ul><br>
+Gemeng;<b>noun [sound:gemeng1.mp3]</b>:<ul><li>comuna [circunscrição administrativa]</li><li>administração municipal</li><li>câmara municipal [edifício]</li></ul><br>
+Maart;<b>noun [sound:maart1.mp3]</b>:<ul><li>mercado [local de venda]</li><li>mercado [circulação de bens]</li></ul><br>
+Tankstell;<b>noun [sound:tankstell1.mp3]</b>:<ul><li>bomba de gasolina</li></ul><br>
+Schwämm;<b>noun [sound:schwamm1.mp3]</b>:<ul><li>piscina [estabelecimento]</li><li>piscina [edifício]</li><li>piscina [tanque]</li></ul><br>
+éischt;<b>adjective [sound:eischt1.mp3]</b>:<ul><li>primeiro [numa série, numa ordem]</li><li>primeiro</li></ul><br>
+dann;<b>adverb [sound:dann2.mp3]</b>:<ul><li>então [nesse momento]</li><li>depois</li><li>então [nesse caso]</li></ul><br>
+Schluss;<b>noun [sound:schluss1.mp3]</b>:<ul><li>fim</li><li>fim [desfecho]</li><li>conclusão [dedução]</li></ul><br>
+Carte d'identité;<b>noun [sound:cartedidentite1.mp3]</b>:<ul><li>bilhete de identidade</li></ul><br>
+Buch;<b>noun [sound:buch1.mp3]</b>:<ul><li>livro [obra, publicação]</li><li>livro de contas</li><li>anotar (regularmente)</li></ul><br><b>noun [sound:buch2.mp3]</b>:<ul><li>pedaço de carne da pá</li></ul><br><b>noun [sound:buch3.mp3]</b>:<ul><li>Variant of BICH1</li></ul><br>
+Zäitschrëft;<b>noun [sound:zaitschreft2.mp3]</b>:<ul><li>revista [periódico]</li><li>revista [redação, casa editora]</li></ul><br>
+Film;<b>noun [sound:film1.mp3]</b>:<ul><li>filme [obra cinematográfica]</li><li>cinema [setor de atividade]</li><li>filme [película fotográfica]</li><li>película [camada fina]</li></ul><br>
+Concert;<b>noun [sound:concert1.mp3]</b>:<ul><li>concerto [espetáculo]</li></ul><br>
+Kont;<b>noun [sound:kont1.mp3]</b>:<ul><li>conta (bancária)</li><li>conta cliente</li><li>conta [contabilidade, balanço]</li></ul><br>
+Pak;<b>noun [sound:pak1.mp3]</b>:<ul><li>pacote [envio postal, presente]</li><li>pacote [embalagem e conteúdo]</li><li>pilha</li></ul><br><b>noun [sound:pak2.mp3]</b>:<ul><li>ralé [súcia]</li></ul><br>
+Formulaire;<b>noun [sound:formulaire1.mp3]</b>:<ul><li>formulário [documento]</li></ul><br>
+Memberskaart;<b>noun [sound:memberskaart1.mp3]</b>:<ul><li>cartão de membro</li></ul><br>
+Reservatioun;<b>noun [sound:reservatioun1.mp3]</b>:<ul><li>reserva [marcação]</li><li>prova de reserva</li></ul><br>
+Plaz;<b>noun [sound:plaz1.mp3]</b>:<ul><li>praça</li><li>lugar [local, sítio]</li><li>lugar [sentado]</li><li>lugar [espaço livre]</li><li>lugar [vaga]</li><li>lugar [espaço atribuído]</li><li>lugar [numa classificação]</li><li>sítio [lugar preciso]</li><li>lugar [emprego]</li><li>mancha [pinta de cor diferente]</li><li>pisadura</li><li>logo</li></ul><br>
+Entrée;<b>noun [sound:entree1.mp3]</b>:<ul><li>entrada [acesso, vestíbulo]</li><li>entrada [bilhete de ingresso]</li><li>entrada [primeiro prato]</li></ul><br><b>noun [sound:entree2.mp3]</b>:<ul><li>entrada</li></ul><br>
+Plat;<b>noun [sound:plat1.mp3]</b>:<ul><li>travessa [recipiente]</li><li>prato [comida]</li></ul><br>
+Vegetarier;<b>noun [sound:vegetarier1.mp3]</b>:<ul><li>vegetariano</li></ul><br>
+Ëffnungszäiten;<b>noun [sound:effnungszaiten1.mp3]</b>:<ul><li>horário de abertura</li></ul><br>
+annerhallef;<b>adjective [sound:annerhallef1.mp3]</b>:<ul><li>um ... e meio</li></ul><br>
+Stonn;<b>noun [sound:stonn1.mp3]</b>:<ul><li>hora [unidade de tempo]</li><li>aula [lição]</li></ul><br>
+al;<b>adjective [sound:al1.mp3]</b>:<ul><li>velho</li><li>com a idade de</li><li>velho [que existe há muito tempo]</li><li>velho [de outrora]</li><li>antigo [da Antiguidade]</li></ul><br><b>adverb [sound:al2.mp3]</b>:<ul><li>muito</li></ul><br>
+Dag;<b>noun [sound:dag1.mp3]</b>:<ul><li>dia [período de 24 horas]</li><li>dia [período entre o nascer e o pôr do sol]</li><li>(dia de) aniversário [de uma pessoa]</li><li>período [menstruação]</li></ul><br>
+ganz;<b>adjective [sound:ganz1.mp3]</b>:<ul><li>inteiro</li><li>no total</li></ul><br><b>adverb [sound:ganz2.mp3]</b>:<ul><li>muito</li></ul><br>
+Rendez-vous;<b>noun [sound:rendezvous1.mp3]</b>:<ul><li>encontro [reunião combinada]</li><li>consulta (marcada)</li><li>encontro [reunião romântica]</li></ul><br>
+Kaddo;<b>noun [sound:kaddo1.mp3]</b>:<ul><li>prenda</li></ul><br>
+Gebuertsdag;<b>noun [sound:gebuertsdag1.mp3]</b>:<ul><li>aniversário [dia aniversário do nascimento]</li><li>(festa de) aniversário</li></ul><br>
+Bicherbuttek;<b>noun [sound:bicherbuttek1.mp3]</b>:<ul><li>livraria [estabelecimento]</li></ul><br>
+Kleederbuttek;<b>noun [sound:kleederbuttek1.mp3]</b>:<ul><li>loja de roupa</li></ul><br>
+Wee;<b>noun [sound:wee1.mp3]</b>:<ul><li>caminho [via de circulação]</li><li>percurso [itinerário]</li><li>sentido [direção, orientação, posição]</li><li>meio [maneira de proceder]</li></ul><br>
+Eck;<b>noun [sound:eck1.mp3]</b>:<ul><li>canto [de um objeto, de um compartimento, de uma rua]</li><li>canto [região, bairro, sítio]</li></ul><br>

@@ -1,1 +1,1 @@
-{"id":"0f28fe833d21018c7707e5680392c068","word":"Freelance","types":[{"type":"noun","details":{"nounGender":"M","plural":"Freelancen"},"meanings":[]},{"type":"noun","details":{"nounGender":"F","plural":"Freelancen","variationOfLodKey":"FREELANCE1"},"meanings":[]}]}
+{"id":"0f28fe833d21018c7707e5680392c068","word":"Freelance","types":[{"type":"noun","lodKey":"FREELANCE1","details":{"nounGender":"M","plural":"Freelancen"},"meanings":[]},{"type":"noun","lodKey":"FREELANCE2","details":{"nounGender":"F","plural":"Freelancen","variationOfLodKey":"FREELANCE1"},"meanings":[]}]}
