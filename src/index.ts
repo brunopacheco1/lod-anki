@@ -11,6 +11,7 @@ import { NounExtractor, NounExtractorImpl } from "./services/noun-extractor";
 import { AdjectiveExtractor, AdjectiveExtractorImpl } from "./services/adjective-extractor";
 import { AdverbExtractor, AdverbExtractorImpl } from "./services/adverb-extractor";
 import { VerbExtractor, VerbExtractorImpl } from "./services/verb-extractor";
+import { DeckExporter, DeckExporterImpl } from "./services/deck-exporter";
 
 export function init(): Cli {
     const container: Container = new Container();
@@ -23,6 +24,7 @@ export function init(): Cli {
     container.bind<WordExtractor>(TYPES.WordExtractor).to(WordExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileOutputStream>(TYPES.FileOutputStream).to(FileOutputStreamImpl).inSingletonScope();
+    container.bind<DeckExporter>(TYPES.DeckExporter).to(DeckExporterImpl).inSingletonScope();
     container.bind<Cli>(TYPES.Cli).to(Cli).inSingletonScope();
 
     return container.get<Cli>(TYPES.Cli);

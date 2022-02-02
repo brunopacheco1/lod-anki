@@ -8,6 +8,7 @@ const TYPES = {
     LodAudioCrawler: Symbol.for("LodAudioCrawler"),
     KeyGenerator: Symbol.for("KeyGenerator"),
     FileOutputStream: Symbol.for("FileOutputStream"),
+    DeckExporter: Symbol.for("DeckExporter")
 };
 
 export { TYPES };

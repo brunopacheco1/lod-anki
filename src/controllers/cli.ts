@@ -8,6 +8,7 @@ import { WordExtractor } from "../services/word-extractor";
 import * as fs from "fs";
 import * as path from "path";
 import { Dictionary } from "../model/word";
+import { DeckExporter } from "../services/deck-exporter";
 const pkg = require("../../package.json");
 
 @injectable()
@@ -17,7 +18,8 @@ export class Cli {
 
     constructor(
         @inject(TYPES.LodAudioCrawler) private readonly lodCrawler: LodAudioCrawler,
-        @inject(TYPES.WordExtractor) private readonly wordExtractor: WordExtractor) { }
+        @inject(TYPES.WordExtractor) private readonly wordExtractor: WordExtractor,
+        @inject(TYPES.DeckExporter) private readonly deckExporter: DeckExporter) { }
 
     public main(argv: string[]): void {
         console.log(
@@ -41,15 +43,19 @@ export class Cli {
                 await this.lodCrawler.fetch(wordListArray, command.opts().output);
             });
 
-        command.command("extract")
-            .description("extract LOD definitions to JSON")
-            .action(async () => {
-                await this.wordExtractor.extract(command.opts().output);
+        command.command("extract <lodDump>")
+            .description("extract words definitions from LOD dump file")
+            .action(async (lodDump: any) => {
+                const lodDumpFile = path.join(process.cwd(), lodDump);
+                await this.wordExtractor.extract(lodDumpFile, command.opts().output);
             });
 
-        command.command("generate <dictionary>")
-            .description("generate anki dictionary")
+        command.command("export <dictionary>")
+            .description("export dictionary into Anki txt file")
             .action(async (dictionaryPath: any) => {
+                const dictionaryFile = path.join(process.cwd(), dictionaryPath);
+                const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
+                await this.deckExporter.export(dictionary, command.opts().output);
             });
 
         command.parse(argv);
