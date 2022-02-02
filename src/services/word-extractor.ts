@@ -12,7 +12,7 @@ import { AdverbExtractor } from "./adverb-extractor";
 import { VerbExtractor } from "./verb-extractor";
 
 export interface WordExtractor {
-    extract(outputDirectory: string): Promise<void>;
+    extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
 }
 
 @injectable()
@@ -26,11 +26,11 @@ export class WordExtractorImpl implements WordExtractor {
         @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor
     ) { }
 
-    public async extract(outputDirectory: string): Promise<void> {
+    public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
         const extractedWords = new Map<string, Word>();
         const parser = new xml2js.Parser({ attrkey: "attributes" });
         try {
-            let xmlStr = fs.readFileSync(CONSTANTS.LOD_XML);
+            let xmlStr = fs.readFileSync(lodDumpFile);
             const xml: any = await parser.parseStringPromise(xmlStr);
             const items: any = xml["lod:LOD"]["lod:ITEM"];
 
@@ -62,7 +62,7 @@ export class WordExtractorImpl implements WordExtractor {
     }
 
     public extractArticle(lodKey: string, article: any): Word[] {
-        const word: any = article["lod:ITEM-ADRESSE"][0]["_"];
+        const word: any = article["lod:ITEM-ADRESSE"][0]["_"].replace(/\_/g, " ").replace(/\#/g, "'");
         const structures: any = article["lod:MICROSTRUCTURE"];
 
         const words: Word[] = [];
