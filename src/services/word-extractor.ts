@@ -28,6 +28,7 @@ export class WordExtractorImpl implements WordExtractor {
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
         const extractedWords = new Map<string, Word>();
+        const lodKeysToWords = new Map<string, string>();
         const parser = new xml2js.Parser({ attrkey: "attributes" });
         try {
             let xmlStr = fs.readFileSync(lodDumpFile);
@@ -41,6 +42,7 @@ export class WordExtractorImpl implements WordExtractor {
                 let wordObjs = this.extractArticle(lodKey, article);
 
                 for (const wordObj of wordObjs) {
+                    lodKeysToWords.set(lodKey, wordObj.word);
                     if (extractedWords.has(wordObj.id)) {
                         const previousWordObj = extractedWords.get(wordObj.id);
                         for (const type of wordObj.types) {
@@ -53,9 +55,14 @@ export class WordExtractorImpl implements WordExtractor {
             }
 
             const wordsJsonFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
-            extractedWords.forEach(word => {
+            for (const word of extractedWords.values()) {
+                for (const type of word.types) {
+                    if (!!type.details.variationOfLodKey) {
+                        type.details.variationOf = lodKeysToWords.get(type.details.variationOfLodKey);
+                    }
+                }
                 this.persistJson(word.id, wordsJsonFolder, Buffer.from(JSON.stringify(word)).toString("base64"));
-            });
+            };
         } catch (exception) {
             console.error(exception);
         }
