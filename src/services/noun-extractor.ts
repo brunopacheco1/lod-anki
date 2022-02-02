@@ -23,6 +23,7 @@ export class NounExtractorImpl implements NounExtractor {
                 lodKey: lodKey,
                 details: {
                     nounGender: this.extractGender(structure),
+                    nounCategory: this.extractNounCategory(structure),
                     plural: this.extractPlural(structure),
                     variationOfLodKey: this.extractVariantOf(structure)
                 },
@@ -33,6 +34,14 @@ export class NounExtractorImpl implements NounExtractor {
 
     private extractGender(structure: any): string {
         return structure["lod:GENRE"][0]["attributes"]["lod:GEN"].trim();
+    }
+
+    private extractNounCategory(structure: any): string | undefined {
+        const attributes = structure["lod:CAT-GRAM-SUBST"][0]["attributes"];
+        if (!!attributes) {
+            return attributes["lod:C-G-SUBST"].trim();
+        }
+        return undefined;
     }
 
     private extractPlural(structure: any): string | undefined {

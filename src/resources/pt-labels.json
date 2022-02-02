@@ -1,7 +1,17 @@
 {
     "VARIANT_OF": "Variante de",
-    "NOUN": "Substantivo",
-    "ADVERB": "Advérbio",
-    "VERB": "Verbo",
-    "ADJECTIVE": "Adjectivo"
+    "N_NOUN": "substantivo neutro",
+    "F_NOUN": "substantivo feminino",
+    "M_NOUN": "substantivo masculino",
+    "MN_NOUN": "substantivo masculino/neutro",
+    "MF_NOUN": "substantivo masculino/feminino",
+    "FN_NOUN": "substantivo feminino/neutro",
+    "INDEF_NOUN": "substantivo",
+    "PROPER_NOUN": "nome próprio",
+    "PLURAL": "plural",
+    "NO_PLURAL": "sem plural",
+    "NO_SINGULAR": "sem singular",
+    "ADVERB": "advérbio",
+    "VERB": "verbo",
+    "ADJECTIVE": "adjectivo"
 }
