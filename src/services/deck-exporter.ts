@@ -59,7 +59,7 @@ export class DeckExporterImpl implements DeckExporter {
             let anyContentPresent = false;
             const mediaToAdd: string[] = [];
             for (const type of word.types) {
-                flashcardBack += `<b>${this.labelProvider.get(type.type.toUpperCase(), dictionary.language)} [sound:${type.lodKey.toLowerCase()}.mp3]</b>:`;
+                flashcardBack += `<b><a href="https://www.lod.lu/?${type.lodKey}">${this.labelProvider.get(type.type.toUpperCase(), dictionary.language)}</a> [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
                 flashcardBack += `<ul>`;
                 for (const meaning of type.meanings) {
                     const translation = meaning.translations.find(it => it.language === dictionary.language);
