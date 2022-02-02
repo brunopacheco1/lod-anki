@@ -6,9 +6,10 @@ import { CONSTANTS } from "../constants";
 import { TYPES } from "../types";
 import { KeyGenerator } from "./key-generator";
 import { LabelProvider } from "./label-provider";
+const { default: AnkiExport } = require("anki-apkg-export");
 
 export interface DeckExporter {
-    export(dictionary: Dictionary, outputDirectory: string): void;
+    export(dictionary: Dictionary, outputDirectory: string): Promise<void>;
 }
 
 @injectable()
@@ -19,8 +20,10 @@ export class DeckExporterImpl implements DeckExporter {
         @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
     ) { }
 
-    public export(dictionary: Dictionary, outputDirectory: string): void {
+    public async export(dictionary: Dictionary, outputDirectory: string): Promise<void> {
         const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
+
         let jsonFiles: string[] = [];
 
         if (!!dictionary.words) {
@@ -35,15 +38,14 @@ export class DeckExporterImpl implements DeckExporter {
         }
 
         if (jsonFiles.length > 0) {
-            this.exportJsonToAnki(jsonFiles, dictionary, wordsFolder, outputDirectory);
+            await this.exportJsonToAnki(jsonFiles, dictionary, wordsFolder, lodAudiosFolder, outputDirectory);
         } else {
             console.error("Nothing to export");
         }
     }
 
-    private exportJsonToAnki(files: string[], dictionary: Dictionary, wordsFolder: string, outputDirectory: string): void {
-        const deckFile = path.join(outputDirectory, `${dictionary.fileName}.txt`);
-        const fileStream = fs.createWriteStream(deckFile);
+    private async exportJsonToAnki(files: string[], dictionary: Dictionary, wordsFolder: string, lodAudiosFolder: string, outputDirectory: string): Promise<void> {
+        const apkg = new AnkiExport(dictionary.fileName);
 
         for (const file of files) {
             const wordFile = path.join(wordsFolder, file);
@@ -53,8 +55,9 @@ export class DeckExporterImpl implements DeckExporter {
             }
             const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
 
-            let flashcardBack = "";
+            let flashcardBack = "<div style=\"text-align: left\">";
             let anyContentPresent = false;
+            const mediaToAdd: string[] = [];
             for (const type of word.types) {
                 flashcardBack += `<b>${this.labelProvider.get(type.type.toUpperCase(), dictionary.language)} [sound:${type.lodKey.toLowerCase()}.mp3]</b>:`;
                 flashcardBack += `<ul>`;
@@ -69,6 +72,7 @@ export class DeckExporterImpl implements DeckExporter {
                     } else {
                         flashcardBack += `<li>${translation.translation}</li>`;
                     }
+                    mediaToAdd.push(`${type.lodKey.toLowerCase()}.mp3`);
                     anyContentPresent = true;
                 }
                 if (!!type.details.variationOfLodKey) {
@@ -79,13 +83,20 @@ export class DeckExporterImpl implements DeckExporter {
                 flashcardBack += `</ul><br>`;
             }
 
+            flashcardBack += "</div>";
+
             if (anyContentPresent) {
-                fileStream.write(`${word.word};${flashcardBack}\n`);
+                for(const media of mediaToAdd) {
+                    apkg.addMedia(media, fs.readFileSync(path.join(lodAudiosFolder, media)));
+                }
+                apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
             } else {
                 console.error(`No content found for ${word.word}#${word.id} in ${dictionary.language}!`);
             }
         }
 
-        fileStream.end();
+        const zip = await apkg.save();
+        const deckFile = path.join(outputDirectory, `${dictionary.fileName}.apkg`);
+        fs.writeFileSync(deckFile, zip, "binary");
     }
 }
