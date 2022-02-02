@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import * as fs from "fs";
 import * as path from "path";
-import { Dictionary, Word } from "../model/word";
+import { Dictionary, Word, WordMeaning, WordTranslation, WordType } from "../model/word";
 import { CONSTANTS } from "../constants";
 import { TYPES } from "../types";
 import { KeyGenerator } from "./key-generator";
@@ -53,50 +53,65 @@ export class DeckExporterImpl implements DeckExporter {
                 console.error(`${wordFile} not found!`);
                 continue;
             }
+
             const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
 
             let flashcardBack = "<div style=\"text-align: left\">";
-            let anyContentPresent = false;
-            const mediaToAdd: string[] = [];
             for (const type of word.types) {
-                flashcardBack += `<b><a href="https://www.lod.lu/?${type.lodKey}">${this.labelProvider.get(type.type.toUpperCase(), dictionary.language)}</a> [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
-                flashcardBack += `<ul>`;
-                for (const meaning of type.meanings) {
-                    const translation = meaning.translations.find(it => it.language === dictionary.language);
-                    if (!translation || !translation.translation) {
-                        continue;
-                    }
-
-                    if (!!translation.complement) {
-                        flashcardBack += `<li>${translation.translation} [${translation.complement}]</li>`;
-                    } else {
-                        flashcardBack += `<li>${translation.translation}</li>`;
-                    }
-                    mediaToAdd.push(`${type.lodKey.toLowerCase()}.mp3`);
-                    anyContentPresent = true;
-                }
-                if (!!type.details.variationOfLodKey) {
-                    flashcardBack += `<li>${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOf}</li>`;
-                    anyContentPresent = true;
-                }
-
-                flashcardBack += `</ul><br>`;
+                apkg.addMedia(`${type.lodKey.toLowerCase()}.mp3`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.mp3`)));
+                flashcardBack += this.rerieveWordTypeHeader(dictionary, word, type);
+                flashcardBack += this.retrieveTranslationContent(dictionary, type);
             }
-
             flashcardBack += "</div>";
 
-            if (anyContentPresent) {
-                for(const media of mediaToAdd) {
-                    apkg.addMedia(media, fs.readFileSync(path.join(lodAudiosFolder, media)));
-                }
-                apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
-            } else {
-                console.error(`No content found for ${word.word}#${word.id} in ${dictionary.language}!`);
-            }
+            apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
         }
 
         const zip = await apkg.save();
         const deckFile = path.join(outputDirectory, `${dictionary.fileName}.apkg`);
         fs.writeFileSync(deckFile, zip, "binary");
+    }
+
+    private rerieveWordTypeHeader(dictionary: Dictionary, word: Word, type: WordType): string {
+        let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a>`;
+        let typeStr = this.labelProvider.get(type.type.toUpperCase(), dictionary.language);
+        if (type.type === "noun") {
+            if (type.details.nounCategory === "NOM-PROPRE") {
+                typeStr = this.labelProvider.get("PROPER_NOUN", dictionary.language);
+            } else {
+                typeStr = this.labelProvider.get(`${type.details.nounGender!.toUpperCase()}_${type.type.toUpperCase()}`, dictionary.language);
+            }
+            if(type.details.nounGender === "INDEF") {
+                typeStr += ` (${this.labelProvider.get("NO_SINGULAR", dictionary.language)})`;
+            } else if (!!type.details.plural) {
+                typeStr += ` (${this.labelProvider.get("PLURAL", dictionary.language)} ${type.details.plural})`;
+            }
+        }
+        content += ` ${typeStr}`;
+        if (!!type.details.variationOfLodKey) {
+            content += ` - ${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOf}`;
+        }
+        content += ` [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
+        return content;
+    }
+
+    private retrieveTranslationContent(dictionary: Dictionary, type: WordType): string {
+        if (type.meanings.length === 0) {
+            return "";
+        }
+
+        let content = `<ul>`;
+        for (const meaning of type.meanings) {
+            const translation = meaning.translations.find(it => it.language === dictionary.language);
+            if (!!translation?.translation) {
+                if (!!translation.complement) {
+                    content += `<li>${translation.translation} [${translation.complement}]</li>`;
+                } else {
+                    content += `<li>${translation.translation}</li>`;
+                }
+            }
+        }
+        content += `</ul>`;
+        return content;
     }
 }

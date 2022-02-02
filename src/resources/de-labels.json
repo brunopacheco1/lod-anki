@@ -1,6 +1,16 @@
 {
     "VARIANT_OF": "Variante von",
-    "NOUN": "Num",
+    "N_NOUN": "Neutrum",
+    "F_NOUN": "Femininum",
+    "M_NOUN": "Maskulinum",
+    "MN_NOUN": "Maskulinum/Neutrum",
+    "MF_NOUN": "Maskulinum/Femininum",
+    "FN_NOUN": "Femininum/Neutrum",
+    "INDEF_NOUN": "Num",
+    "PROPER_NOUN": "Eigenname",
+    "PLURAL": "Plural",
+    "NO_PLURAL": "ohne Plural",
+    "NO_SINGULAR": "ohne Singular",
     "ADVERB": "Adverb",
     "VERB": "Verb",
     "ADJECTIVE": "Adjektiv"

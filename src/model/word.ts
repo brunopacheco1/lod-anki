@@ -23,6 +23,7 @@ export interface WordTypeDetails {
     pastParticiples?: string[],
     imperative?: string,
     nounGender?: string,
+    nounCategory?: string,
     plural?: string,
     variationOf?: string,
     variationOfLodKey?: string

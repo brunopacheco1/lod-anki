@@ -18,6 +18,8 @@ export interface WordExtractor {
 @injectable()
 export class WordExtractorImpl implements WordExtractor {
 
+    private genders = new Set<string>();
+
     constructor(
         @inject(TYPES.FileOutputStream) private readonly outputStream: FileOutputStream,
         @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor,
@@ -63,6 +65,8 @@ export class WordExtractorImpl implements WordExtractor {
                 }
                 this.persistJson(word.id, wordsJsonFolder, Buffer.from(JSON.stringify(word)).toString("base64"));
             };
+
+            this.genders.forEach(it => console.log(it));
         } catch (exception) {
             console.error(exception);
         }
@@ -80,6 +84,7 @@ export class WordExtractorImpl implements WordExtractor {
                 switch (typeKey) {
                     case "lod:MS-TYPE-SUBST":
                         wordObj = this.nounExtraxtor.extract(lodKey, word, type);
+                        wordObj.types.forEach(type => this.genders.add(type.details.nounGender!));
                         break;
                     case "lod:MS-TYPE-INTERJ": break;
                     case "lod:MS-TYPE-ADJ":

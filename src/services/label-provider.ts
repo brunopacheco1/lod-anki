@@ -13,16 +13,17 @@ export interface LabelProvider {
 export class LabelProviderImpl implements LabelProvider {
 
     public get(label: string, language: string = "en"): string {
+        let value;
         switch (language.toLowerCase()) {
-            case "all":
-                return deLabels[label];
-            case "po":
-                return ptLabels[label];
-            case "fr":
-                return frLabels[label];
+            case "all": value = deLabels[label]; break;
+            case "po": value = ptLabels[label]; break;
+            case "fr": value = frLabels[label]; break;
             case "en":
-            default:
-                return enLabels[label];
+            default: value = enLabels[label]; break;
         }
+        if (!!value) {
+            return value;
+        }
+        return label;
     }
 }

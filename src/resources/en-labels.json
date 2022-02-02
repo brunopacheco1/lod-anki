@@ -1,7 +1,17 @@
 {
     "VARIANT_OF": "Variant of",
-    "NOUN": "Noun",
-    "ADVERB": "Adverb",
-    "VERB": "Verb",
-    "ADJECTIVE": "Adjective"
+    "N_NOUN": "neutral noun",
+    "F_NOUN": "feminine noun",
+    "M_NOUN": "masculine noun",
+    "MN_NOUN": "masculine/neutral noun",
+    "MF_NOUN": "masculine/feminine noun",
+    "FN_NOUN": "feminine/neutral noun",
+    "INDEF_NOUN": "noun",
+    "PROPER_NOUN": "proper noun",
+    "PLURAL": "plural",
+    "NO_PLURAL": "no plural",
+    "NO_SINGULAR": "no singular",
+    "ADVERB": "adverb",
+    "VERB": "verb",
+    "ADJECTIVE": "adjective"
 }
