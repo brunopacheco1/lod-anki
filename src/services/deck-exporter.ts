@@ -76,7 +76,7 @@ export class DeckExporterImpl implements DeckExporter {
                     anyContentPresent = true;
                 }
                 if (!!type.details.variationOfLodKey) {
-                    flashcardBack += `<li>${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOfLodKey}</li>`;
+                    flashcardBack += `<li>${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOf}</li>`;
                     anyContentPresent = true;
                 }
 
