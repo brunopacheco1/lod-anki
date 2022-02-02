@@ -4,9 +4,8 @@ import * as path from "path";
 import { Dictionary, Word } from "../model/word";
 import { CONSTANTS } from "../constants";
 import { TYPES } from "../types";
-import { FileOutputStream } from "./file-output-stream";
 import { KeyGenerator } from "./key-generator";
-import { json } from "stream/consumers";
+import { LabelProvider } from "./label-provider";
 
 export interface DeckExporter {
     export(dictionary: Dictionary, outputDirectory: string): void;
@@ -16,8 +15,8 @@ export interface DeckExporter {
 export class DeckExporterImpl implements DeckExporter {
 
     constructor(
-        @inject(TYPES.FileOutputStream) private readonly outputStream: FileOutputStream,
-        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator
+        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator,
+        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
     ) { }
 
     public export(dictionary: Dictionary, outputDirectory: string): void {
@@ -57,7 +56,7 @@ export class DeckExporterImpl implements DeckExporter {
             let flashcardBack = "";
             let anyContentPresent = false;
             for (const type of word.types) {
-                flashcardBack += `<b>${type.type} [sound:${type.lodKey.toLowerCase()}.mp3]</b>:`;
+                flashcardBack += `<b>${this.labelProvider.get(type.type.toUpperCase(), dictionary.language)} [sound:${type.lodKey.toLowerCase()}.mp3]</b>:`;
                 flashcardBack += `<ul>`;
                 for (const meaning of type.meanings) {
                     const translation = meaning.translations.find(it => it.language === dictionary.language);
@@ -73,7 +72,7 @@ export class DeckExporterImpl implements DeckExporter {
                     anyContentPresent = true;
                 }
                 if (!!type.details.variationOfLodKey) {
-                    flashcardBack += `<li>Variant of ${type.details.variationOfLodKey}</li>`;
+                    flashcardBack += `<li>${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOfLodKey}</li>`;
                     anyContentPresent = true;
                 }
 

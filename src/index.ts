@@ -12,6 +12,7 @@ import { AdjectiveExtractor, AdjectiveExtractorImpl } from "./services/adjective
 import { AdverbExtractor, AdverbExtractorImpl } from "./services/adverb-extractor";
 import { VerbExtractor, VerbExtractorImpl } from "./services/verb-extractor";
 import { DeckExporter, DeckExporterImpl } from "./services/deck-exporter";
+import { LabelProvider, LabelProviderImpl } from "./services/label-provider";
 
 export function init(): Cli {
     const container: Container = new Container();
@@ -25,6 +26,7 @@ export function init(): Cli {
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileOutputStream>(TYPES.FileOutputStream).to(FileOutputStreamImpl).inSingletonScope();
     container.bind<DeckExporter>(TYPES.DeckExporter).to(DeckExporterImpl).inSingletonScope();
+    container.bind<LabelProvider>(TYPES.LabelProvider).to(LabelProviderImpl).inSingletonScope();
     container.bind<Cli>(TYPES.Cli).to(Cli).inSingletonScope();
 
     return container.get<Cli>(TYPES.Cli);
