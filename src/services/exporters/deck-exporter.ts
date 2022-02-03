@@ -1,11 +1,11 @@
 import { inject, injectable } from "inversify";
 import * as fs from "fs";
 import * as path from "path";
-import { Dictionary, Word, WordMeaning, WordTranslation, WordType } from "../model/word";
-import { CONSTANTS } from "../constants";
-import { TYPES } from "../types";
-import { KeyGenerator } from "./key-generator";
-import { LabelProvider } from "./label-provider";
+import { Dictionary, Word, WordType } from "@model/word";
+import { CONSTANTS } from "@model/constants";
+import { TYPES } from "@services/types";
+import { WordIdGenerator } from "@services/word-id-generator";
+import { LabelProvider } from "@services/label-provider";
 const { default: AnkiExport } = require("anki-apkg-export");
 
 export interface DeckExporter {
@@ -16,7 +16,7 @@ export interface DeckExporter {
 export class DeckExporterImpl implements DeckExporter {
 
     constructor(
-        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator,
+        @inject(TYPES.WordIdGenerator) private readonly keyGenerator: WordIdGenerator,
         @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
     ) { }
 
@@ -28,7 +28,7 @@ export class DeckExporterImpl implements DeckExporter {
 
         if (!!dictionary.words) {
             jsonFiles = dictionary.words.map(word => {
-                const wordId = this.keyGenerator.generateWordKey(word);
+                const wordId = this.keyGenerator.generate(word);
                 return `${wordId}.json`;
             });
         }

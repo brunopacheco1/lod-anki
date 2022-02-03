@@ -1,11 +1,10 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
-import { FileOutputStream } from "./file-output-stream";
+import { TYPES } from "@services/types";
+import { FileWriter } from "@services/file-writer";
 import * as https from "https";
 import * as fs from "fs";
 import * as path from "path";
-import { KeyGenerator } from "./key-generator";
-import { CONSTANTS } from "../constants";
+import { CONSTANTS } from "@model/constants";
 
 export interface LodAudioCrawler {
     fetch(lodWordList: string[], outputDirectory: string): Promise<void>;
@@ -16,8 +15,7 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
 
 
     constructor(
-        @inject(TYPES.FileOutputStream) private readonly outputStream: FileOutputStream,
-        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator
+        @inject(TYPES.FileWriter) private readonly fileWriter: FileWriter
     ) { }
 
     public async fetch(lodWordList: string[], outputDirectory: string): Promise<void> {
@@ -52,7 +50,7 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
                 response.on("error", reject);
                 response.on("data", (data) => { body += data });
                 response.on("end", () => {
-                    this.outputStream.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
+                    this.fileWriter.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
                     resolve();
                 });
             });

@@ -1,15 +1,15 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
-import { FileOutputStream } from "./file-output-stream";
+import { TYPES } from "@services/types";
+import { FileWriter } from "@services/file-writer";
 import * as xml2js from "xml2js";
 import * as fs from "fs";
 import * as path from "path";
-import { CONSTANTS } from "../constants";
-import { NounExtractor } from "./noun-extractor";
-import { Word } from "../model/word";
-import { AdjectiveExtractor } from "./adjective-extractor";
-import { AdverbExtractor } from "./adverb-extractor";
-import { VerbExtractor } from "./verb-extractor";
+import { CONSTANTS } from "@model/constants";
+import { NounExtractor } from "@services/extractors/noun-extractor";
+import { Word } from "@model/word";
+import { AdjectiveExtractor } from "@services/extractors/adjective-extractor";
+import { AdverbExtractor } from "@services/extractors/adverb-extractor";
+import { VerbExtractor } from "@services/extractors/verb-extractor";
 
 export interface WordExtractor {
     extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
@@ -21,7 +21,7 @@ export class WordExtractorImpl implements WordExtractor {
     private genders = new Set<string>();
 
     constructor(
-        @inject(TYPES.FileOutputStream) private readonly outputStream: FileOutputStream,
+        @inject(TYPES.FileWriter) private readonly fileWriter: FileWriter,
         @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor,
         @inject(TYPES.AdjectiveExtractor) private readonly adjectiveExtractor: AdjectiveExtractor,
         @inject(TYPES.AdverbExtractor) private readonly adverbExtractor: AdverbExtractor,
@@ -118,6 +118,6 @@ export class WordExtractorImpl implements WordExtractor {
     }
 
     private persistJson(wordKey: string, outputDirectory: string, body: string): void {
-        this.outputStream.write(outputDirectory, `${wordKey}.json`, body);
+        this.fileWriter.write(outputDirectory, `${wordKey}.json`, body);
     }
 }

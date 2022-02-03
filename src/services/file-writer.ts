@@ -2,12 +2,12 @@ import { injectable } from "inversify";
 import * as fs from "fs";
 import * as path from "path";
 
-export interface FileOutputStream {
+export interface FileWriter {
     write(outputDirectory: string, fileName: string, contentBase64: string): void;
 }
 
 @injectable()
-export class FileOutputStreamImpl implements FileOutputStream {
+export class FileWriterImpl implements FileWriter {
 
     constructor() { }
 

@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { Word, WordMeaning, WordTranslation, WordUsageExample } from "../model/word";
-import { TYPES } from "../types";
-import { KeyGenerator } from "./key-generator";
+import { Word, WordMeaning, WordTranslation, WordUsageExample } from "@model/word";
+import { TYPES } from "@services/types";
+import { WordIdGenerator } from "@services/word-id-generator";
 
 export interface NounExtractor {
     extract(lodKey: string, word: string, structure: any): Word;
@@ -11,12 +11,12 @@ export interface NounExtractor {
 export class NounExtractorImpl implements NounExtractor {
 
     constructor(
-        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator
+        @inject(TYPES.WordIdGenerator) private readonly WordIdGenerator: WordIdGenerator
     ) { }
 
     public extract(lodKey: string, word: string, structure: any): Word {
         return {
-            id: this.keyGenerator.generateWordKey(word),
+            id: this.WordIdGenerator.generate(word),
             word: word,
             types: [{
                 type: "noun",
