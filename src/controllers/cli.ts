@@ -2,13 +2,13 @@ import { Command } from "commander";
 import { injectable, inject } from "inversify";
 import kleur from "kleur";
 import figlet from "figlet";
-import { TYPES } from "../types";
-import { LodAudioCrawler } from "../services/lod-audio-crawler";
-import { WordExtractor } from "../services/word-extractor";
+import { TYPES } from "@services/types";
+import { LodAudioCrawler } from "@services/lod-audio-crawler";
+import { WordExtractor } from "@services/extractors/word-extractor";
 import * as fs from "fs";
 import * as path from "path";
-import { Dictionary } from "../model/word";
-import { DeckExporter } from "../services/deck-exporter";
+import { Dictionary } from "@model/word";
+import { DeckExporter } from "@services/exporters/deck-exporter";
 const pkg = require("../../package.json");
 
 @injectable()

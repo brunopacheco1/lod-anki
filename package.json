@@ -11,7 +11,7 @@
     "watch": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "test": "npm run lint && npm run test:unit",
     "test:unit": "mocha -r ts-node/register tests/**/*.spec.ts",
-    "lint": "tslint -p . --fix",
+    "lint": "eslint --fix ./**/*.ts",
     "copy:resources": "copyfiles -u 1 'src/resources/**' 'lib'",
     "build": "npm run clean:some && tsc -p . && npm run copy:resources",
     "global": "npm i -g && lod-anki",
@@ -48,6 +48,8 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.10",
     "@types/xml2js": "^0.4.9",
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
     "chai": "^4.3.4",
     "copyfiles": "^2.4.1",
     "eslint": "^8.7.0",
@@ -65,8 +67,15 @@
     "figlet": "^1.5.2",
     "inversify": "^6.0.1",
     "kleur": "^4.1.4",
+    "module-alias": "^2.2.2",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.3.1",
     "xml2js": "^0.4.23"
+  },
+  "_moduleAliases": {
+    "@services": "lib/services",
+    "@model": "lib/model",
+    "@controllers": "lib/controllers",
+    "@resources": "lib/resources"
   }
 }

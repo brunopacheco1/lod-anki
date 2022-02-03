@@ -6,8 +6,8 @@ const TYPES = {
     AdverbExtractor: Symbol.for("AdverbExtractor"),
     VerbExtractor: Symbol.for("VerbExtractor"),
     LodAudioCrawler: Symbol.for("LodAudioCrawler"),
-    KeyGenerator: Symbol.for("KeyGenerator"),
-    FileOutputStream: Symbol.for("FileOutputStream"),
+    WordIdGenerator: Symbol.for("WordIdGenerator"),
+    FileWriter: Symbol.for("FileWriter"),
     DeckExporter: Symbol.for("DeckExporter"),
     LabelProvider: Symbol.for("LabelProvider")
 };

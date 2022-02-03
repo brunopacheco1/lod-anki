@@ -1,25 +1,25 @@
 import { inject, injectable } from "inversify";
-import { Word, WordMeaning, WordTranslation, WordUsageExample } from "../model/word";
-import { TYPES } from "../types";
-import { KeyGenerator } from "./key-generator";
+import { Word, WordMeaning, WordTranslation, WordUsageExample } from "@model/word";
+import { TYPES } from "@services/types";
+import { WordIdGenerator } from "@services/word-id-generator";
 
-export interface AdjectiveExtractor {
+export interface AdverbExtractor {
     extract(lodKey: string, word: string, structure: any): Word;
 }
 
 @injectable()
-export class AdjectiveExtractorImpl implements AdjectiveExtractor {
+export class AdverbExtractorImpl implements AdverbExtractor {
 
     constructor(
-        @inject(TYPES.KeyGenerator) private readonly keyGenerator: KeyGenerator
+        @inject(TYPES.WordIdGenerator) private readonly WordIdGenerator: WordIdGenerator
     ) { }
 
     public extract(lodKey: string, word: string, structure: any): Word {
         return {
-            id: this.keyGenerator.generateWordKey(word),
+            id: this.WordIdGenerator.generate(word),
             word: word,
             types: [{
-                type: "adjective",
+                type: "adverb",
                 lodKey: lodKey,
                 details: {
                     variationOf: this.extractVariantOf(structure)
@@ -31,7 +31,7 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
 
     private extractVariantOf(structure: any): string | undefined {
         let variantOf: string | undefined = undefined;
-        const variantOfStructure = structure["lod:RENVOI-ADJ"];
+        const variantOfStructure = structure["lod:RENVOI-ADV"];
         if (!!variantOfStructure) {
             variantOf = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
         }
@@ -41,7 +41,7 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
     private extractMeanings(word: string, structure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 
-        const meaningsStructure = structure["lod:TRAITEMENT-LING-ADJ"];
+        const meaningsStructure = structure["lod:TRAITEMENT-LING-ADV"];
         if (!!meaningsStructure) {
             for (const meaningStructure of meaningsStructure) {
                 const translationStructures = meaningStructure["lod:UNITE-TRAD"];

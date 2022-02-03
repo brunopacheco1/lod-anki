@@ -20,7 +20,23 @@
         "importHelpers": true,
         "removeComments": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "moduleResolution": "node",
+        "baseUrl": "./src",
+        "paths": {
+            "@services/*": [
+                "services/*"
+            ],
+            "@model/*": [
+                "model/*"
+            ],
+            "@controllers/*": [
+                "controllers/*"
+            ],
+            "@resources/*": [
+                "resources/*"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

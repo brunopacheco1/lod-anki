@@ -1,9 +1,8 @@
 import { injectable } from "inversify";
-
-const deLabels = require("../resources/de-labels.json");
-const ptLabels = require("../resources/pt-labels.json");
-const frLabels = require("../resources/fr-labels.json");
-const enLabels = require("../resources/en-labels.json");
+const deLabels = require("@resources/de-labels.json");
+const ptLabels = require("@resources/pt-labels.json");
+const frLabels = require("@resources/fr-labels.json");
+const enLabels = require("@resources/en-labels.json");
 
 export interface LabelProvider {
     get(language: string, label: string): string;
