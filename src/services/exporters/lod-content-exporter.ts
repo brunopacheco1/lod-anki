@@ -1,0 +1,74 @@
+import * as fs from "fs";
+import * as path from "path";
+import { Word, WordType } from "@model/word";
+import { inject, injectable } from "inversify";
+import { TYPES } from "@services/types";
+import { AdverbExporter } from "@services/exporters/adverb-exporter";
+import { AdjectiveExporter } from "@services/exporters/adjective-exporter";
+import { NounExporter } from "@services/exporters/noun-exporter";
+import { VerbExporter } from "@services/exporters/verb-exporter";
+
+export interface BaseLodWordExporter {
+    rerieveWordTypeHeader(language: string, word: Word, type: WordType): string;
+}
+
+export interface LodContentExporter {
+    export(apkg: any, language: string, jsonFile: string, wordsFolder: string, lodAudiosFolder: string): void;
+}
+
+@injectable()
+export class LodContentExporterImpl implements LodContentExporter {
+
+    constructor(
+        @inject(TYPES.AdverbExporter) private readonly adverbExporter: AdverbExporter,
+        @inject(TYPES.AdjectiveExporter) private readonly adjectiveExporter: AdjectiveExporter,
+        @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
+        @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter
+    ) { }
+
+
+    public export(apkg: any, language: string, jsonFile: string, wordsFolder: string, lodAudiosFolder: string): void {
+        const wordFile = path.join(wordsFolder, jsonFile);
+        if (!fs.existsSync(wordFile)) {
+            console.error(`${wordFile} not found!`);
+            return;
+        }
+
+        const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
+
+        let flashcardBack = "<div style=\"text-align: left\">";
+        for (const type of word.types) {
+            apkg.addMedia(`${type.lodKey.toLowerCase()}.mp3`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.mp3`)));
+            switch(type.type) {
+                case "noun": flashcardBack += this.nounExporter.rerieveWordTypeHeader(language, word, type); break;
+                case "adjective": flashcardBack += this.adjectiveExporter.rerieveWordTypeHeader(language, word, type); break;
+                case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
+                case "adverb": flashcardBack += this.adverbExporter.rerieveWordTypeHeader(language, word, type); break;
+            }
+            flashcardBack += this.retrieveTranslationContent(language, type);
+        }
+        flashcardBack += "</div>";
+
+        apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
+    }
+
+    private retrieveTranslationContent(language: string, type: WordType): string {
+        if (type.meanings.length === 0) {
+            return "";
+        }
+
+        let content = `<ul>`;
+        for (const meaning of type.meanings) {
+            const translation = meaning.translations.find(it => it.language === language);
+            if (!!translation?.translation) {
+                if (!!translation.complement) {
+                    content += `<li>${translation.translation} [${translation.complement}]</li>`;
+                } else {
+                    content += `<li>${translation.translation}</li>`;
+                }
+            }
+        }
+        content += `</ul>`;
+        return content;
+    }
+}

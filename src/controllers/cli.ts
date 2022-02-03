@@ -7,7 +7,7 @@ import { LodAudioCrawler } from "@services/lod-audio-crawler";
 import { WordExtractor } from "@services/extractors/word-extractor";
 import * as fs from "fs";
 import * as path from "path";
-import { Dictionary } from "@model/word";
+import { Deck } from "@model/word";
 import { DeckExporter } from "@services/exporters/deck-exporter";
 const pkg = require("../../package.json");
 
@@ -50,12 +50,12 @@ export class Cli {
                 await this.wordExtractor.extract(lodDumpFile, command.opts().output);
             });
 
-        command.command("export <dictionary>")
-            .description("export dictionary into Anki txt file")
-            .action(async (dictionaryPath: any) => {
-                const dictionaryFile = path.join(process.cwd(), dictionaryPath);
-                const dictionary: Dictionary = JSON.parse(fs.readFileSync(dictionaryFile).toString());
-                await this.deckExporter.export(dictionary, command.opts().output);
+        command.command("export <deck>")
+            .description("export deck into Anki apkg format")
+            .action(async (deckPath: any) => {
+                const deckFile = path.join(process.cwd(), deckPath);
+                const deck: Deck = JSON.parse(fs.readFileSync(deckFile).toString());
+                await this.deckExporter.export(deck, command.opts().output);
             });
 
         command.parse(argv);

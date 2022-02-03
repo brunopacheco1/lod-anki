@@ -1,8 +1,8 @@
-export interface Dictionary {
+export interface Deck {
     name: string,
     fileName: string,
-    words: string[],
-    exportAll?: boolean
+    flashcards: string[],
+    languages: string[]
 }
 
 export interface Word {
