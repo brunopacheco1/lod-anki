@@ -1,8 +1,8 @@
 export interface Dictionary {
+    name: string,
     fileName: string,
     words: string[],
     exportAll?: boolean
-    language: string
 }
 
 export interface Word {

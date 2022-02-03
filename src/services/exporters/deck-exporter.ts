@@ -38,14 +38,16 @@ export class DeckExporterImpl implements DeckExporter {
         }
 
         if (jsonFiles.length > 0) {
-            await this.exportJsonToAnki(jsonFiles, dictionary, wordsFolder, lodAudiosFolder, outputDirectory);
+            for (const language of ["ALL", "PO", "FR", "EN"]) {
+                await this.exportJsonToAnki(jsonFiles, dictionary, language, wordsFolder, lodAudiosFolder, outputDirectory);
+            }
         } else {
             console.error("Nothing to export");
         }
     }
 
-    private async exportJsonToAnki(files: string[], dictionary: Dictionary, wordsFolder: string, lodAudiosFolder: string, outputDirectory: string): Promise<void> {
-        const apkg = new AnkiExport(dictionary.fileName);
+    private async exportJsonToAnki(files: string[], dictionary: Dictionary, language: string, wordsFolder: string, lodAudiosFolder: string, outputDirectory: string): Promise<void> {
+        const apkg = new AnkiExport(`${dictionary.name} - ${language}`);
 
         for (const file of files) {
             const wordFile = path.join(wordsFolder, file);
@@ -59,8 +61,8 @@ export class DeckExporterImpl implements DeckExporter {
             let flashcardBack = "<div style=\"text-align: left\">";
             for (const type of word.types) {
                 apkg.addMedia(`${type.lodKey.toLowerCase()}.mp3`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.mp3`)));
-                flashcardBack += this.rerieveWordTypeHeader(dictionary, word, type);
-                flashcardBack += this.retrieveTranslationContent(dictionary, type);
+                flashcardBack += this.rerieveWordTypeHeader(language, word, type);
+                flashcardBack += this.retrieveTranslationContent(language, type);
             }
             flashcardBack += "</div>";
 
@@ -68,41 +70,41 @@ export class DeckExporterImpl implements DeckExporter {
         }
 
         const zip = await apkg.save();
-        const deckFile = path.join(outputDirectory, `${dictionary.fileName}.apkg`);
+        const deckFile = path.join(outputDirectory, `${dictionary.fileName}_${language.toLowerCase()}.apkg`);
         fs.writeFileSync(deckFile, zip, "binary");
     }
 
-    private rerieveWordTypeHeader(dictionary: Dictionary, word: Word, type: WordType): string {
+    private rerieveWordTypeHeader(language: string, word: Word, type: WordType): string {
         let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a>`;
-        let typeStr = this.labelProvider.get(type.type.toUpperCase(), dictionary.language);
+        let typeStr = this.labelProvider.get(type.type.toUpperCase(), language);
         if (type.type === "noun") {
             if (type.details.nounCategory === "NOM-PROPRE") {
-                typeStr = this.labelProvider.get("PROPER_NOUN", dictionary.language);
+                typeStr = this.labelProvider.get("PROPER_NOUN", language);
             } else {
-                typeStr = this.labelProvider.get(`${type.details.nounGender!.toUpperCase()}_${type.type.toUpperCase()}`, dictionary.language);
+                typeStr = this.labelProvider.get(`${type.details.nounGender!.toUpperCase()}_${type.type.toUpperCase()}`, language);
             }
-            if(type.details.nounGender === "INDEF") {
-                typeStr += ` (${this.labelProvider.get("NO_SINGULAR", dictionary.language)})`;
+            if (type.details.nounGender === "INDEF") {
+                typeStr += ` (${this.labelProvider.get("NO_SINGULAR", language)})`;
             } else if (!!type.details.plural) {
-                typeStr += ` (${this.labelProvider.get("PLURAL", dictionary.language)} ${type.details.plural})`;
+                typeStr += ` (${this.labelProvider.get("PLURAL", language)} ${type.details.plural})`;
             }
         }
         content += ` ${typeStr}`;
         if (!!type.details.variationOfLodKey) {
-            content += ` - ${this.labelProvider.get("VARIANT_OF", dictionary.language)} ${type.details.variationOf}`;
+            content += ` - ${this.labelProvider.get("VARIANT_OF", language)} ${type.details.variationOf}`;
         }
         content += ` [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
         return content;
     }
 
-    private retrieveTranslationContent(dictionary: Dictionary, type: WordType): string {
+    private retrieveTranslationContent(language: string, type: WordType): string {
         if (type.meanings.length === 0) {
             return "";
         }
 
         let content = `<ul>`;
         for (const meaning of type.meanings) {
-            const translation = meaning.translations.find(it => it.language === dictionary.language);
+            const translation = meaning.translations.find(it => it.language === language);
             if (!!translation?.translation) {
                 if (!!translation.complement) {
                     content += `<li>${translation.translation} [${translation.complement}]</li>`;
