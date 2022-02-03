@@ -14,6 +14,13 @@ import { AdverbExtractor, AdverbExtractorImpl } from "@services/extractors/adver
 import { VerbExtractor, VerbExtractorImpl } from "@services/extractors/verb-extractor";
 import { DeckExporter, DeckExporterImpl } from "@services/exporters/deck-exporter";
 import { LabelProvider, LabelProviderImpl } from "@services/label-provider";
+import { AdjectiveExporter, AdjectiveExporterImpl } from "@services/exporters/adjective-exporter";
+import { AdverbExporter, AdverbExporterImpl } from "@services/exporters/adverb-exporter";
+import { BasicCardExporter, BasicCardExporterImpl } from "@services/exporters/basic-card-exporter";
+import { ClozeCardExporter, ClozeCardExporterImpl } from "@services/exporters/cloze-card-exporter";
+import { NounExporter, NounExporterImpl } from "@services/exporters/noun-exporter";
+import { VerbExporter, VerbExporterImpl } from "@services/exporters/verb-exporter";
+import { LodContentExporter, LodContentExporterImpl } from "@services/exporters/lod-content-exporter";
 
 export function init(): Cli {
     const container: Container = new Container();
@@ -26,6 +33,13 @@ export function init(): Cli {
     container.bind<WordExtractor>(TYPES.WordExtractor).to(WordExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileWriter>(TYPES.FileWriter).to(FileWriterImpl).inSingletonScope();
+    container.bind<AdjectiveExporter>(TYPES.AdjectiveExporter).to(AdjectiveExporterImpl).inSingletonScope();
+    container.bind<AdverbExporter>(TYPES.AdverbExporter).to(AdverbExporterImpl).inSingletonScope();
+    container.bind<BasicCardExporter>(TYPES.BasicCardExporter).to(BasicCardExporterImpl).inSingletonScope();
+    container.bind<ClozeCardExporter>(TYPES.ClozeCardExporter).to(ClozeCardExporterImpl).inSingletonScope();
+    container.bind<NounExporter>(TYPES.NounExporter).to(NounExporterImpl).inSingletonScope();
+    container.bind<VerbExporter>(TYPES.VerbExporter).to(VerbExporterImpl).inSingletonScope();
+    container.bind<LodContentExporter>(TYPES.LodContentExporter).to(LodContentExporterImpl).inSingletonScope();
     container.bind<DeckExporter>(TYPES.DeckExporter).to(DeckExporterImpl).inSingletonScope();
     container.bind<LabelProvider>(TYPES.LabelProvider).to(LabelProviderImpl).inSingletonScope();
     container.bind<Cli>(TYPES.Cli).to(Cli).inSingletonScope();

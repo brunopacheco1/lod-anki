@@ -8,6 +8,13 @@ const TYPES = {
     LodAudioCrawler: Symbol.for("LodAudioCrawler"),
     WordIdGenerator: Symbol.for("WordIdGenerator"),
     FileWriter: Symbol.for("FileWriter"),
+    AdjectiveExporter: Symbol.for("AdjectiveExporter"),
+    AdverbExporter: Symbol.for("AdverbExporter"),
+    NounExporter: Symbol.for("NounExporter"),
+    VerbExporter: Symbol.for("VerbExporter"),
+    BasicCardExporter: Symbol.for("BasicCardExporter"),
+    LodContentExporter: Symbol.for("LodContentExporter"),
+    ClozeCardExporter: Symbol.for("ClozeCardExporter"),
     DeckExporter: Symbol.for("DeckExporter"),
     LabelProvider: Symbol.for("LabelProvider")
 };

@@ -1,7 +1,7 @@
 {
     "name": "A2 wichteg Wierder vun Kapitel 1",
     "fileName": "a2_wichteg_wierder_kapitel_1",
-    "words": [
+    "flashcards": [
         "Gare",
         "Depart",
         "Quai",
@@ -96,5 +96,11 @@
         "erklären",
         "Wee",
         "Eck"
+    ],
+    "languages": [
+        "ALL",
+        "EN",
+        "FR",
+        "PO"
     ]
 }
