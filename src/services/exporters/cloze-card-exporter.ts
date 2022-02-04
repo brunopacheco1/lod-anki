@@ -7,9 +7,12 @@ export interface ClozeCardExporter {
 @injectable()
 export class ClozeCardExporterImpl implements ClozeCardExporter {
 
+    private readonly WORD_REGEX = /\{\{(.+)\}\}/;
+
     public export(apkg: any, clozeCardContent: string): void {
-        console.log(clozeCardContent);
-        //const [front, back] = ClozeCardContent.slice(5).split(";");
-       // apkg.addCard(`<div style="text-align: left">${front}</div>`, `<div style="text-align: left">${back}</div>`);
+        const cardContent = clozeCardContent.slice(6);
+        const front = cardContent.replace(this.WORD_REGEX, "<span style=\"color: blue\">[...]</span>");
+        const back = cardContent.replace(this.WORD_REGEX, `<span style=\"color: blue\">${this.WORD_REGEX.exec(cardContent)![1]}</span>`);
+        apkg.addCard(`<div style="text-align: left">${front}</div>`, `<div style="text-align: left">${back}</div>`);
     }
 }
