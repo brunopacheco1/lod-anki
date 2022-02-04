@@ -1,11 +1,8 @@
 import { inject, injectable } from "inversify";
 import * as fs from "fs";
 import * as path from "path";
-import { Deck, Word, WordType } from "@model/word";
-import { CONSTANTS } from "@model/constants";
+import { Deck } from "@model/word";
 import { TYPES } from "@services/types";
-import { WordIdGenerator } from "@services/word-id-generator";
-import { LabelProvider } from "@services/label-provider";
 import { BasicCardExporter } from "@services/exporters/basic-card-exporter";
 import { ClozeCardExporter } from "@services/exporters/cloze-card-exporter";
 import { LodContentExporter } from "@services/exporters/lod-content-exporter";
@@ -19,40 +16,19 @@ export interface DeckExporter {
 export class DeckExporterImpl implements DeckExporter {
 
     constructor(
-        @inject(TYPES.WordIdGenerator) private readonly keyGenerator: WordIdGenerator,
-        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
         @inject(TYPES.LodContentExporter) private readonly lodContentExporter: LodContentExporter,
         @inject(TYPES.BasicCardExporter) private readonly basicCardExporter: BasicCardExporter,
         @inject(TYPES.ClozeCardExporter) private readonly clozeCardExporter: ClozeCardExporter,
     ) { }
 
     public async export(deck: Deck, outputDirectory: string): Promise<void> {
-        const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
-        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
-
-        let flashcards: string[] = [];
-
-        if (!!deck.flashcards) {
-            flashcards = deck.flashcards.map(flashcard => {
-                if (flashcard.startsWith("basic:") || flashcard.startsWith("cloze:")) {
-                    return flashcard;
-                }
-                const wordId = this.keyGenerator.generate(flashcard);
-                return `${wordId}.json`;
-            });
-        }
-
-        if (flashcards.length > 0) {
-            for (const language of deck.languages) {
-                const apkg = this.generateAnki(flashcards, deck.name, language, wordsFolder, lodAudiosFolder);
-                await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
-            }
-        } else {
-            console.error("Nothing to export.");
+        for (const language of deck.languages) {
+            const apkg = this.generateAnki(deck.flashcards, deck.name, language, outputDirectory);
+            await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
         }
     }
 
-    private generateAnki(flashcards: string[], deckName: string, language: string, wordsFolder: string, lodAudiosFolder: string): any {
+    private generateAnki(flashcards: string[], deckName: string, language: string, outputDirectory: string): any {
         const apkg = new AnkiExport(`${deckName} - ${language}`);
 
         for (const flashcard of flashcards) {
@@ -61,7 +37,7 @@ export class DeckExporterImpl implements DeckExporter {
             } else if (flashcard.startsWith("cloze:")) {
                 this.clozeCardExporter.export(apkg, flashcard);
             } else {
-                this.lodContentExporter.export(apkg, language, flashcard, wordsFolder, lodAudiosFolder);
+                this.lodContentExporter.export(apkg, language, flashcard, outputDirectory);
             }
         }
 

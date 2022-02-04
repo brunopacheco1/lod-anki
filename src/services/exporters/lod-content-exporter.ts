@@ -7,19 +7,22 @@ import { AdverbExporter } from "@services/exporters/adverb-exporter";
 import { AdjectiveExporter } from "@services/exporters/adjective-exporter";
 import { NounExporter } from "@services/exporters/noun-exporter";
 import { VerbExporter } from "@services/exporters/verb-exporter";
+import { WordIdGenerator } from "@services/word-id-generator";
+import { CONSTANTS } from "@model/constants";
 
 export interface BaseLodWordExporter {
     rerieveWordTypeHeader(language: string, word: Word, type: WordType): string;
 }
 
 export interface LodContentExporter {
-    export(apkg: any, language: string, jsonFile: string, wordsFolder: string, lodAudiosFolder: string): void;
+    export(apkg: any, language: string, jsonFile: string, outputDirectory: string): void;
 }
 
 @injectable()
 export class LodContentExporterImpl implements LodContentExporter {
 
     constructor(
+        @inject(TYPES.WordIdGenerator) private readonly keyGenerator: WordIdGenerator,
         @inject(TYPES.AdverbExporter) private readonly adverbExporter: AdverbExporter,
         @inject(TYPES.AdjectiveExporter) private readonly adjectiveExporter: AdjectiveExporter,
         @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
@@ -27,10 +30,14 @@ export class LodContentExporterImpl implements LodContentExporter {
     ) { }
 
 
-    public export(apkg: any, language: string, jsonFile: string, wordsFolder: string, lodAudiosFolder: string): void {
-        const wordFile = path.join(wordsFolder, jsonFile);
+    public export(apkg: any, language: string, flashcard: string, outputDirectory: string): void {
+        const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
+
+        const wordId = this.keyGenerator.generate(flashcard);
+        const wordFile = path.join(wordsFolder, `${wordId}.json`);
         if (!fs.existsSync(wordFile)) {
-            console.error(`${wordFile} not found!`);
+            console.error(`${flashcard} not found!`);
             return;
         }
 
