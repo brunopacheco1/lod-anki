@@ -30,8 +30,8 @@ export class DeckExporterImpl implements DeckExporter {
 
     private generateAnki(flashcards: string[], deckName: string, language: string, outputDirectory: string): any {
         const apkg = new AnkiExport(`${deckName} - ${language}`);
-
-        for (const flashcard of flashcards) {
+        const uniqueFlashcards = [...new Set(flashcards)];
+        for (const flashcard of uniqueFlashcards) {
             if (flashcard.startsWith("basic:")) {
                 this.basicCardExporter.export(apkg, flashcard);
             } else if (flashcard.startsWith("cloze:")) {
