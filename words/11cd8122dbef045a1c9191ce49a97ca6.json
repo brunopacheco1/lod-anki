@@ -1,1 +1,1 @@
-{"id":"11cd8122dbef045a1c9191ce49a97ca6","word":"purgéieren","types":[{"type":"verb","lodKey":"PURGEIEREN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["purgéiert"]},"meanings":[]}]}
+{"id":"11cd8122dbef045a1c9191ce49a97ca6","word":"purgéieren","types":[{"type":"verb","lodKey":"PURGEIEREN1","details":{"variationOfLodKey":"PURGEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["purgéiert"],"variationOf":"purgen"},"meanings":[]}]}

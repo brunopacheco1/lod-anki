@@ -1,1 +1,1 @@
-{"id":"e8cc1cd18fb3b0ec85dec2d156c20d54","word":"ausklammeren","types":[{"type":"verb","lodKey":"AUSKLAMMEREN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["ausgeklammert"]},"meanings":[]}]}
+{"id":"e8cc1cd18fb3b0ec85dec2d156c20d54","word":"ausklammeren","types":[{"type":"verb","lodKey":"AUSKLAMMEREN1","details":{"variationOfLodKey":"AUSKLAMEREN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["ausgeklammert"],"variationOf":"ausklameren"},"meanings":[]}]}

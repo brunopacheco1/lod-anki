@@ -1,1 +1,1 @@
-{"id":"b67b0c76e9d39fc5339ee171b98879c4","word":"aleng","types":[{"type":"adjective","lodKey":"ALENG1","details":{},"meanings":[]},{"type":"adverb","lodKey":"ALENG2","details":{},"meanings":[]}]}
+{"id":"b67b0c76e9d39fc5339ee171b98879c4","word":"aleng","types":[{"type":"adjective","lodKey":"ALENG1","details":{"variationOfLodKey":"ELENG1","variationType":"VARIANT_OF","variationOf":"eleng"},"meanings":[]},{"type":"adverb","lodKey":"ALENG2","details":{"variationOfLodKey":"ELENG2","variationType":"VARIANT_OF","variationOf":"eleng"},"meanings":[]}]}

@@ -1,1 +1,1 @@
-{"id":"c2f90234ef139221eacac304fc1bde6b","word":"wéidinn","types":[{"type":"verb","lodKey":"WEIDINN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["wéigedoen"]},"meanings":[]}]}
+{"id":"c2f90234ef139221eacac304fc1bde6b","word":"wéidinn","types":[{"type":"verb","lodKey":"WEIDINN1","details":{"variationOfLodKey":"WEIDOEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["wéigedoen"],"variationOf":"wéidoen"},"meanings":[]}]}

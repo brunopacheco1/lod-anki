@@ -1,1 +1,1 @@
-{"id":"6f510a6a2257967cd565fd348a126485","word":"schlaudinn","types":[{"type":"verb","lodKey":"SCHLAUDINN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["schlaugedoen"]},"meanings":[]}]}
+{"id":"6f510a6a2257967cd565fd348a126485","word":"schlaudinn","types":[{"type":"verb","lodKey":"SCHLAUDINN1","details":{"variationOfLodKey":"SCHLAUDOEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["schlaugedoen"],"variationOf":"schlaudoen"},"meanings":[]}]}

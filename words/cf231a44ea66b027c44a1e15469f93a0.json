@@ -1,1 +1,1 @@
-{"id":"cf231a44ea66b027c44a1e15469f93a0","word":"ermuerden","types":[{"type":"verb","lodKey":"ERMUERDEN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["ermuert"]},"meanings":[]}]}
+{"id":"cf231a44ea66b027c44a1e15469f93a0","word":"ermuerden","types":[{"type":"verb","lodKey":"ERMUERDEN1","details":{"variationOfLodKey":"ERMORDEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["ermuert"],"variationOf":"ermorden"},"meanings":[]}]}

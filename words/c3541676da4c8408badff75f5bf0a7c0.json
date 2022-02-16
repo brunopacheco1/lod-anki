@@ -1,1 +1,1 @@
-{"id":"c3541676da4c8408badff75f5bf0a7c0","word":"guttdinn","types":[{"type":"verb","lodKey":"GUTTDINN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["guttgedoen"]},"meanings":[]}]}
+{"id":"c3541676da4c8408badff75f5bf0a7c0","word":"guttdinn","types":[{"type":"verb","lodKey":"GUTTDINN1","details":{"variationOfLodKey":"GUTTDOEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["guttgedoen"],"variationOf":"guttdoen"},"meanings":[]}]}
