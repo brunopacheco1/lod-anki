@@ -1,1 +1,1 @@
-{"id":"2f238c97e21d3be3e153744a495e022a","word":"verwennen","types":[{"type":"verb","lodKey":"VERWENNEN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["verwennt"]},"meanings":[]}]}
+{"id":"2f238c97e21d3be3e153744a495e022a","word":"verwennen","types":[{"type":"verb","lodKey":"VERWENNEN1","details":{"variationOfLodKey":"VERWENDEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["verwennt"],"variationOf":"verwenden"},"meanings":[]}]}

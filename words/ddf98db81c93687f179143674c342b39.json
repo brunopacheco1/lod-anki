@@ -1,1 +1,1 @@
-{"id":"ddf98db81c93687f179143674c342b39","word":"rechts","types":[{"type":"adjective","lodKey":"RECHTS1","details":{},"meanings":[]},{"type":"adverb","lodKey":"RECHTS2","details":{},"meanings":[]}]}
+{"id":"ddf98db81c93687f179143674c342b39","word":"rechts","types":[{"type":"adjective","lodKey":"RECHTS1","details":{"variationOfLodKey":"RIETS1","variationType":"VARIANT_OF","variationOf":"riets"},"meanings":[]},{"type":"adverb","lodKey":"RECHTS2","details":{"variationOfLodKey":"RIETS2","variationType":"VARIANT_OF","variationOf":"riets"},"meanings":[]}]}

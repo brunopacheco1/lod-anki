@@ -1,1 +1,1 @@
-{"id":"5c035826329a745c80ae1dfe03ec1c50","word":"schassen","types":[{"type":"verb","lodKey":"SCHASSEN2","details":{"auxiliaryVerb":"HUNN","pastParticiples":["geschasst"]},"meanings":[]}]}
+{"id":"5c035826329a745c80ae1dfe03ec1c50","word":"schassen","types":[{"type":"verb","lodKey":"SCHASSEN2","details":{"variationOfLodKey":"SCHASSEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["geschasst"],"variationOf":"schässen"},"meanings":[]}]}

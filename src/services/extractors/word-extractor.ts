@@ -65,8 +65,6 @@ export class WordExtractorImpl implements WordExtractor {
                 }
                 this.persistJson(word.id, wordsJsonFolder, Buffer.from(JSON.stringify(word)).toString("base64"));
             };
-
-            this.genders.forEach(it => console.log(it));
         } catch (exception) {
             console.error(exception);
         }

@@ -1,1 +1,1 @@
-{"id":"d917bb896793da8030e074fd0643b26c","word":"schmunzen","types":[{"type":"verb","lodKey":"SCHMUNZEN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["geschmunzt"]},"meanings":[]}]}
+{"id":"d917bb896793da8030e074fd0643b26c","word":"schmunzen","types":[{"type":"verb","lodKey":"SCHMUNZEN1","details":{"variationOfLodKey":"SCHMUNZELEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["geschmunzt"],"variationOf":"schmunzelen"},"meanings":[]}]}

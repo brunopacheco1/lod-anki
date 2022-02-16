@@ -1,1 +1,1 @@
-{"id":"4617dee3951c69ebc55bb9e6d664e71a","word":"déckdinn","types":[{"type":"verb","lodKey":"DECKDINN1","details":{"auxiliaryVerb":"HUNN","pastParticiples":["déckgedoen"]},"meanings":[]}]}
+{"id":"4617dee3951c69ebc55bb9e6d664e71a","word":"déckdinn","types":[{"type":"verb","lodKey":"DECKDINN1","details":{"variationOfLodKey":"DECKDOEN1","variationType":"VARIANT_OF","auxiliaryVerb":"HUNN","pastParticiples":["déckgedoen"],"variationOf":"déckdoen"},"meanings":[]}]}

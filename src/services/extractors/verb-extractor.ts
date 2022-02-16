@@ -39,7 +39,7 @@ export class VerbExtractorImpl implements VerbExtractor {
     } {
         let variationOfLodKey: string | undefined = undefined;
         let variationType: string | undefined = undefined;
-        const variantOfStructure = structure["lod:RENVOI-SUBST"];
+        const variantOfStructure = structure["lod:RENVOI-VRB"];
         if (!!variantOfStructure) {
             variationOfLodKey = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
             variationType = Object.keys(variantOfStructure[0])[1];
