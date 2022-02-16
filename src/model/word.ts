@@ -26,7 +26,8 @@ export interface WordTypeDetails {
     nounCategory?: string,
     plural?: string,
     variationOf?: string,
-    variationOfLodKey?: string
+    variationOfLodKey?: string,
+    variationType?: string,
 }
 
 export interface WordMeaning {

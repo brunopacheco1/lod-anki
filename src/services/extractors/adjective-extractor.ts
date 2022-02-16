@@ -15,6 +15,7 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
     ) { }
 
     public extract(lodKey: string, word: string, structure: any): Word {
+        const { variationOfLodKey, variationType } = this.extractVariantOf(structure);
         return {
             id: this.keyGenerator.generate(word),
             word: word,
@@ -22,20 +23,36 @@ export class AdjectiveExtractorImpl implements AdjectiveExtractor {
                 type: "adjective",
                 lodKey: lodKey,
                 details: {
-                    variationOf: this.extractVariantOf(structure)
+                    variationOfLodKey: variationOfLodKey,
+                    variationType: variationType
                 },
                 meanings: this.extractMeanings(word, structure)
             }]
         };
     }
 
-    private extractVariantOf(structure: any): string | undefined {
-        let variantOf: string | undefined = undefined;
-        const variantOfStructure = structure["lod:RENVOI-ADJ"];
+    private extractVariantOf(structure: any): {
+        variationOfLodKey: string | undefined,
+        variationType: string | undefined
+    } {
+        let variationOfLodKey: string | undefined = undefined;
+        let variationType: string | undefined = undefined;
+        const variantOfStructure = structure["lod:RENVOI-SUBST"];
         if (!!variantOfStructure) {
-            variantOf = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
+            variationOfLodKey = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
+            variationType = Object.keys(variantOfStructure[0])[1];
+            switch (variationType) {
+                case "lod:VARIANTE-HOMOSEME":
+                case "lod:VARIANTE-ORTHOGRAPHIQUE":
+                case "lod:VARIANTE-LOCALE": variationType = "VARIANT_OF"; break;
+                case "lod:FORME-FEM": variationType = "FEMININE_FORM_OF"; break;
+                case "lod:FORME-ABREGEE": variationType = "SHORT_FORM_OF"; break;
+                case "lod:FORME-DIMINUTIVE": variationType = "DIMINUTIVE_FORM_OF"; break;
+                case "lod:FORME-MASC": variationType = "MASCULINE_FORM_OF"; break;
+                default: throw new Error(`${variationType} not recognized.`);
+            }
         }
-        return variantOf;
+        return { variationOfLodKey, variationType };
     }
 
     private extractMeanings(word: string, structure: any): WordMeaning[] {

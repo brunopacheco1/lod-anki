@@ -30,7 +30,7 @@ export class NounExporterImpl implements NounExporter {
         }
         content += ` ${typeStr}`;
         if (!!type.details.variationOfLodKey) {
-            content += ` - ${this.labelProvider.get("VARIANT_OF", language)} ${type.details.variationOf}`;
+            content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
         content += ` [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
         return content;
