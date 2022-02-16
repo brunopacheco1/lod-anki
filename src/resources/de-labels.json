@@ -17,5 +17,7 @@
     "NO_SINGULAR": "ohne Singular",
     "ADVERB": "Adverb",
     "VERB": "Verb",
-    "ADJECTIVE": "Adjektiv"
+    "ADJECTIVE": "Adjektiv",
+    "AUXILIARY_VERB": "Hilfsverb",
+    "PAST_PARTICIPLE": "Partizip Perfekt"
 }
