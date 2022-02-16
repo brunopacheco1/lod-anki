@@ -85,6 +85,7 @@ export class VerbExtractorImpl implements VerbExtractor {
                     meanings.push({
                         examples: this.extractExamples(word, translation),
                         synonyms: this.extractSynonyms(translation),
+                        polyLex: this.extractPolyLex(translation),
                         translations: [
                             this.extractTranslation("ALL", translation),
                             this.extractTranslation("FR", translation),
@@ -128,7 +129,16 @@ export class VerbExtractorImpl implements VerbExtractor {
         return [];
     }
 
+    private extractPolyLex(translationStructure: any): string | undefined {
+        const polyLexStructure = translationStructure["lod:UNITE-POLYLEX-LUX"];
+        if (!polyLexStructure) {
+            return undefined;
+        }
+        return polyLexStructure[0];
+    }
+
     private extractTranslation(languageKey: string, translationStructure: any): WordTranslation {
+
         const translationObj = translationStructure[`lod:EQUIV-TRAD-${languageKey}`];
         if (!translationObj) {
             return {

@@ -46,7 +46,7 @@ export class LodContentExporterImpl implements LodContentExporter {
         let flashcardBack = "<div style=\"text-align: left\">";
         for (const type of word.types) {
             apkg.addMedia(`${type.lodKey.toLowerCase()}.mp3`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.mp3`)));
-            switch(type.type) {
+            switch (type.type) {
                 case "noun": flashcardBack += this.nounExporter.rerieveWordTypeHeader(language, word, type); break;
                 case "adjective": flashcardBack += this.adjectiveExporter.rerieveWordTypeHeader(language, word, type); break;
                 case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
@@ -64,18 +64,24 @@ export class LodContentExporterImpl implements LodContentExporter {
             return "";
         }
 
-        let content = `<ul>`;
+        let content = `<ol>`;
         for (const meaning of type.meanings) {
             const translation = meaning.translations.find(it => it.language === language);
             if (!!translation?.translation) {
-                if (!!translation.complement) {
-                    content += `<li>${translation.translation} [${translation.complement}]</li>`;
-                } else {
-                    content += `<li>${translation.translation}</li>`;
+                let polyLex = "";
+                if (!!meaning.polyLex) {
+                    polyLex = `<span style="color: #b00c12;">${meaning.polyLex}</span><br>`;
                 }
+
+                let complement = "";
+                if (!!translation.complement) {
+                    complement = ` [${translation.complement}]`;
+                }
+
+                content += `<li>${polyLex}${translation.translation}${complement}</li>`;
             }
         }
-        content += `</ul>`;
+        content += `</ol>`;
         return content;
     }
 }
