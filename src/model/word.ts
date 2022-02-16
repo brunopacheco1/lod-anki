@@ -21,7 +21,6 @@ export interface WordType {
 export interface WordTypeDetails {
     auxiliaryVerb?: string,
     pastParticiples?: string[],
-    imperative?: string,
     nounGender?: string,
     nounCategory?: string,
     plural?: string,

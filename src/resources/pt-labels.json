@@ -17,5 +17,7 @@
     "NO_SINGULAR": "sem singular",
     "ADVERB": "advérbio",
     "VERB": "verbo",
-    "ADJECTIVE": "adjectivo"
+    "ADJECTIVE": "adjectivo",
+    "AUXILIARY_VERB": "verbo auxiliar",
+    "PAST_PARTICIPLE": "particípio passado"
 }
