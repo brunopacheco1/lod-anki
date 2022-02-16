@@ -1,5 +1,9 @@
 {
     "VARIANT_OF": "Variante von",
+    "FEMININE_FORM_OF": "feminine Form von",
+    "SHORT_FORM_OF": "Kurzform für",
+    "DIMINUTIVE_FORM_OF": "Diminutivform von",
+    "MASCULINE_FORM_OF": "maskuline Form von",
     "N_NOUN": "Neutrum",
     "F_NOUN": "Femininum",
     "M_NOUN": "Maskulinum",

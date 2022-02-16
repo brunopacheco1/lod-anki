@@ -17,7 +17,7 @@ export class AdverbExporterImpl implements AdverbExporter {
     public rerieveWordTypeHeader(language: string, word: Word, type: WordType): string {
         let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a> ${this.labelProvider.get(type.type.toUpperCase(), language)}`;
         if (!!type.details.variationOfLodKey) {
-            content += ` - ${this.labelProvider.get("VARIANT_OF", language)} ${type.details.variationOf}`;
+            content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
         content += ` [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
         return content;
