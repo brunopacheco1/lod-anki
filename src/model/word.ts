@@ -33,7 +33,8 @@ export interface WordTypeDetails {
 export interface WordMeaning {
     translations: WordTranslation[],
     examples?: WordUsageExample[],
-    synonyms?: string[]
+    synonyms?: string[],
+    polyLex?: string,
 }
 
 export interface WordUsageExample {
