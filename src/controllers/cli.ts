@@ -4,7 +4,7 @@ import kleur from "kleur";
 import figlet from "figlet";
 import { TYPES } from "@services/types";
 import { LodAudioCrawler } from "@services/lod-audio-crawler";
-import { WordExtractor } from "@services/extractors/word-extractor";
+import { LodContentExtractor } from "@services/extractors/lod-content-extractor";
 import * as fs from "fs";
 import * as path from "path";
 import { Deck } from "@model/word";
@@ -18,7 +18,7 @@ export class Cli {
 
     constructor(
         @inject(TYPES.LodAudioCrawler) private readonly lodCrawler: LodAudioCrawler,
-        @inject(TYPES.WordExtractor) private readonly wordExtractor: WordExtractor,
+        @inject(TYPES.LodContentExtractor) private readonly lodContentExtractor: LodContentExtractor,
         @inject(TYPES.DeckExporter) private readonly deckExporter: DeckExporter) { }
 
     public main(argv: string[]): void {
@@ -47,7 +47,7 @@ export class Cli {
             .description("extract words definitions from LOD dump file")
             .action(async (lodDump: any) => {
                 const lodDumpFile = path.join(process.cwd(), lodDump);
-                await this.wordExtractor.extract(lodDumpFile, command.opts().output);
+                await this.lodContentExtractor.extract(lodDumpFile, command.opts().output);
             });
 
         command.command("export <deck>")

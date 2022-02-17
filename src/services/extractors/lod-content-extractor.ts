@@ -10,22 +10,22 @@ import { Word } from "@model/word";
 import { AdjectiveExtractor } from "@services/extractors/adjective-extractor";
 import { AdverbExtractor } from "@services/extractors/adverb-extractor";
 import { VerbExtractor } from "@services/extractors/verb-extractor";
+import { ConjunctionExtractor } from "./conjunction-extractor";
 
-export interface WordExtractor {
+export interface LodContentExtractor {
     extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
 }
 
 @injectable()
-export class WordExtractorImpl implements WordExtractor {
-
-    private genders = new Set<string>();
+export class LodContentExtractorImpl implements LodContentExtractor {
 
     constructor(
         @inject(TYPES.FileWriter) private readonly fileWriter: FileWriter,
         @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor,
         @inject(TYPES.AdjectiveExtractor) private readonly adjectiveExtractor: AdjectiveExtractor,
         @inject(TYPES.AdverbExtractor) private readonly adverbExtractor: AdverbExtractor,
-        @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor
+        @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor,
+        @inject(TYPES.ConjunctionExtractor) private readonly conjunctionExtractor: ConjunctionExtractor
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
@@ -82,7 +82,6 @@ export class WordExtractorImpl implements WordExtractor {
                 switch (typeKey) {
                     case "lod:MS-TYPE-SUBST":
                         wordObj = this.nounExtraxtor.extract(lodKey, word, type);
-                        wordObj.types.forEach(type => this.genders.add(type.details.nounGender!));
                         break;
                     case "lod:MS-TYPE-INTERJ": break;
                     case "lod:MS-TYPE-ADJ":
@@ -96,7 +95,9 @@ export class WordExtractorImpl implements WordExtractor {
                         wordObj = this.verbExtractor.extract(lodKey, word, type);
                         break;
                     case "lod:MS-TYPE-PRON": break;
-                    case "lod:MS-TYPE-CONJ": break;
+                    case "lod:MS-TYPE-CONJ":
+                        wordObj = this.conjunctionExtractor.extract(lodKey, word, type);
+                        break;
                     case "lod:MS-TYPE-PART": break;
                     case "lod:MS-TYPE-PREP-plus-ART": break;
                     case "lod:MS-TYPE-VRBPART": break;
