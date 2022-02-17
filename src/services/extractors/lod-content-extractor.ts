@@ -11,6 +11,7 @@ import { AdjectiveExtractor } from "@services/extractors/adjective-extractor";
 import { AdverbExtractor } from "@services/extractors/adverb-extractor";
 import { VerbExtractor } from "@services/extractors/verb-extractor";
 import { ConjunctionExtractor } from "./conjunction-extractor";
+import { PrepositionExtractor } from "./preposition-extractor";
 
 export interface LodContentExtractor {
     extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
@@ -25,7 +26,8 @@ export class LodContentExtractorImpl implements LodContentExtractor {
         @inject(TYPES.AdjectiveExtractor) private readonly adjectiveExtractor: AdjectiveExtractor,
         @inject(TYPES.AdverbExtractor) private readonly adverbExtractor: AdverbExtractor,
         @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor,
-        @inject(TYPES.ConjunctionExtractor) private readonly conjunctionExtractor: ConjunctionExtractor
+        @inject(TYPES.ConjunctionExtractor) private readonly conjunctionExtractor: ConjunctionExtractor,
+        @inject(TYPES.PrepositionExtractor) private readonly prepositionExtractor: PrepositionExtractor
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
@@ -90,7 +92,10 @@ export class LodContentExtractorImpl implements LodContentExtractor {
                     case "lod:MS-TYPE-ADV":
                         wordObj = this.adverbExtractor.extract(lodKey, word, type);
                         break;
-                    case "lod:MS-TYPE-PREP": break;
+                    case "lod:MS-TYPE-PREP":
+                        wordObj = this.prepositionExtractor.extract(lodKey, word, type);
+                        console.log(JSON.stringify(wordObj));
+                        break;
                     case "lod:MS-TYPE-VRB":
                         wordObj = this.verbExtractor.extract(lodKey, word, type);
                         break;

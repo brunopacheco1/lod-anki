@@ -22,6 +22,7 @@ import { NounExporter, NounExporterImpl } from "@services/exporters/noun-exporte
 import { VerbExporter, VerbExporterImpl } from "@services/exporters/verb-exporter";
 import { LodContentExporter, LodContentExporterImpl } from "@services/exporters/lod-content-exporter";
 import { ConjunctionExtractor, ConjunctionExtractorImpl } from "@services/extractors/conjunction-extractor";
+import { PrepositionExtractor, PrepositionExtractorImpl } from "@services/extractors/preposition-extractor";
 
 export function init(): Cli {
     const container: Container = new Container();
@@ -32,6 +33,7 @@ export function init(): Cli {
     container.bind<AdverbExtractor>(TYPES.AdverbExtractor).to(AdverbExtractorImpl).inSingletonScope();
     container.bind<VerbExtractor>(TYPES.VerbExtractor).to(VerbExtractorImpl).inSingletonScope();
     container.bind<ConjunctionExtractor>(TYPES.ConjunctionExtractor).to(ConjunctionExtractorImpl).inSingletonScope();
+    container.bind<PrepositionExtractor>(TYPES.PrepositionExtractor).to(PrepositionExtractorImpl).inSingletonScope();
     container.bind<LodContentExtractor>(TYPES.LodContentExtractor).to(LodContentExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileWriter>(TYPES.FileWriter).to(FileWriterImpl).inSingletonScope();

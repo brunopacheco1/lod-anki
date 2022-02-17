@@ -17,7 +17,8 @@ const TYPES = {
     ClozeCardExporter: Symbol.for("ClozeCardExporter"),
     DeckExporter: Symbol.for("DeckExporter"),
     LabelProvider: Symbol.for("LabelProvider"),
-    ConjunctionExtractor: Symbol.for("ConjunctionExtractor")
+    ConjunctionExtractor: Symbol.for("ConjunctionExtractor"),
+    PrepositionExtractor: Symbol.for("PrepositionExtractor")
 };
 
 export { TYPES };

@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Word, WordMeaning, WordTranslation, WordTypeDetails, WordUsageExample } from "@model/word";
+import { WordTypeDetails } from "@model/word";
 import { TYPES } from "@services/types";
 import { WordIdGenerator } from "@services/word-id-generator";
 import { BaseLodWordExtractor, BaseLodWordExtractorImpl } from "./base-lod-word-extractor";
