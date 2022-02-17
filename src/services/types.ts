@@ -1,6 +1,6 @@
 const TYPES = {
     Cli: Symbol.for("Cli"),
-    WordExtractor: Symbol.for("WordExtractor"),
+    LodContentExtractor: Symbol.for("LodContentExtractor"),
     NounExtractor: Symbol.for("NounExtractor"),
     AdjectiveExtractor: Symbol.for("AdjectiveExtractor"),
     AdverbExtractor: Symbol.for("AdverbExtractor"),
@@ -16,7 +16,8 @@ const TYPES = {
     LodContentExporter: Symbol.for("LodContentExporter"),
     ClozeCardExporter: Symbol.for("ClozeCardExporter"),
     DeckExporter: Symbol.for("DeckExporter"),
-    LabelProvider: Symbol.for("LabelProvider")
+    LabelProvider: Symbol.for("LabelProvider"),
+    ConjunctionExtractor: Symbol.for("ConjunctionExtractor")
 };
 
 export { TYPES };
