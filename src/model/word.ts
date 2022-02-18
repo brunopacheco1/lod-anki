@@ -27,6 +27,7 @@ export interface WordTypeDetails {
     variationOf?: string,
     variationOfLodKey?: string,
     variationType?: string,
+    verbCategory?: string
 }
 
 export interface WordMeaning {
@@ -34,6 +35,9 @@ export interface WordMeaning {
     examples?: WordUsageExample[],
     synonyms?: string[],
     polyLex?: string,
+    case?: string,
+    reflexivePronoun?: string,
+    employsImpersonal?: string
 }
 
 export interface WordUsageExample {

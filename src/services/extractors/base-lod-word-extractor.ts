@@ -63,29 +63,40 @@ export abstract class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
     }
 
     protected extractMeanings(word: string, structure: any): WordMeaning[] {
-        const meanings: WordMeaning[] = [];
-
+        let meanings: WordMeaning[] = [];
         const meaningsStructure = structure[`lod:TRAITEMENT-LING-${this.lodWordType()}`];
         if (!!meaningsStructure) {
             for (const meaningStructure of meaningsStructure) {
-                const translationStructures = meaningStructure["lod:UNITE-TRAD"];
-                for (const translationStructure of translationStructures) {
-                    const translation = translationStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"][0]["lod:UNITE-DE-SENS"][0];
-
-                    meanings.push({
-                        examples: this.extractExamples(word, translation),
-                        synonyms: this.extractSynonyms(translation),
-                        polyLex: this.extractPolyLex(translation),
-                        translations: [
-                            this.extractTranslation("ALL", translation),
-                            this.extractTranslation("FR", translation),
-                            this.extractTranslation("PO", translation),
-                            this.extractTranslation("EN", translation)
-                        ]
-                    });
-                }
+                meanings = meanings.concat(this.extractMeaningsFromStructure(word, meaningStructure));
             }
         }
+        return meanings;
+    }
+
+    protected extractMeaningsFromStructure(word: string, meaningStructure: any): WordMeaning[] {
+        const meanings: WordMeaning[] = [];
+
+        const translationUnitStructures = meaningStructure["lod:UNITE-TRAD"];
+        for (const translationUnitStructure of translationUnitStructures) {
+            const translationStructures = translationUnitStructure["lod:PAS-DE-TRAD-SUBORDONNANTE"];
+
+            for (const translationStructure of translationStructures) {
+                const translation = translationStructure["lod:UNITE-DE-SENS"][0];
+
+                meanings.push({
+                    examples: this.extractExamples(word, translation),
+                    synonyms: this.extractSynonyms(translation),
+                    polyLex: this.extractPolyLex(translation),
+                    translations: [
+                        this.extractTranslation("ALL", translation),
+                        this.extractTranslation("FR", translation),
+                        this.extractTranslation("PO", translation),
+                        this.extractTranslation("EN", translation)
+                    ]
+                });
+            }
+        }
+
         return meanings;
     }
 

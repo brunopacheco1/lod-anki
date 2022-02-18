@@ -94,7 +94,6 @@ export class LodContentExtractorImpl implements LodContentExtractor {
                         break;
                     case "lod:MS-TYPE-PREP":
                         wordObj = this.prepositionExtractor.extract(lodKey, word, type);
-                        console.log(JSON.stringify(wordObj));
                         break;
                     case "lod:MS-TYPE-VRB":
                         wordObj = this.verbExtractor.extract(lodKey, word, type);
