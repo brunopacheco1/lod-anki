@@ -1,50 +1,47 @@
 import { Word, WordMeaning, WordTranslation, WordTypeDetails, WordUsageExample } from "@model/word";
+import { TYPES } from "@services/types";
 import { WordIdGenerator } from "@services/word-id-generator";
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
 export interface BaseLodWordExtractor {
-    extract(lodKey: string, word: string, structure: any): Word;
+    extract(lodKey: string, wordType: string, lodWordType: string, word: string, structure: any): Word;
 }
 
 @injectable()
-export abstract class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
+export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
 
     constructor(
-        private readonly wordIdGenerator: WordIdGenerator
+        @inject(TYPES.WordIdGenerator) private readonly wordIdGenerator: WordIdGenerator
     ) { }
 
-    public abstract wordType(): string;
-
-    public abstract lodWordType(): string;
-
-    public extract(lodKey: string, word: string, structure: any): Word {
+    public extract(lodKey: string, wordType: string, lodWordType: string, word: string, structure: any): Word {
         return {
             id: this.wordIdGenerator.generate(word),
             word: word,
             types: [{
-                type: this.wordType(),
+                type: wordType,
                 lodKey: lodKey,
-                details: this.extractDetails(structure),
-                meanings: this.extractMeanings(word, structure)
+                details: this.extractDetails(lodWordType, structure),
+                meanings: this.extractMeanings(lodWordType, word, structure)
             }]
         };
     }
 
-    protected extractDetails(structure: any): WordTypeDetails {
-        const { variationOfLodKey, variationType } = this.extractVariantOf(structure);
+    protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {
+        const { variationOfLodKey, variationType } = this.extractVariantOf(lodWordType, structure);
         return {
             variationOfLodKey: variationOfLodKey,
             variationType: variationType
         };
     }
 
-    protected extractVariantOf(structure: any): {
+    protected extractVariantOf(lodWordType: string, structure: any): {
         variationOfLodKey: string | undefined,
         variationType: string | undefined
     } {
         let variationOfLodKey: string | undefined = undefined;
         let variationType: string | undefined = undefined;
-        const variantOfStructure = structure[`lod:RENVOI-${this.lodWordType()}`];
+        const variantOfStructure = structure[`lod:RENVOI-${lodWordType}`];
         if (!!variantOfStructure) {
             variationOfLodKey = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
             variationType = Object.keys(variantOfStructure[0])[1];
@@ -62,9 +59,9 @@ export abstract class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
         return { variationOfLodKey, variationType };
     }
 
-    protected extractMeanings(word: string, structure: any): WordMeaning[] {
+    protected extractMeanings(lodWordType: string, word: string, structure: any): WordMeaning[] {
         let meanings: WordMeaning[] = [];
-        const meaningsStructure = structure[`lod:TRAITEMENT-LING-${this.lodWordType()}`];
+        const meaningsStructure = structure[`lod:TRAITEMENT-LING-${lodWordType}`];
         if (!!meaningsStructure) {
             for (const meaningStructure of meaningsStructure) {
                 meanings = meanings.concat(this.extractMeaningsFromStructure(word, meaningStructure));

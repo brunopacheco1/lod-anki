@@ -2,13 +2,13 @@ import { inject, injectable } from "inversify";
 import { Word, WordType } from "@model/word";
 import { TYPES } from "@services/types";
 import { LabelProvider } from "@services/label-provider";
-import { BaseLodWordExporter } from "@services/exporters/lod-content-exporter";
 
-export interface AdjectiveExporter extends BaseLodWordExporter {
+export interface BaseLodWordExporter {
+    rerieveWordTypeHeader(language: string, word: Word, type: WordType): string;
 }
 
 @injectable()
-export class AdjectiveExporterImpl implements AdjectiveExporter {
+export class BaseLodWordExporterImpl implements BaseLodWordExporter {
 
     constructor(
         @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider

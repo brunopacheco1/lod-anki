@@ -19,5 +19,7 @@
     "VERB": "verbo",
     "ADJECTIVE": "adjectivo",
     "AUXILIARY_VERB": "verbo auxiliar",
-    "PAST_PARTICIPLE": "particípio passado"
+    "PAST_PARTICIPLE": "particípio passado",
+    "CONJUNCTION": "conjunção",
+    "PREPOSITION": "preposição"
 }

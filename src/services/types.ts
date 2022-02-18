@@ -1,24 +1,25 @@
 const TYPES = {
     Cli: Symbol.for("Cli"),
-    LodContentExtractor: Symbol.for("LodContentExtractor"),
-    NounExtractor: Symbol.for("NounExtractor"),
-    AdjectiveExtractor: Symbol.for("AdjectiveExtractor"),
-    AdverbExtractor: Symbol.for("AdverbExtractor"),
-    VerbExtractor: Symbol.for("VerbExtractor"),
-    LodAudioCrawler: Symbol.for("LodAudioCrawler"),
-    WordIdGenerator: Symbol.for("WordIdGenerator"),
-    FileWriter: Symbol.for("FileWriter"),
-    AdjectiveExporter: Symbol.for("AdjectiveExporter"),
-    AdverbExporter: Symbol.for("AdverbExporter"),
+
+    BasicCardExporter: Symbol.for("BasicCardExporter"),
+    ClozeCardExporter: Symbol.for("ClozeCardExporter"),
+
+    BaseLodWordExporter: Symbol.for("BaseLodWordExporter"),
+    DeckExporter: Symbol.for("DeckExporter"),
+    LodContentExporter: Symbol.for("LodContentExporter"),
     NounExporter: Symbol.for("NounExporter"),
     VerbExporter: Symbol.for("VerbExporter"),
-    BasicCardExporter: Symbol.for("BasicCardExporter"),
-    LodContentExporter: Symbol.for("LodContentExporter"),
-    ClozeCardExporter: Symbol.for("ClozeCardExporter"),
-    DeckExporter: Symbol.for("DeckExporter"),
+
+    BaseLodWordExtractor: Symbol.for("BaseLodWordExtractor"),
+    LodContentExtractor: Symbol.for("LodContentExtractor"),
+    NounExtractor: Symbol.for("NounExtractor"),
+    PrepositionExtractor: Symbol.for("PrepositionExtractor"),
+    VerbExtractor: Symbol.for("VerbExtractor"),
+
+    FileWriter: Symbol.for("FileWriter"),
     LabelProvider: Symbol.for("LabelProvider"),
-    ConjunctionExtractor: Symbol.for("ConjunctionExtractor"),
-    PrepositionExtractor: Symbol.for("PrepositionExtractor")
+    LodAudioCrawler: Symbol.for("LodAudioCrawler"),
+    WordIdGenerator: Symbol.for("WordIdGenerator")
 };
 
 export { TYPES };

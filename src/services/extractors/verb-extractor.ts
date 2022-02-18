@@ -24,9 +24,8 @@ export class VerbExtractorImpl extends BaseLodWordExtractorImpl implements VerbE
         return "VRB";
     }
 
-    protected extractDetails(structure: any): WordTypeDetails {
-        //TODO <lod:CAT-GRAM-VRB lod:C-G-VRB="VRB-DE-MODALITE"/>
-        const { variationOfLodKey, variationType } = this.extractVariantOf(structure);
+    protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {
+        const { variationOfLodKey, variationType } = this.extractVariantOf(lodWordType, structure);
         return {
             variationOfLodKey: variationOfLodKey,
             variationType: variationType,

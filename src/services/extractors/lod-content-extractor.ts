@@ -7,11 +7,9 @@ import * as path from "path";
 import { CONSTANTS } from "@model/constants";
 import { NounExtractor } from "@services/extractors/noun-extractor";
 import { Word } from "@model/word";
-import { AdjectiveExtractor } from "@services/extractors/adjective-extractor";
-import { AdverbExtractor } from "@services/extractors/adverb-extractor";
 import { VerbExtractor } from "@services/extractors/verb-extractor";
-import { ConjunctionExtractor } from "./conjunction-extractor";
 import { PrepositionExtractor } from "./preposition-extractor";
+import { BaseLodWordExtractor } from "./base-lod-word-extractor";
 
 export interface LodContentExtractor {
     extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
@@ -23,11 +21,9 @@ export class LodContentExtractorImpl implements LodContentExtractor {
     constructor(
         @inject(TYPES.FileWriter) private readonly fileWriter: FileWriter,
         @inject(TYPES.NounExtractor) private readonly nounExtraxtor: NounExtractor,
-        @inject(TYPES.AdjectiveExtractor) private readonly adjectiveExtractor: AdjectiveExtractor,
-        @inject(TYPES.AdverbExtractor) private readonly adverbExtractor: AdverbExtractor,
         @inject(TYPES.VerbExtractor) private readonly verbExtractor: VerbExtractor,
-        @inject(TYPES.ConjunctionExtractor) private readonly conjunctionExtractor: ConjunctionExtractor,
-        @inject(TYPES.PrepositionExtractor) private readonly prepositionExtractor: PrepositionExtractor
+        @inject(TYPES.PrepositionExtractor) private readonly prepositionExtractor: PrepositionExtractor,
+        @inject(TYPES.BaseLodWordExtractor) private readonly baseLodWordExtractor: BaseLodWordExtractor
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
@@ -83,24 +79,24 @@ export class LodContentExtractorImpl implements LodContentExtractor {
                 let wordObj;
                 switch (typeKey) {
                     case "lod:MS-TYPE-SUBST":
-                        wordObj = this.nounExtraxtor.extract(lodKey, word, type);
+                        wordObj = this.nounExtraxtor.extract(lodKey, "noun", "SUBST", word, type);
                         break;
                     case "lod:MS-TYPE-INTERJ": break;
                     case "lod:MS-TYPE-ADJ":
-                        wordObj = this.adjectiveExtractor.extract(lodKey, word, type);
+                        wordObj = this.baseLodWordExtractor.extract(lodKey, "adjective", "ADJ", word, type);
                         break;
                     case "lod:MS-TYPE-ADV":
-                        wordObj = this.adverbExtractor.extract(lodKey, word, type);
+                        wordObj = this.baseLodWordExtractor.extract(lodKey, "adverb", "ADV", word, type);
                         break;
                     case "lod:MS-TYPE-PREP":
-                        wordObj = this.prepositionExtractor.extract(lodKey, word, type);
+                        wordObj = this.prepositionExtractor.extract(lodKey, "preposition", "PREP", word, type);
                         break;
                     case "lod:MS-TYPE-VRB":
-                        wordObj = this.verbExtractor.extract(lodKey, word, type);
+                        wordObj = this.verbExtractor.extract(lodKey, "verb", "VRB", word, type);
                         break;
                     case "lod:MS-TYPE-PRON": break;
                     case "lod:MS-TYPE-CONJ":
-                        wordObj = this.conjunctionExtractor.extract(lodKey, word, type);
+                        wordObj = this.baseLodWordExtractor.extract(lodKey, "conjunction", "CONJ", word, type);
                         break;
                     case "lod:MS-TYPE-PART": break;
                     case "lod:MS-TYPE-PREP-plus-ART": break;
