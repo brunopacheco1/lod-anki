@@ -26,7 +26,7 @@ export class NounExporterImpl implements NounExporter {
         if (type.details.nounGender === "INDEF") {
             typeStr += ` (${this.labelProvider.get("NO_SINGULAR", language)})`;
         } else if (!!type.details.plural) {
-            typeStr += ` (${this.labelProvider.get("PLURAL", language)} ${type.details.plural})`;
+            typeStr += ` (${this.labelProvider.get("PLURAL", language)} <span style="color: #b00c12;">${type.details.plural}</span>)`;
         }
         content += ` ${typeStr}`;
         if (!!type.details.variationOfLodKey) {
