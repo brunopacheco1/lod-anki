@@ -19,5 +19,7 @@
     "VERB": "Verb",
     "ADJECTIVE": "Adjektiv",
     "AUXILIARY_VERB": "Hilfsverb",
-    "PAST_PARTICIPLE": "Partizip Perfekt"
+    "PAST_PARTICIPLE": "Partizip Perfekt",
+    "CONJUNCTION": "Konjunktion",
+    "PREPOSITION": "Präposition"
 }

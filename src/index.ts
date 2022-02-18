@@ -9,36 +9,30 @@ import { LodAudioCrawler, LodAudioCrawlerImpl } from "@services/lod-audio-crawle
 import { FileWriter, FileWriterImpl } from "@services/file-writer";
 import { WordIdGenerator, WordIdGeneratorImpl } from "@services/word-id-generator";
 import { NounExtractor, NounExtractorImpl } from "@services/extractors/noun-extractor";
-import { AdjectiveExtractor, AdjectiveExtractorImpl } from "@services/extractors/adjective-extractor";
-import { AdverbExtractor, AdverbExtractorImpl } from "@services/extractors/adverb-extractor";
 import { VerbExtractor, VerbExtractorImpl } from "@services/extractors/verb-extractor";
 import { DeckExporter, DeckExporterImpl } from "@services/exporters/deck-exporter";
 import { LabelProvider, LabelProviderImpl } from "@services/label-provider";
-import { AdjectiveExporter, AdjectiveExporterImpl } from "@services/exporters/adjective-exporter";
-import { AdverbExporter, AdverbExporterImpl } from "@services/exporters/adverb-exporter";
 import { BasicCardExporter, BasicCardExporterImpl } from "@services/exporters/basic-card-exporter";
 import { ClozeCardExporter, ClozeCardExporterImpl } from "@services/exporters/cloze-card-exporter";
 import { NounExporter, NounExporterImpl } from "@services/exporters/noun-exporter";
 import { VerbExporter, VerbExporterImpl } from "@services/exporters/verb-exporter";
 import { LodContentExporter, LodContentExporterImpl } from "@services/exporters/lod-content-exporter";
-import { ConjunctionExtractor, ConjunctionExtractorImpl } from "@services/extractors/conjunction-extractor";
 import { PrepositionExtractor, PrepositionExtractorImpl } from "@services/extractors/preposition-extractor";
+import { BaseLodWordExtractor, BaseLodWordExtractorImpl } from "@services/extractors/base-lod-word-extractor";
+import { BaseLodWordExporter, BaseLodWordExporterImpl } from "@services/exporters/base-lod-word-exporter";
 
 export function init(): Cli {
     const container: Container = new Container();
 
     container.bind<WordIdGenerator>(TYPES.WordIdGenerator).to(WordIdGeneratorImpl).inSingletonScope();
     container.bind<NounExtractor>(TYPES.NounExtractor).to(NounExtractorImpl).inSingletonScope();
-    container.bind<AdjectiveExtractor>(TYPES.AdjectiveExtractor).to(AdjectiveExtractorImpl).inSingletonScope();
-    container.bind<AdverbExtractor>(TYPES.AdverbExtractor).to(AdverbExtractorImpl).inSingletonScope();
     container.bind<VerbExtractor>(TYPES.VerbExtractor).to(VerbExtractorImpl).inSingletonScope();
-    container.bind<ConjunctionExtractor>(TYPES.ConjunctionExtractor).to(ConjunctionExtractorImpl).inSingletonScope();
     container.bind<PrepositionExtractor>(TYPES.PrepositionExtractor).to(PrepositionExtractorImpl).inSingletonScope();
+    container.bind<BaseLodWordExtractor>(TYPES.BaseLodWordExtractor).to(BaseLodWordExtractorImpl).inSingletonScope();
     container.bind<LodContentExtractor>(TYPES.LodContentExtractor).to(LodContentExtractorImpl).inSingletonScope();
     container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileWriter>(TYPES.FileWriter).to(FileWriterImpl).inSingletonScope();
-    container.bind<AdjectiveExporter>(TYPES.AdjectiveExporter).to(AdjectiveExporterImpl).inSingletonScope();
-    container.bind<AdverbExporter>(TYPES.AdverbExporter).to(AdverbExporterImpl).inSingletonScope();
+    container.bind<BaseLodWordExporter>(TYPES.BaseLodWordExporter).to(BaseLodWordExporterImpl).inSingletonScope();
     container.bind<BasicCardExporter>(TYPES.BasicCardExporter).to(BasicCardExporterImpl).inSingletonScope();
     container.bind<ClozeCardExporter>(TYPES.ClozeCardExporter).to(ClozeCardExporterImpl).inSingletonScope();
     container.bind<NounExporter>(TYPES.NounExporter).to(NounExporterImpl).inSingletonScope();

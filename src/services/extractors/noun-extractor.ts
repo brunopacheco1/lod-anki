@@ -24,8 +24,8 @@ export class NounExtractorImpl extends BaseLodWordExtractorImpl implements NounE
         return "SUBST";
     }
 
-    protected extractDetails(structure: any): WordTypeDetails {
-        const { variationOfLodKey, variationType } = this.extractVariantOf(structure);
+    protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {
+        const { variationOfLodKey, variationType } = this.extractVariantOf(lodWordType, structure);
         return {
             nounGender: this.extractGender(structure),
             nounCategory: this.extractNounCategory(structure),
