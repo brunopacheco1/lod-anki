@@ -4,7 +4,7 @@ import { WordIdGenerator } from "@services/word-id-generator";
 import { inject, injectable } from "inversify";
 
 export interface BaseLodWordExtractor {
-    extract(lodKey: string, wordType: string, lodWordType: string, word: string, structure: any): Word;
+    extract(lodKey: string, lodWordType: string, word: string, structure: any): Word;
 }
 
 @injectable()
@@ -14,7 +14,8 @@ export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
         @inject(TYPES.WordIdGenerator) private readonly wordIdGenerator: WordIdGenerator
     ) { }
 
-    public extract(lodKey: string, wordType: string, lodWordType: string, word: string, structure: any): Word {
+    public extract(lodKey: string, lodWordType: string, word: string, structure: any): Word {
+        const wordType = this.retrieveWordType(lodWordType);
         return {
             id: this.wordIdGenerator.generate(word),
             word: word,
@@ -25,6 +26,24 @@ export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
                 meanings: this.extractMeanings(lodWordType, word, structure)
             }]
         };
+    }
+
+    protected retrieveWordType(lodWordType: string): string {
+        switch (lodWordType) {
+            case "SUBST":
+                return "noun";
+            case "ADJ":
+                return "adjective";
+            case "ADV":
+                return "adverb";
+            case "PREP":
+                return "preposition";
+            case "VRB":
+                return "verb";
+            case "CONJ":
+                return "conjunction";
+            default: throw new Error(`${lodWordType} not recognized.`);
+        }
     }
 
     protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {

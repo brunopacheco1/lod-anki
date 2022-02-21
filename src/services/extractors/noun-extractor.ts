@@ -16,14 +16,6 @@ export class NounExtractorImpl extends BaseLodWordExtractorImpl implements NounE
         super(wordIdGenerator);
     }
 
-    public wordType(): string {
-        return "noun";
-    }
-
-    public lodWordType(): string {
-        return "SUBST";
-    }
-
     protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {
         const { variationOfLodKey, variationType } = this.extractVariantOf(lodWordType, structure);
         return {

@@ -16,14 +16,6 @@ export class PrepositionExtractorImpl extends BaseLodWordExtractorImpl implement
         super(wordIdGenerator);
     }
 
-    public wordType(): string {
-        return "preposition";
-    }
-
-    public lodWordType(): string {
-        return "PREP";
-    }
-    
     protected extractMeaningsFromStructure(word: string, meaningStructure: any): WordMeaning[] {
         const meanings: WordMeaning[] = [];
 

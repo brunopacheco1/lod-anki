@@ -16,14 +16,6 @@ export class VerbExtractorImpl extends BaseLodWordExtractorImpl implements VerbE
         super(wordIdGenerator);
     }
 
-    public wordType(): string {
-        return "verb";
-    }
-
-    public lodWordType(): string {
-        return "VRB";
-    }
-
     protected extractDetails(lodWordType: string, structure: any): WordTypeDetails {
         const { variationOfLodKey, variationType } = this.extractVariantOf(lodWordType, structure);
         return {
