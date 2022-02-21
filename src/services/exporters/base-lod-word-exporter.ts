@@ -19,7 +19,7 @@ export class BaseLodWordExporterImpl implements BaseLodWordExporter {
         if (!!type.details.variationOfLodKey) {
             content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
-        content += ` [sound:${type.lodKey.toLowerCase()}.mp3]</b>`;
+        content += ` [sound:${type.lodKey.toLowerCase()}.m4a]</b>`;
         return content;
     }
 }
