@@ -5,6 +5,7 @@ import * as https from "https";
 import * as fs from "fs";
 import * as path from "path";
 import { CONSTANTS } from "@model/constants";
+import { execSync } from "child_process";
 
 export interface LodAudioCrawler {
     fetch(lodWordList: string[], outputDirectory: string): Promise<void>;
@@ -30,6 +31,7 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
                 }
 
                 await this.persistMp3(lodKey, lodAudiosFolder);
+                this.persistM4a(lodKey, lodAudiosFolder);
 
                 console.log(`${lodKey} was fetched.`);
             } catch (exception) {
@@ -39,7 +41,7 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
     }
 
     private audioExists(lodKey: string, lodAudiosFolder: string): boolean {
-        return fs.existsSync(path.join(lodAudiosFolder, `${lodKey.toLowerCase()}.mp3`));
+        return fs.existsSync(path.join(lodAudiosFolder, `${lodKey.toLowerCase()}.m4a`));
     }
 
     private async persistMp3(lodKey: string, outputDirectory: string): Promise<void> {
@@ -56,5 +58,11 @@ export class LodAudioCrawlerImpl implements LodAudioCrawler {
             });
         });
         return waitPromise;
+    }
+
+    private persistM4a(lodKey: string, outputDirectory: string): void {
+        const mp3File = path.join(outputDirectory, `${lodKey.toLowerCase()}.mp3`);
+        const m4aFile = path.join(outputDirectory, `${lodKey.toLowerCase()}.m4a`);
+        execSync(`ffmpeg -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
     }
 }

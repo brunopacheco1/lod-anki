@@ -9,6 +9,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { Deck } from "@model/word";
 import { DeckExporter } from "@services/exporters/deck-exporter";
+import { execSync } from "child_process";
 const pkg = require("../../package.json");
 
 @injectable()
@@ -34,6 +35,24 @@ export class Cli {
 
         command.version(pkg.version, "-v, --version")
             .usage("<command> [options]");
+
+        command.command("convert-all <wordList>")
+            .description("convert all mp3 into aac")
+            .action(async (wordList: any) => {
+                const wordListFile = path.join(process.cwd(), wordList);
+                const wordListArray: string[] = fs.readFileSync(wordListFile).toString().split("\n");
+                for (const lodKey of wordListArray) {
+                    const mp3File = path.join(command.opts().output, "lod/audios", `${lodKey.toLowerCase().trim()}.mp3`);
+                    const m4aFile = path.join(command.opts().output, "lod/audios", `${lodKey.toLowerCase().trim()}.m4a`);
+                    if(!fs.existsSync(m4aFile)) {
+                        try {
+                            execSync(`ffmpeg -y -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
+                        } catch(error) {
+                            console.log(error);
+                        }
+                    }
+                }
+            });
 
         command.command("fetchaudio <wordList>")
             .description("fetch mp3 of all words")

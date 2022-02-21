@@ -40,7 +40,7 @@ export class LodContentExporterImpl implements LodContentExporter {
         let flashcardBack = "<div style=\"text-align: left\">";
         for (const type of word.types) {
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
-            apkg.addMedia(`${type.lodKey.toLowerCase()}.mp3`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.mp3`)));
+            apkg.addMedia(`${type.lodKey.toLowerCase()}.m4a`, fs.readFileSync(path.join(lodAudiosFolder, `${type.lodKey.toLowerCase()}.m4a`)));
             switch (type.type) {
                 case "noun": flashcardBack += this.nounExporter.rerieveWordTypeHeader(language, word, type); break;
                 case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
