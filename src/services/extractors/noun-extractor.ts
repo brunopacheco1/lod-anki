@@ -41,7 +41,7 @@ export class NounExtractorImpl extends BaseLodWordExtractorImpl implements NounE
 
     private extractPlural(structure: any): string | undefined {
         let plural: string | undefined;
-        const pluralType = Object.keys(structure["lod:PLURIEL"][0])[0];
+        const pluralType = Object.keys(structure["lod:PLURIEL"][0])[1];
         const pluralStructure = structure["lod:PLURIEL"][0][pluralType];
         switch (pluralType) {
             case "lod:TJ-NOMBRABLE":
