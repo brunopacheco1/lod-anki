@@ -96,37 +96,37 @@ export class LodContentExtractorImpl implements LodContentExtractor {
         for (const structure of structures) {
             const typeKey = Object.keys(structure)[0];
             for (const type of structure[typeKey]) {
-                let wordObj;
+                let extractor: BaseLodWordExtractor;
+                let lodWordType: string = typeKey.slice(typeKey.lastIndexOf("-") + 1);
                 switch (typeKey) {
+                    case "lod:MS-TYPE-PREP-plus-ART":
+                    case "lod:MS-TYPE-PART":
+                    case "lod:MS-TYPE-VRBPART":
+                    case "lod:MS-TYPE-ELEM-COMP":
+                    case "lod:MS-TYPE-PRONADV":
+                    case "lod:MS-TYPE-INDEF":
+                    case "lod:MS-TYPE-INTERJ":
+                    case "lod:MS-TYPE-PRON":
+                    case "lod:MS-TYPE-ART":
+                        continue;
                     case "lod:MS-TYPE-SUBST":
-                        wordObj = this.nounExtraxtor.extract(lodKey, "noun", "SUBST", word, type);
-                        break;
-                    case "lod:MS-TYPE-INTERJ": break;
-                    case "lod:MS-TYPE-ADJ":
-                        wordObj = this.baseLodWordExtractor.extract(lodKey, "adjective", "ADJ", word, type);
-                        break;
-                    case "lod:MS-TYPE-ADV":
-                        wordObj = this.baseLodWordExtractor.extract(lodKey, "adverb", "ADV", word, type);
+                        extractor = this.nounExtraxtor;
                         break;
                     case "lod:MS-TYPE-PREP":
-                        wordObj = this.prepositionExtractor.extract(lodKey, "preposition", "PREP", word, type);
+                        extractor = this.prepositionExtractor;
                         break;
                     case "lod:MS-TYPE-VRB":
-                        wordObj = this.verbExtractor.extract(lodKey, "verb", "VRB", word, type);
+                        extractor = this.verbExtractor;
                         break;
-                    case "lod:MS-TYPE-PRON": break;
                     case "lod:MS-TYPE-CONJ":
-                        wordObj = this.baseLodWordExtractor.extract(lodKey, "conjunction", "CONJ", word, type);
+                    case "lod:MS-TYPE-ADJ":
+                    case "lod:MS-TYPE-ADV":
+                        extractor = this.baseLodWordExtractor;
                         break;
-                    case "lod:MS-TYPE-PART": break;
-                    case "lod:MS-TYPE-PREP-plus-ART": break;
-                    case "lod:MS-TYPE-VRBPART": break;
-                    case "lod:MS-TYPE-ART": break;
-                    case "lod:MS-TYPE-ELEM-COMP": break;
-                    case "lod:MS-TYPE-PRONADV": break;
-                    case "lod:MS-TYPE-INDEF": break;
                     default: throw new Error(`${type} not recognized.`);
                 }
+
+                const wordObj = extractor.extract(lodKey, lodWordType, word, type);
 
                 if (!!wordObj) {
                     words.push(wordObj);
