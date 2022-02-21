@@ -1,1 +1,1 @@
-{"id":"a078fb91566687fc624c0b92485f923a","word":"ier","types":[{"type":"conjunction","lodKey":"IER1","details":{"variationOfLodKey":"EIER2","variationType":"VARIANT_OF","variationOf":"éier"},"meanings":[]},{"type":"adjective","lodKey":"IER2","details":{},"meanings":[]}]}
+{"id":"a078fb91566687fc624c0b92485f923a","word":"ier","types":[{"type":"conjunction","lodKey":"IER1","details":{"variationOfLodKey":"EIER2","variationType":"VARIANT_OF","audio":"ier1.m4a","variationOf":"éier"},"meanings":[]},{"type":"adjective","lodKey":"IER2","details":{"audio":"ier2.m4a"},"meanings":[]}]}

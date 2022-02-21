@@ -27,7 +27,8 @@ export interface WordTypeDetails {
     variationOf?: string,
     variationOfLodKey?: string,
     variationType?: string,
-    verbCategory?: string
+    verbCategory?: string,
+    audio?: string
 }
 
 export interface WordMeaning {
