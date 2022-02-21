@@ -63,7 +63,7 @@ export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
         const variantOfStructure = structure[`lod:RENVOI-${lodWordType}`];
         if (!!variantOfStructure) {
             variationOfLodKey = variantOfStructure[0]["attributes"]["lod:REF-ID-ITEM-ADRESSE"].slice(0, -3);
-            variationType = Object.keys(variantOfStructure[0])[1];
+            variationType = Object.keys(variantOfStructure[0])[2];
             switch (variationType) {
                 case "lod:VARIANTE-HOMOSEME":
                 case "lod:VARIANTE-ORTHOGRAPHIQUE":
@@ -121,12 +121,11 @@ export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
         const examplesStructure = translationStructure["lod:EXEMPLIFICATION"][0]["lod:EXEMPLE"];
         for (const exampleStructure of examplesStructure) {
             const usage = exampleStructure["attributes"]["lod:MARQUE-USAGE"];
-            const texts = exampleStructure["lod:TEXTE-EX"][0]["lod:TEXTE"];
-
-            // TODO improve example concatenation
-            // perhaps XML parsing is wrongly reordering the text elements.
             examples.push({
-                example: `${texts[0]} ${word}${texts[1] || ""}`.trim(),
+                example: exampleStructure["lod:TEXTE-EX"][0]["$$"].map((it: any) => {
+                    if (it["#name"] === "lod:ABREV-AD" && it["_"].includes(".")) return word + it["_"].split(".")[1];
+                    return it["_"];
+                }).join(" "),
                 usage: usage
             });
         }

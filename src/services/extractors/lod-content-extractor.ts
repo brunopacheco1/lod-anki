@@ -32,7 +32,7 @@ export class LodContentExtractorImpl implements LodContentExtractor {
         const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
         const extractedWords = new Map<string, Word>();
         const lodKeysToWords = new Map<string, string>();
-        const parser = new xml2js.Parser({ attrkey: "attributes" });
+        const parser = new xml2js.Parser({ attrkey: "attributes", explicitChildren: true, preserveChildrenOrder: true });
 
         try {
             let xmlStr = fs.readFileSync(lodDumpFile);
@@ -94,7 +94,7 @@ export class LodContentExtractorImpl implements LodContentExtractor {
 
         const words: Word[] = [];
         for (const structure of structures) {
-            const typeKey = Object.keys(structure)[0];
+            const typeKey = Object.keys(structure)[1];
             for (const type of structure[typeKey]) {
                 let extractor: BaseLodWordExtractor;
                 let lodWordType: string = typeKey.slice(typeKey.lastIndexOf("-") + 1);
