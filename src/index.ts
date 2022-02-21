@@ -5,7 +5,6 @@ import { Container } from "inversify";
 import { Cli } from "@controllers/cli";
 import { TYPES } from "@services/types";
 import { LodContentExtractor, LodContentExtractorImpl } from "@services/extractors/lod-content-extractor";
-import { LodAudioCrawler, LodAudioCrawlerImpl } from "@services/lod-audio-crawler";
 import { FileWriter, FileWriterImpl } from "@services/file-writer";
 import { WordIdGenerator, WordIdGeneratorImpl } from "@services/word-id-generator";
 import { NounExtractor, NounExtractorImpl } from "@services/extractors/noun-extractor";
@@ -30,7 +29,6 @@ export function init(): Cli {
     container.bind<PrepositionExtractor>(TYPES.PrepositionExtractor).to(PrepositionExtractorImpl).inSingletonScope();
     container.bind<BaseLodWordExtractor>(TYPES.BaseLodWordExtractor).to(BaseLodWordExtractorImpl).inSingletonScope();
     container.bind<LodContentExtractor>(TYPES.LodContentExtractor).to(LodContentExtractorImpl).inSingletonScope();
-    container.bind<LodAudioCrawler>(TYPES.LodAudioCrawler).to(LodAudioCrawlerImpl).inSingletonScope();
     container.bind<FileWriter>(TYPES.FileWriter).to(FileWriterImpl).inSingletonScope();
     container.bind<BaseLodWordExporter>(TYPES.BaseLodWordExporter).to(BaseLodWordExporterImpl).inSingletonScope();
     container.bind<BasicCardExporter>(TYPES.BasicCardExporter).to(BasicCardExporterImpl).inSingletonScope();

@@ -41,14 +41,25 @@ export class LodContentExtractorImpl implements LodContentExtractor {
 
             for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
                 const article: any = items[itemIndex]["lod:ARTICLE"][0];
+                const hasAudio: any = !!items[itemIndex]["lod:AUDIO"];
                 const lodKey: string = items[itemIndex]["lod:META"][0]["attributes"]["lod:ID"].trim();
 
-                if (!this.audioExists(lodKey, lodAudiosFolder)) {
-                    await this.persistMp3(lodKey, lodAudiosFolder);
-                    this.persistM4a(lodKey, lodAudiosFolder);
+                if (hasAudio) {
+                    if (!this.audioExists(lodKey, lodAudiosFolder)) {
+                        await this.persistMp3(lodKey, lodAudiosFolder);
+                        this.persistM4a(lodKey, lodAudiosFolder);
+                    }
+                } else {
+                    console.log(`${lodKey} does not have audio file.`);
                 }
 
                 let wordObjs = this.extractArticle(lodKey, article);
+
+                for (const wordObj of wordObjs) {
+                    for (const type of wordObj.types) {
+                        type.details.audio = `${lodKey.toLowerCase()}.m4a`;
+                    }
+                }
 
                 for (const wordObj of wordObjs) {
                     lodKeysToWords.set(lodKey, wordObj.word);
@@ -148,7 +159,11 @@ export class LodContentExtractorImpl implements LodContentExtractor {
     private persistM4a(lodKey: string, outputDirectory: string): void {
         const mp3File = path.join(outputDirectory, `${lodKey.toLowerCase()}.mp3`);
         const m4aFile = path.join(outputDirectory, `${lodKey.toLowerCase()}.m4a`);
-        execSync(`ffmpeg -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
+        try {
+            execSync(`ffmpeg -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
+        } catch (e) {
+            console.log(`${lodKey} audio file is broken.`);
+        }
         fs.rmSync(mp3File);
     }
 

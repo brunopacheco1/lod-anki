@@ -32,7 +32,9 @@ export class NounExporterImpl implements NounExporter {
         if (!!type.details.variationOfLodKey) {
             content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
-        content += ` [sound:${type.lodKey.toLowerCase()}.m4a]</b>`;
+        if (!!type.details.audio) {
+            content += ` [sound:${!!type.details.audio}]</b>`;
+        }
         return content;
     }
 }
