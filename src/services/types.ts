@@ -18,7 +18,6 @@ const TYPES = {
 
     FileWriter: Symbol.for("FileWriter"),
     LabelProvider: Symbol.for("LabelProvider"),
-    LodAudioCrawler: Symbol.for("LodAudioCrawler"),
     WordIdGenerator: Symbol.for("WordIdGenerator")
 };
 
