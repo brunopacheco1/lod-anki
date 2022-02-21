@@ -10,6 +10,8 @@ import { Word } from "@model/word";
 import { VerbExtractor } from "@services/extractors/verb-extractor";
 import { PrepositionExtractor } from "./preposition-extractor";
 import { BaseLodWordExtractor } from "./base-lod-word-extractor";
+import * as https from "https";
+import { execSync } from "child_process";
 
 export interface LodContentExtractor {
     extract(lodDumpFile: string, outputDirectory: string): Promise<void>;
@@ -27,9 +29,11 @@ export class LodContentExtractorImpl implements LodContentExtractor {
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
         const extractedWords = new Map<string, Word>();
         const lodKeysToWords = new Map<string, string>();
         const parser = new xml2js.Parser({ attrkey: "attributes" });
+
         try {
             let xmlStr = fs.readFileSync(lodDumpFile);
             const xml: any = await parser.parseStringPromise(xmlStr);
@@ -38,6 +42,11 @@ export class LodContentExtractorImpl implements LodContentExtractor {
             for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
                 const article: any = items[itemIndex]["lod:ARTICLE"][0];
                 const lodKey: string = items[itemIndex]["lod:META"][0]["attributes"]["lod:ID"].trim();
+
+                if (!this.audioExists(lodKey, lodAudiosFolder)) {
+                    await this.persistMp3(lodKey, lodAudiosFolder);
+                    this.persistM4a(lodKey, lodAudiosFolder);
+                }
 
                 let wordObjs = this.extractArticle(lodKey, article);
 
@@ -114,6 +123,33 @@ export class LodContentExtractorImpl implements LodContentExtractor {
             }
         }
         return words;
+    }
+
+    private audioExists(lodKey: string, lodAudiosFolder: string): boolean {
+        return fs.existsSync(path.join(lodAudiosFolder, `${lodKey.toLowerCase()}.m4a`));
+    }
+
+    private async persistMp3(lodKey: string, outputDirectory: string): Promise<void> {
+        const waitPromise: Promise<void> = new Promise((resolve, reject) => {
+            https.get(`https://www.lod.lu/audio/${lodKey.toLowerCase()}.mp3`, (response) => {
+                response.setEncoding("base64");
+                let body = "";
+                response.on("error", reject);
+                response.on("data", (data) => { body += data });
+                response.on("end", () => {
+                    this.fileWriter.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
+                    resolve();
+                });
+            });
+        });
+        return waitPromise;
+    }
+
+    private persistM4a(lodKey: string, outputDirectory: string): void {
+        const mp3File = path.join(outputDirectory, `${lodKey.toLowerCase()}.mp3`);
+        const m4aFile = path.join(outputDirectory, `${lodKey.toLowerCase()}.m4a`);
+        execSync(`ffmpeg -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
+        fs.rmSync(mp3File);
     }
 
     private persistJson(wordKey: string, outputDirectory: string, body: string): void {
