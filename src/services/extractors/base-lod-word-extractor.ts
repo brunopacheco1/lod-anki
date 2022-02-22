@@ -120,7 +120,7 @@ export class BaseLodWordExtractorImpl implements BaseLodWordExtractor {
         const examples: WordUsageExample[] = [];
         const examplesStructure = translationStructure["lod:EXEMPLIFICATION"][0]["lod:EXEMPLE"];
         for (const exampleStructure of examplesStructure) {
-            const usage = exampleStructure["attributes"]["lod:MARQUE-USAGE"];
+            const usage = exampleStructure["attributes"]["lod:MARQUE-USAGE"].trim();
             examples.push({
                 example: exampleStructure["lod:TEXTE-EX"][0]["$$"].map((it: any) => {
                     if (it["#name"] === "lod:ABREV-AD" && it["_"].includes(".")) return word + it["_"].split(".")[1];

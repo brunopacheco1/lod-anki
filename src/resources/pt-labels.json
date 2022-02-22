@@ -21,5 +21,13 @@
     "AUXILIARY_VERB": "verbo auxiliar",
     "PAST_PARTICIPLE": "particípio passado",
     "CONJUNCTION": "conjunção",
-    "PREPOSITION": "preposição"
+    "PREPOSITION": "preposição",
+    "EXAMPLE": "exemplo",
+    "EGS_USAGE": "coloquial",
+    "FAM_USAGE": "grosseiro",
+    "GEHUEW_USAGE": "língua cuidada",
+    "KANNERSPROOCH_USAGE": "infantil",
+    "PEJ_USAGE": "pejorativo",
+    "VEREELZT_USAGE": "antiquado",
+    "VULG_USAGE": "vulgarismo"
 }

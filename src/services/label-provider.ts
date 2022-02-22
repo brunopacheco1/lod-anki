@@ -5,7 +5,7 @@ const frLabels = require("@resources/fr-labels.json");
 const enLabels = require("@resources/en-labels.json");
 
 export interface LabelProvider {
-    get(language: string, label: string): string;
+    get(label: string, language: string): string;
 }
 
 @injectable()
