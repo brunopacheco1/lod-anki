@@ -49,8 +49,6 @@ export class LodContentExtractorImpl implements LodContentExtractor {
                         await this.persistMp3(lodKey, lodAudiosFolder);
                         this.persistM4a(lodKey, lodAudiosFolder);
                     }
-                } else {
-                    console.log(`${lodKey} does not have audio file.`);
                 }
 
                 let wordObjs = this.extractArticle(lodKey, article);

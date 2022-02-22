@@ -21,5 +21,13 @@
     "AUXILIARY_VERB": "auxiliary verb",
     "PAST_PARTICIPLE": "past participle",
     "CONJUNCTION": "conjunction",
-    "PREPOSITION": "preposition"
+    "PREPOSITION": "preposition",
+    "EXAMPLE": "example",
+    "EGS_USAGE": "colloquial",
+    "FAM_USAGE": "crude",
+    "GEHUEW_USAGE": "formal",
+    "KANNERSPROOCH_USAGE": "child language",
+    "PEJ_USAGE": "pejorative",
+    "VEREELZT_USAGE": "archaic",
+    "VULG_USAGE": "vulgar"
 }

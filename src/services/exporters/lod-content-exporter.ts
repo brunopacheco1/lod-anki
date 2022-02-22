@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Word, WordType } from "@model/word";
+import { Word, WordType, WordUsageExample } from "@model/word";
 import { inject, injectable } from "inversify";
 import { TYPES } from "@services/types";
 import { NounExporter } from "@services/exporters/noun-exporter";
@@ -8,6 +8,7 @@ import { VerbExporter } from "@services/exporters/verb-exporter";
 import { WordIdGenerator } from "@services/word-id-generator";
 import { CONSTANTS } from "@model/constants";
 import { BaseLodWordExporter } from "./base-lod-word-exporter";
+import { LabelProvider } from "@services/label-provider";
 
 export interface LodContentExporter {
     export(apkg: any, language: string, jsonFile: string, outputDirectory: string): void;
@@ -20,7 +21,8 @@ export class LodContentExporterImpl implements LodContentExporter {
         @inject(TYPES.WordIdGenerator) private readonly keyGenerator: WordIdGenerator,
         @inject(TYPES.BaseLodWordExporter) private readonly baseLodWordExporter: BaseLodWordExporter,
         @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
-        @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter
+        @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter,
+        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
     ) { }
 
 
@@ -80,10 +82,24 @@ export class LodContentExporterImpl implements LodContentExporter {
                     complement = ` [${translation.complement}]`;
                 }
 
-                content += `<li>${polyLex}${translation.translation}${complement}</li>`;
+                let examples = "";
+                if (!!meaning.examples) {
+                    examples = `<br><span style="font-size: 85%; color: #595959;">${this.labelProvider.get("EXAMPLE", language)}</span><br>${meaning.examples.map(it => this.buildExample(it, language)).join("<br>")}`;
+                }
+
+                content += `<li>${polyLex}${translation.translation}${complement}${examples}</li>`;
             }
         }
         content += `</ol>`;
         return content;
+    }
+
+    private buildExample(example: WordUsageExample, language: string): string {
+        let usages = example.usage.split(" ")
+            .filter(it => it !== "ALLG")
+            .map(it => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${this.labelProvider.get(it + "_USAGE", language)}</span> `)
+            .join(" ");
+
+        return `${usages || ""}${example.example}`;
     }
 }

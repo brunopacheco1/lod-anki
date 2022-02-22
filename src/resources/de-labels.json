@@ -21,5 +21,13 @@
     "AUXILIARY_VERB": "Hilfsverb",
     "PAST_PARTICIPLE": "Partizip Perfekt",
     "CONJUNCTION": "Konjunktion",
-    "PREPOSITION": "Präposition"
+    "PREPOSITION": "Präposition",
+    "EXAMPLE": "Beispiel",
+    "EGS_USAGE": "umgangssprachlich",
+    "FAM_USAGE": "derb",
+    "GEHUEW_USAGE": "bildungssprachlich",
+    "KANNERSPROOCH_USAGE": "Kindersprache",
+    "PEJ_USAGE": "pejorativ",
+    "VEREELZT_USAGE": "veraltet",
+    "VULG_USAGE": "vulgär"
 }

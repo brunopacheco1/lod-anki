@@ -20,7 +20,7 @@ export class BaseLodWordExporterImpl implements BaseLodWordExporter {
             content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
         if (!!type.details.audio) {
-            content += ` [sound:${!!type.details.audio}]</b>`;
+            content += ` [sound:${type.details.audio}]</b>`;
         }
         return content;
     }
