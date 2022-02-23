@@ -28,7 +28,7 @@ export class LodContentExporterImpl implements LodContentExporter {
 
     public export(apkg: any, language: string, flashcard: string, outputDirectory: string): void {
         const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
-        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
 
         const wordId = this.keyGenerator.generate(flashcard);
         const wordFile = path.join(wordsFolder, `${wordId}.json`);

@@ -29,7 +29,7 @@ export class LodContentExtractorImpl implements LodContentExtractor {
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
-        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.LOD_AUDIOS_FOLDER);
+        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
         const extractedWords = new Map<string, Word>();
         const lodKeysToWords = new Map<string, string>();
         const parser = new xml2js.Parser({ attrkey: "attributes", explicitChildren: true, preserveChildrenOrder: true });

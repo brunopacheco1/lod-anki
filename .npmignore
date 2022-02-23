@@ -4,6 +4,8 @@ src
 tests
 .vscode
 tsconfig.json
-tslint.json
+.gitattributes
 .github
-lod_temp
+lod
+.eslintrc.js
+lod.zip
