@@ -6,7 +6,10 @@ import { TYPES } from "@services/types";
 import { BasicCardExporter } from "@services/exporters/basic-card-exporter";
 import { ClozeCardExporter } from "@services/exporters/cloze-card-exporter";
 import { LodContentExporter } from "@services/exporters/lod-content-exporter";
-const { default: AnkiExport } = require("anki-apkg-export");
+const initSqlJs = require("sql.js");
+const { default: AnkiExport } = require("anki-apkg-export/dist/exporter");
+const { default: createTemplate } = require("anki-apkg-export/dist/template");
+
 
 export interface DeckExporter {
     export(deck: Deck, outputDirectory: string): Promise<void>;
@@ -23,13 +26,17 @@ export class DeckExporterImpl implements DeckExporter {
 
     public async export(deck: Deck, outputDirectory: string): Promise<void> {
         for (const language of deck.languages) {
-            const apkg = this.generateAnki(deck.flashcards, deck.name, language, outputDirectory);
+            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, outputDirectory);
             await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
         }
     }
 
-    private generateAnki(flashcards: string[], deckName: string, language: string, outputDirectory: string): any {
-        const apkg = new AnkiExport(`${deckName} - ${language}`);
+    private async generateAnki(flashcards: string[], deckName: string, language: string, outputDirectory: string): Promise<any> {
+        const sql = await initSqlJs({});
+        const apkg = new AnkiExport(`${deckName} - ${language}`, {
+            template: createTemplate(),
+            sql
+        });
         const uniqueFlashcards = [...new Set(flashcards)];
         for (const flashcard of uniqueFlashcards) {
             if (flashcard.startsWith("basic:")) {
