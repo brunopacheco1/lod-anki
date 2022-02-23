@@ -29,5 +29,7 @@
     "KANNERSPROOCH_USAGE": "langage enfantin",
     "PEJ_USAGE": "péjoratif",
     "VEREELZT_USAGE": "vieilli",
-    "VULG_USAGE": "vulgaire"
+    "VULG_USAGE": "vulgaire",
+    "LANGUAGE": "Français",
+    "LANGUAGE_FILENAME": "francais"
 }

@@ -29,5 +29,7 @@
     "KANNERSPROOCH_USAGE": "Kindersprache",
     "PEJ_USAGE": "pejorativ",
     "VEREELZT_USAGE": "veraltet",
-    "VULG_USAGE": "vulgär"
+    "VULG_USAGE": "vulgär",
+    "LANGUAGE": "Deutsch",
+    "LANGUAGE_FILENAME": "deutsch"
 }

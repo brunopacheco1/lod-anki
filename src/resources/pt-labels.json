@@ -29,5 +29,7 @@
     "KANNERSPROOCH_USAGE": "infantil",
     "PEJ_USAGE": "pejorativo",
     "VEREELZT_USAGE": "antiquado",
-    "VULG_USAGE": "vulgarismo"
+    "VULG_USAGE": "vulgarismo",
+    "LANGUAGE": "Português",
+    "LANGUAGE_FILENAME": "portugues"
 }

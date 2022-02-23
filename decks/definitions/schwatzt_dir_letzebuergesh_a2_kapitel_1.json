@@ -1,6 +1,6 @@
 {
-    "name": "A2 Kapitel 1",
-    "fileName": "a2_kapitel_1",
+    "name": "Schwätzt Dir Lëtzebuergesch A2 - Kapitel 1",
+    "fileName": "schwatzt_dir_letzebuergesh_a2_kapitel_1",
     "flashcards": [
         "Gare",
         "Depart",
@@ -149,6 +149,9 @@
         "cloze:Hie muss mat der Ambulanz {{an d'}} Spidol fueren."
     ],
     "languages": [
+        "ALL",
+        "EN",
+        "FR",
         "PO"
     ]
 }

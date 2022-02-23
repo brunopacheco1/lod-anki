@@ -1,6 +1,6 @@
 {
-    "name": "A2 Kapitel 7",
-    "fileName": "a2_kapitel_7",
+    "name": "Schwätzt Dir Lëtzebuergesch A2 - Kapitel 7",
+    "fileName": "schwatzt_dir_letzebuergesh_a2_kapitel_7",
     "flashcards": [
         "Gesondheet",
         "gesond",
@@ -266,6 +266,9 @@
         "cloze:Mir {{kënnen}} ze Fouss goen, et ass net wäit."
     ],
     "languages": [
+        "ALL",
+        "EN",
+        "FR",
         "PO"
     ]
 }
