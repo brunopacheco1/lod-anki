@@ -1,6 +1,6 @@
 {
-    "name": "A2 Kapitel 5",
-    "fileName": "a2_kapitel_5",
+    "name": "Schwätzt Dir Lëtzebuergesch A2 - Kapitel 5",
+    "fileName": "schwatzt_dir_letzebuergesh_a2_kapitel_5",
     "flashcards": [
         "Wieder",
         "ameséieren",
@@ -76,6 +76,9 @@
         "cloze:{{Hues}} du gëschter Owend d'Tëlee gekuckt?"
     ],
     "languages": [
+        "ALL",
+        "EN",
+        "FR",
         "PO"
     ]
 }

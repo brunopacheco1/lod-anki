@@ -1,6 +1,6 @@
 {
-    "name": "A2 Kapitel 6",
-    "fileName": "a2_kapitel_6",
+    "name": "Schwätzt Dir Lëtzebuergesch A2 - Kapitel 6",
+    "fileName": "schwatzt_dir_letzebuergesh_a2_kapitel_6",
     "flashcards": [
         "Wunneng",
         "Doheem",
@@ -162,6 +162,9 @@
         "cloze:{{Am}} August gi mer {{op d'}} Schueberfouer."
     ],
     "languages": [
+        "ALL",
+        "EN",
+        "FR",
         "PO"
     ]
 }

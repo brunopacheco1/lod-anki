@@ -29,5 +29,7 @@
     "KANNERSPROOCH_USAGE": "child language",
     "PEJ_USAGE": "pejorative",
     "VEREELZT_USAGE": "archaic",
-    "VULG_USAGE": "vulgar"
+    "VULG_USAGE": "vulgar",
+    "LANGUAGE": "English",
+    "LANGUAGE_FILENAME": "english"
 }

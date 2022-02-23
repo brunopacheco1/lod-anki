@@ -1,6 +1,6 @@
 {
-    "name": "A2 Kapitel 2",
-    "fileName": "a2_kapitel_2",
+    "name": "Schwätzt Dir Lëtzebuergesch A2 - Kapitel 2",
+    "fileName": "schwatzt_dir_letzebuergesh_a2_kapitel_2",
     "flashcards": [
         "wunnen",
         "Reienhaus",
@@ -111,6 +111,9 @@
         "Schreifdësch"
     ],
     "languages": [
+        "ALL",
+        "EN",
+        "FR",
         "PO"
     ]
 }
