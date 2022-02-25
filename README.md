@@ -1,5 +1,5 @@
 # lod-anki
-This project exports LOD.lu content into [Anki](https://apps.ankiweb.net/) flashcards, so anyone can rapidly design and generate decks. Here there are also some [decks](https://github.com/brunopacheco1/lod-anki/tree/main/decks/apkg), based on the book series "Schwätzt Dir Lëtzebuergesch?" published by [INL](https://www.inll.lu/).
+This project exports LOD.lu content into [Anki](https://apps.ankiweb.net/) flashcards, so anyone can rapidly design and generate decks. Here there are also some [decks](https://github.com/brunopacheco1/lod-anki/tree/main/decks/schwatzt_dir_letzebuergesh), based on the book series "Schwätzt Dir Lëtzebuergesch?" published by [INL](https://www.inll.lu/).
 
 ## LOD.lu
 [Luxembourger Dictionary Online (LOD)](https://www.lod.lu/) is a platform maintained by [ZLS](https://portal.education.lu/zls/), where anyone can easily search word meanings and how to pronounce them.
