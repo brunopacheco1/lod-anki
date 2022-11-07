@@ -46,8 +46,7 @@ export class LodContentExtractorImpl implements LodContentExtractor {
 
                 if (hasAudio) {
                     if (!this.audioExists(lodKey, lodAudiosFolder)) {
-                        await this.persistMp3(lodKey, lodAudiosFolder);
-                        this.persistM4a(lodKey, lodAudiosFolder);
+                        await this.persistM4a(lodKey, lodAudiosFolder);
                     }
                 }
 
@@ -138,31 +137,20 @@ export class LodContentExtractorImpl implements LodContentExtractor {
         return fs.existsSync(path.join(lodAudiosFolder, `${lodKey.toLowerCase()}.m4a`));
     }
 
-    private async persistMp3(lodKey: string, outputDirectory: string): Promise<void> {
+    private async persistM4a(lodKey: string, outputDirectory: string): Promise<void> {
         const waitPromise: Promise<void> = new Promise((resolve, reject) => {
-            https.get(`https://www.lod.lu/audio/${lodKey.toLowerCase()}.mp3`, (response) => {
+            https.get(`https://lod.lu/uploads/AAC/${lodKey.toLowerCase()}.m4a`, (response) => {
                 response.setEncoding("base64");
                 let body = "";
                 response.on("error", reject);
                 response.on("data", (data) => { body += data });
                 response.on("end", () => {
-                    this.fileWriter.write(outputDirectory, `${lodKey.toLowerCase()}.mp3`, body);
+                    this.fileWriter.write(outputDirectory, `${lodKey.toLowerCase()}.m4a`, body);
                     resolve();
                 });
             });
         });
         return waitPromise;
-    }
-
-    private persistM4a(lodKey: string, outputDirectory: string): void {
-        const mp3File = path.join(outputDirectory, `${lodKey.toLowerCase()}.mp3`);
-        const m4aFile = path.join(outputDirectory, `${lodKey.toLowerCase()}.m4a`);
-        try {
-            execSync(`ffmpeg -i "${mp3File}" -map a:0 -c:a aac "${m4aFile}"`);
-        } catch (e) {
-            console.log(`${lodKey} audio file is broken.`);
-        }
-        fs.rmSync(mp3File);
     }
 
     private persistJson(wordKey: string, outputDirectory: string, body: string): void {
