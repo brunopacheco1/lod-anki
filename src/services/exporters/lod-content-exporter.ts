@@ -40,10 +40,12 @@ export class LodContentExporterImpl implements LodContentExporter {
         const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
 
         let flashcardBack = "<div style=\"text-align: left\">";
+        let shouldAddCard = false;
         for (const type of word.types) {
-            if (types !== undefined && !types.includes(type.type)) {
+            if (!types.includes(type.type)) {
                 continue;
             }
+            shouldAddCard = true;
             
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
 
@@ -64,7 +66,9 @@ export class LodContentExporterImpl implements LodContentExporter {
         }
         flashcardBack += "</div>";
 
-        apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
+        if(shouldAddCard) {
+            apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
+        }
     }
 
     private retrieveTranslationContent(language: string, type: WordType): string {
