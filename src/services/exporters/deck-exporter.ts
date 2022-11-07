@@ -28,12 +28,12 @@ export class DeckExporterImpl implements DeckExporter {
 
     public async export(deck: Deck, outputDirectory: string): Promise<void> {
         for (const language of deck.languages) {
-            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, outputDirectory);
+            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, deck.types, outputDirectory);
             await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
         }
     }
 
-    private async generateAnki(flashcards: string[], deckName: string, language: string, outputDirectory: string): Promise<any> {
+    private async generateAnki(flashcards: string[], deckName: string, language: string, types: string[], outputDirectory: string): Promise<any> {
         const sql = await initSqlJs({});
         const apkg = new AnkiExport(`${deckName} - ${this.labelProvider.get("LANGUAGE", language)}`, {
             template: createTemplate(),
@@ -46,7 +46,7 @@ export class DeckExporterImpl implements DeckExporter {
             } else if (flashcard.startsWith("cloze:")) {
                 this.clozeCardExporter.export(apkg, flashcard);
             } else {
-                this.lodContentExporter.export(apkg, language, flashcard, outputDirectory);
+                this.lodContentExporter.export(apkg, language, flashcard, types, outputDirectory);
             }
         }
 

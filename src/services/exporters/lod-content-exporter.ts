@@ -11,7 +11,7 @@ import { BaseLodWordExporter } from "./base-lod-word-exporter";
 import { LabelProvider } from "@services/label-provider";
 
 export interface LodContentExporter {
-    export(apkg: any, language: string, jsonFile: string, outputDirectory: string): void;
+    export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void;
 }
 
 @injectable()
@@ -26,7 +26,7 @@ export class LodContentExporterImpl implements LodContentExporter {
     ) { }
 
 
-    public export(apkg: any, language: string, flashcard: string, outputDirectory: string): void {
+    public export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void {
         const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
         const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
 
@@ -41,6 +41,10 @@ export class LodContentExporterImpl implements LodContentExporter {
 
         let flashcardBack = "<div style=\"text-align: left\">";
         for (const type of word.types) {
+            if (types !== undefined && !types.includes(type.type)) {
+                continue;
+            }
+            
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
 
             if (!!type.details.audio) {
