@@ -11,7 +11,7 @@ import { BaseLodWordExporter } from "./base-lod-word-exporter";
 import { LabelProvider } from "@services/label-provider";
 
 export interface LodContentExporter {
-    export(apkg: any, language: string, jsonFile: string, outputDirectory: string): void;
+    export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void;
 }
 
 @injectable()
@@ -26,7 +26,7 @@ export class LodContentExporterImpl implements LodContentExporter {
     ) { }
 
 
-    public export(apkg: any, language: string, flashcard: string, outputDirectory: string): void {
+    public export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void {
         const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
         const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
 
@@ -40,7 +40,13 @@ export class LodContentExporterImpl implements LodContentExporter {
         const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
 
         let flashcardBack = "<div style=\"text-align: left\">";
+        let shouldAddCard = false;
         for (const type of word.types) {
+            if (!types.includes(type.type)) {
+                continue;
+            }
+            shouldAddCard = true;
+            
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
 
             if (!!type.details.audio) {
@@ -60,7 +66,9 @@ export class LodContentExporterImpl implements LodContentExporter {
         }
         flashcardBack += "</div>";
 
-        apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
+        if(shouldAddCard) {
+            apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
+        }
     }
 
     private retrieveTranslationContent(language: string, type: WordType): string {

@@ -1,6 +1,7 @@
 export interface Deck {
     name: string,
     fileName: string,
+    types: string[],
     flashcards: string[],
     languages: string[]
 }
