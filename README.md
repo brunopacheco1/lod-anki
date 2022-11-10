@@ -4,7 +4,7 @@ This project exports LOD.lu content into [Anki](https://apps.ankiweb.net/) flash
 ## LOD.lu
 [Luxembourger Dictionary Online (LOD)](https://www.lod.lu/) is a platform maintained by [ZLS](https://portal.education.lu/zls/), where anyone can easily search word meanings and how to pronounce them.
 
-The word database was extracted from [data.public.lu](https://data.public.lu/en/datasets/letzebuerger-online-dictionnaire/). The audio content was download directly from LOD.lu and converted into AAC, to reduce the size of the files.
+The word database was extracted from [data.public.lu](https://data.public.lu/en/datasets/letzebuerger-online-dictionnaire/). The audio content was downloaded directly from LOD.lu.
 
 ## How to use it
 (Un)Fortunately, the amount of data is huge. To soothe the struggle of fetching everything again, you can find a mirror of the LOD content included in this project repo ([here](https://github.com/brunopacheco1/lod-anki/tree/main/lod)). To use this app, please follow these steps:
