@@ -32,9 +32,8 @@
         "liewensgeféierlech",
         "déidlech",
         "verletzen",
-        "blesséiert",
-        "verwonnt",
-        "Schrumm",
+        "blesséieren",
+        "verwonnen",
         "Wonn",
         "Schnëttwonn",
         "Péng",
@@ -245,7 +244,7 @@
         "Ongléck",
         "schwéier",
         "uerg",
-        "verletzt",
+        "verletzen",
         "verwonnen",
         "Accident",
         "Affer",
@@ -277,8 +276,8 @@
         "Rutsch",
         "Rëtsch",
         "kommen",
-        "verletzt",
-        "verwonnt"
+        "verletzen",
+        "verwonnen"
     ],
     "languages": [
         "ALL",
