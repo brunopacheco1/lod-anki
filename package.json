@@ -1,6 +1,6 @@
 {
   "name": "lod-anki",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Export words to Anki dictionaries",
   "main": "./lib/index.js",
   "bin": {

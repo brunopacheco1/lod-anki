@@ -42,7 +42,7 @@ export class LodContentExporterImpl implements LodContentExporter {
         let flashcardBack = "<div style=\"text-align: left\">";
         let shouldAddCard = false;
         for (const type of word.types) {
-            if (!types.includes(type.type)) {
+            if (types.length !== 0 && !types.includes(type.type)) {
                 continue;
             }
             shouldAddCard = true;
