@@ -7,10 +7,10 @@ This project exports LOD.lu content into [Anki](https://apps.ankiweb.net/) flash
 The word database was extracted from [data.public.lu](https://data.public.lu/en/datasets/letzebuerger-online-dictionnaire/). The audio content was downloaded directly from LOD.lu.
 
 ## How to use it?
-(Un)Fortunately, the amount of data is huge. To soothe the struggle of fetching everything again, you can find a mirror of the LOD content included in this project repo ([here](https://github.com/brunopacheco1/lod-anki/tree/main/lod)). To use this app, please follow these steps:
+(Un)Fortunately, the amount of data is huge. To soothe the struggle of fetching everything again, you can find a mirror of the LOD (2022-10-06) content included in this project repo ([here](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0)). To use this app, please follow these steps:
 
 1. Install this app running ```npm i -g lod-anki```;
-2. Download and extract this [file](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0);
+2. Download and extract the [file](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0);
 3. Navigate to the root folder where the zip file was extracted;
 4. Run ```lod-anki export <deckFile>```.
 
@@ -18,7 +18,7 @@ The word database was extracted from [data.public.lu](https://data.public.lu/en/
 
 The deck file is a JSON file, with the following schema:
 
-- name: It is the name of the deck, shown in Anki. It will be concatenated with the language, to avoid duplicity, if you want to export multiple languges;
+- name: It is the name of the deck, shown in Anki. It will be concatenated with the language, to avoid duplicity, if you want to export multiple languages;
 - fileName: It is the file name. It will be concatenated with the language, to avoid duplicity;
 - flashcards: The collection of words in Luxembourguish you want to export;
 - languages: The collection of languages you want to export to. The possible values are: ALL (German), EN (English), FR (French), and PO (Portuguese);
