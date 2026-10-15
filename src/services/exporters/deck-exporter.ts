@@ -40,9 +40,12 @@ export class DeckExporter {
             if (!card) {
                 continue;
             }
-            for (const audio of card.media.filter((it) => !media.has(it.name))) {
-                apkg.addMedia(audio.name, fs.readFileSync(audio.file));
-                media.add(audio.name);
+            for (const audio of card.media) {
+                // Word types from the same LOD entry share one audio file, so a card can list it twice.
+                if (!media.has(audio.name)) {
+                    apkg.addMedia(audio.name, fs.readFileSync(audio.file));
+                    media.add(audio.name);
+                }
             }
             this.addCard(apkg, flashcard, card, { noteId: card.noteId, tags: card.tags });
         }

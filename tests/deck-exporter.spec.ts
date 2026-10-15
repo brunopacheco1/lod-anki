@@ -99,4 +99,20 @@ describe("Deck exporter", () => {
         expect(kandAfter.guid).toBe(kandBefore.guid);
         expect(after.find((note) => note.flds.includes("Hello"))!.guid).toBe(before.find((note) => note.flds.includes("Hello"))!.guid);
     });
+
+    it("adds audio once when several word types of a word share it", async () => {
+        const sharedData = path.join(workDirectory, "shared-audio-lod");
+        fs.cpSync(dataDirectory, sharedData, { recursive: true });
+        const kandFile = path.join(sharedData, "words", `${wordId("Kand")}.json`);
+        const kand: Word = JSON.parse(fs.readFileSync(kandFile).toString());
+        kand.types.push({ ...kand.types[0], type: "adjective" });
+        fs.writeFileSync(kandFile, JSON.stringify(kand));
+
+        const output = fs.mkdtempSync(path.join(workDirectory, "out-"));
+        await exporter.export({ ...deck, flashcards: ["Kand"] }, output, sharedData);
+
+        const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
+        expect(notes).toHaveLength(1);
+        expect(Object.values(media)).toEqual(["kand1.m4a"]);
+    });
 });
