@@ -6,9 +6,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 6 3 * *" # monthly; the dataset is published roughly monthly
-  push:
-    branches: [claude/project-thread-y2iga6]
-    paths: [.github/workflows/lod-data.yml, scripts/build-decks.sh, src/**]
 
 permissions:
   contents: write
@@ -53,7 +50,6 @@ jobs:
           for url in https://lod.lu/uploads/AAC/kand1.m4a https://lod.lu/artikel/KAND1; do
             echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$url")"
           done
-          node -e 'require("https").get("https://lod.lu/uploads/AAC/kand1.m4a", r => console.log("node https.get ->", r.statusCode, r.headers["content-type"], r.headers.location || ""))'
 
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
