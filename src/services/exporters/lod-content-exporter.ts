@@ -13,7 +13,10 @@ import { AudioProvider } from "../audio-provider";
 
 export interface LodContentExporter {
     export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void>;
+    prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void>;
 }
+
+const PARALLEL_DOWNLOADS = 8;
 
 @injectable()
 export class LodContentExporterImpl implements LodContentExporter {
@@ -27,6 +30,25 @@ export class LodContentExporterImpl implements LodContentExporter {
         @inject(TYPES.AudioProvider) private readonly audioProvider: AudioProvider,
     ) { }
 
+
+    public async prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void> {
+        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
+        const audios = new Set<string>();
+        for (const flashcard of flashcards) {
+            const wordFile = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER, `${this.keyGenerator.generate(flashcard)}.json`);
+            if (fs.existsSync(wordFile)) {
+                const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
+                word.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
+            }
+        }
+        const queue = [...audios];
+        const worker = async () => {
+            for (let audio = queue.shift(); audio; audio = queue.shift()) {
+                await this.audioProvider.get(audio, lodAudiosFolder);
+            }
+        };
+        await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
+    }
 
     public async export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void> {
         const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);

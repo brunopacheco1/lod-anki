@@ -17,9 +17,14 @@ env:
   DATASET_API: https://data.public.lu/api/1/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/
   RELEASE_TAG: lod-data
 
+concurrency:
+  group: lod-data-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

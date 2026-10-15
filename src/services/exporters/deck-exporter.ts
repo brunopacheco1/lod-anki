@@ -27,6 +27,7 @@ export class DeckExporterImpl implements DeckExporter {
     ) { }
 
     public async export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void> {
+        await this.lodContentExporter.prefetchAudio(deck.flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
         for (const language of deck.languages) {
             const apkg = await this.generateAnki(deck.flashcards, deck.name, language, deck.types, dataDirectory);
             await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);

@@ -5,6 +5,7 @@ import * as path from "path";
 
 const LOD_AUDIO_URL = "https://lod.lu/uploads/AAC";
 const HTTP_OK = 200;
+const TIMEOUT_MS = 15000;
 
 export interface AudioProvider {
     /**
@@ -17,14 +18,20 @@ export interface AudioProvider {
 @injectable()
 export class AudioProviderImpl implements AudioProvider {
 
+    private readonly unavailable = new Set<string>();
+
     public async get(fileName: string, audiosFolder: string): Promise<string | undefined> {
         const audioFile = path.join(audiosFolder, fileName);
         if (fs.existsSync(audioFile)) {
             return audioFile;
         }
+        if (this.unavailable.has(fileName)) {
+            return undefined;
+        }
         try {
             const content = await this.download(`${LOD_AUDIO_URL}/${encodeURIComponent(fileName)}`);
             if (!content) {
+                this.unavailable.add(fileName);
                 return undefined;
             }
             fs.mkdirSync(audiosFolder, { recursive: true });
@@ -32,13 +39,14 @@ export class AudioProviderImpl implements AudioProvider {
             return audioFile;
         } catch (error) {
             console.warn(`Could not download audio ${fileName}: ${error}`);
+            this.unavailable.add(fileName);
             return undefined;
         }
     }
 
     private download(url: string): Promise<Buffer | undefined> {
         return new Promise((resolve, reject) => {
-            https.get(url, (response) => {
+            const request = https.get(url, { timeout: TIMEOUT_MS }, (response) => {
                 if (response.statusCode !== HTTP_OK) {
                     response.resume();
                     resolve(undefined);
@@ -48,7 +56,9 @@ export class AudioProviderImpl implements AudioProvider {
                 response.on("data", (chunk) => chunks.push(chunk));
                 response.on("end", () => resolve(Buffer.concat(chunks)));
                 response.on("error", reject);
-            }).on("error", reject);
+            });
+            request.on("timeout", () => request.destroy(new Error(`timed out after ${TIMEOUT_MS} ms`)));
+            request.on("error", reject);
         });
     }
 }
