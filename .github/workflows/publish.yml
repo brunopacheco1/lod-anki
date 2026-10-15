@@ -3,6 +3,8 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  # Publishes the version in package.json on the chosen branch, e.g. to retry a release.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -18,6 +20,7 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - name: Check the release tag matches package.json
+        if: github.event_name == 'release'
         run: |
           VERSION="v$(node -p "require('./package.json').version")"
           if [ "$VERSION" != "${{ github.event.release.tag_name }}" ]; then
@@ -29,4 +32,6 @@ jobs:
       - run: npm run build
       # Uses npm trusted publishing (OIDC): no NPM_TOKEN secret needed once the
       # trusted publisher is configured on npmjs.com for this workflow file.
-      - run: npm publish --provenance --access public
+      # The version is only staged: a maintainer approves it with 2FA on npmjs.com
+      # (or `npm stage approve <id>`) before it goes live.
+      - run: npm stage publish --provenance --access public
