@@ -42,14 +42,21 @@ export class LodContentExporter {
             const word = this.readWord(flashcard, dataDirectory);
             word?.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
         }
-        const queue = [...audios];
         const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
+        const queue = [...audios].filter((audio) => !fs.existsSync(path.join(audiosFolder, audio)));
+        const cached = audios.size - queue.length;
+        let downloaded = 0;
         const worker = async () => {
             for (let audio = queue.shift(); audio; audio = queue.shift()) {
-                await this.audioProvider.get(audio, audiosFolder);
+                if (await this.audioProvider.get(audio, audiosFolder)) {
+                    downloaded++;
+                }
             }
         };
         await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
+        if (audios.size > 0) {
+            console.log(`Audio: ${downloaded} downloaded, ${cached} already cached, ${audios.size - cached - downloaded} unavailable`);
+        }
     }
 
     /** Returns every word that has a word type in one of `categories`, sorted alphabetically. */

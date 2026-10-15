@@ -29,3 +29,6 @@ jobs:
           echo '{"name":"Smoke","fileName":"smoke","types":[],"languages":["EN"],"flashcards":["Kand","basic:Moien;Hello"]}' > deck.json
           LOD_ANKI_CACHE="$RUNNER_TEMP/cache" npx lod-anki export deck.json
           test -s smoke_english.apkg
+          printf 'Kand\nbasic:Moien;Hello\n' > words.txt
+          LOD_ANKI_CACHE="$RUNNER_TEMP/cache" npx lod-anki export words.txt --languages EN,FR
+          test -s words_english.apkg && test -s words_francais.apkg
