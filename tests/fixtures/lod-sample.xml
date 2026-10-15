@@ -68,6 +68,7 @@
     </microStructure>
     <categories>
       <category>A1</category>
+      <category>FAMILL</category>
     </categories>
   </entry>
   <entry id="LAFEN1">
@@ -141,6 +142,9 @@
         </meaning>
       </grammaticalUnit>
     </microStructure>
+    <categories>
+      <category>B1</category>
+    </categories>
   </entry>
   <entry id="MOIEN1">
     <lemma nRuleForm="Moie">Moien</lemma>
@@ -157,6 +161,10 @@
         </meaning>
       </grammaticalUnit>
     </microStructure>
+    <categories>
+      <category>A1</category>
+      <category>A2</category>
+    </categories>
   </entry>
   <entry id="ACH1">
     <lemma>ach</lemma>

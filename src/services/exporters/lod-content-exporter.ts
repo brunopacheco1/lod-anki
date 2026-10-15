@@ -10,12 +10,24 @@ import { wordTypeHeader } from "./word-headers";
 
 const PARALLEL_DOWNLOADS = 8;
 
+export interface WordFilter {
+    /** Word types to keep, such as noun; empty keeps all. */
+    types: string[],
+    /** LOD categories to keep, such as A1; empty keeps all. */
+    categories: string[]
+}
+
 export interface LodCard extends Card {
     /** Stable key of the note, so re-importing an updated deck updates the card instead of duplicating it. */
     noteId: string,
     tags: string[],
     /** Audio files (name and local path) the card plays. */
     media: { name: string, file: string }[]
+}
+
+function matches(type: WordType, filter: WordFilter): boolean {
+    return (filter.types.length === 0 || filter.types.includes(type.type))
+        && (filter.categories.length === 0 || (type.categories || []).some((category) => filter.categories.includes(category)));
 }
 
 /** Builds cards for LOD words from the extracted LOD data. */
@@ -40,15 +52,28 @@ export class LodContentExporter {
         await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
     }
 
-    /** Builds the card of a word, or returns undefined when the word is unknown or has none of `types`. */
-    public async buildCard(language: string, flashcard: string, types: string[], dataDirectory: string): Promise<LodCard | undefined> {
+    /** Returns every word that has a word type in one of `categories`, sorted alphabetically. */
+    public listWords(categories: string[], dataDirectory: string): string[] {
+        const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
+        const words: string[] = [];
+        for (const file of fs.readdirSync(wordsFolder)) {
+            const word = JSON.parse(fs.readFileSync(path.join(wordsFolder, file)).toString()) as Word;
+            if (word.types.some((type) => matches(type, { types: [], categories }))) {
+                words.push(word.word);
+            }
+        }
+        return words.sort((a, b) => a.localeCompare(b, "lb"));
+    }
+
+    /** Builds the card of a word, or returns undefined when the word is unknown or none of its types pass `filter`. */
+    public async buildCard(language: string, flashcard: string, filter: WordFilter, dataDirectory: string): Promise<LodCard | undefined> {
         const word = this.readWord(flashcard, dataDirectory);
         if (!word) {
             console.error(`${flashcard} not found!`);
             return undefined;
         }
 
-        const selectedTypes = word.types.filter((type) => types.length === 0 || types.includes(type.type));
+        const selectedTypes = word.types.filter((type) => matches(type, filter));
         if (selectedTypes.length === 0) {
             return undefined;
         }
@@ -72,7 +97,7 @@ export class LodContentExporter {
             front: word.word,
             back,
             noteId: `lod:${word.word}`,
-            tags: [...new Set(selectedTypes.map((type) => type.type))],
+            tags: [...new Set(selectedTypes.flatMap((type) => [type.type, ...(type.categories || [])]))],
             media,
         };
     }

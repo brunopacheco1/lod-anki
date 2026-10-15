@@ -66,12 +66,12 @@ describe("Deck exporter", () => {
         expect(Object.values(media)).toEqual(["kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
-        expect(kand.tags).toBe("noun");
+        expect(kand.tags.split(" ").sort()).toEqual(["A1", "FAMILL", "noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
-        expect(mat.tags.split(" ").sort()).toEqual(["adverb", "preposition"]);
+        expect(mat.tags.split(" ").sort()).toEqual(["B1", "adverb", "preposition"]);
         expect(mat.flds).not.toContain("[sound:");
 
         const cloze = notes.find((note) => note.flds.includes("[...]"))!;
@@ -114,5 +114,23 @@ describe("Deck exporter", () => {
         const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
         expect(notes).toHaveLength(1);
         expect(Object.values(media)).toEqual(["kand1.m4a"]);
+    });
+
+    it("exports every word in the deck's categories when it lists no flashcards", async () => {
+        const output = fs.mkdtempSync(path.join(workDirectory, "out-"));
+        await exporter.export({ name: "A1", fileName: "a1", languages: ["EN"], categories: ["A1"] }, output, dataDirectory);
+
+        const { notes } = await readPackage(path.join(output, "a1_english.apkg"));
+        expect(notes.map((note) => note.flds.match(/>([^<]+)<\/a>/)![1]).sort()).toEqual(["Kand", "Moien"]);
+    });
+
+    it("keeps only the word types in the deck's categories", async () => {
+        const output = fs.mkdtempSync(path.join(workDirectory, "out-"));
+        await exporter.export({ name: "B1", fileName: "b1", languages: ["EN"], categories: ["B1"], flashcards: ["mat", "Kand"] }, output, dataDirectory);
+
+        const { notes } = await readPackage(path.join(output, "b1_english.apkg"));
+        expect(notes).toHaveLength(1);
+        expect(notes[0].tags.split(" ").sort()).toEqual(["B1", "adverb"]);
+        expect(notes[0].flds).not.toContain("MAT1");
     });
 });

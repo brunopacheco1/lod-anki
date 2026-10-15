@@ -104,9 +104,10 @@ The deck file is a JSON file, with the following schema:
 
 - name: It is the name of the deck, shown in Anki. It will be concatenated with the language, to avoid duplicity, if you want to export multiple languages;
 - fileName: It is the file name. It will be concatenated with the language, to avoid duplicity;
-- flashcards: The collection of words in Luxembourgish you want to export;
+- flashcards: The collection of words in Luxembourgish you want to export. Optional when you use `categories`;
 - languages: The collection of languages you want to export to. The possible values are: ALL (German), EN (English), FR (French), and PO (Portuguese);
 - types: The collection of word types you want to export. `lod-anki` will filter the flashcards (or words), and export only the ones matching the types in this list. This field is optional. `noun`, `verb`, `preposition`, `conjunction`, `adjective`, `adverb`, and `numeral` are supported by this tool.
+- categories: LOD categories to export, such as CEFR levels (`A1`, `A2`, `B1`, ...) or topics (`FAMILL` for family, ...). This field is optional. Without `flashcards`, the deck holds every word in these categories; with `flashcards`, only the listed words in these categories are kept. Cards are tagged with their word type and categories in Anki.
 
 Below you can see an example:
 
@@ -130,4 +131,22 @@ Below you can see an example:
 }
 ```
 
+A deck with all A1 words needs no word list:
+
+```json
+{
+    "name": "Luxembourgish A1",
+    "fileName": "luxembourgish_a1",
+    "categories": ["A1"],
+    "languages": ["EN"]
+}
+```
+
+If such a deck comes out empty, run `npx lod-anki update` to download LOD data that includes categories.
+
 When building the deck, put the words in lowercase. But if it is a noun, capitalize the first character, as it is in Luxembourgish.
+## Releasing
+
+1. Bump the version in a pull request: `npm version patch|minor|major --no-git-tag-version`, then commit `package.json` and `package-lock.json`.
+2. After it is merged, open **Actions › Publish to npm › Run workflow** on `main`. It tags the version from `package.json`, creates the GitHub release, and stages the package on npm. It stops if that version is already released.
+3. Approve the staged version on npmjs.com (or with `npx npm@latest stage approve <id>`) to make it live.

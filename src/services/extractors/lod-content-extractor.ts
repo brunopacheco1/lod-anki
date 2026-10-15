@@ -29,15 +29,23 @@ export async function extractLodContent(lodDumpFile: string, outputDirectory: st
     const wordsFolder = path.join(outputDirectory, CONSTANTS.DATA_FOLDER, CONSTANTS.WORDS_FOLDER);
     fs.mkdirSync(wordsFolder, { recursive: true });
     const typeCounts = new Map<string, number>();
+    const categoryCounts = new Map<string, number>();
     for (const word of extractedWords.values()) {
         fs.writeFileSync(path.join(wordsFolder, `${word.id}.json`), JSON.stringify(word));
         for (const type of word.types) {
             typeCounts.set(type.type, (typeCounts.get(type.type) || 0) + 1);
+            for (const category of type.categories || []) {
+                categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1);
+            }
         }
     }
 
     console.log(`Read ${entries} entries and wrote ${extractedWords.size} words to ${wordsFolder}`);
     for (const [type, count] of typeCounts) {
         console.log(`  ${type}: ${count}`);
+    }
+    console.log("Categories:");
+    for (const [category, count] of [...categoryCounts].sort(([a], [b]) => a.localeCompare(b))) {
+        console.log(`  ${category}: ${count}`);
     }
 }

@@ -1,33 +1,61 @@
 name: Publish to npm
 
 on:
+  # Release button: Actions > Publish to npm > Run workflow. It releases the version in package.json on main.
+  workflow_dispatch:
+  # A release published by hand on GitHub (tag vX.Y.Z matching package.json) also publishes.
   release:
     types: [published]
-  # Retries a release: run it on the release tag (e.g. v2.0.0), not on a branch.
-  workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
+      - name: Tag and release the version in package.json
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$(node -p "require('./package.json').version")"
+          if gh release view "$TAG" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "::error::$TAG is already released. Bump the version in package.json first (npm version patch|minor|major --no-git-tag-version)."
+            exit 1
+          fi
+          gh release create "$TAG" --title "$TAG" --generate-notes --target "$GITHUB_SHA"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: release
+    if: always() && (github.event_name == 'release' || needs.release.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.release.outputs.tag || github.event.release.tag_name }}
       - uses: actions/setup-node@v5
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - name: Check the release tag matches package.json
         env:
-          TAG: ${{ github.event.release.tag_name || github.ref_name }}
-          REF_TYPE: ${{ github.ref_type }}
+          TAG: ${{ needs.release.outputs.tag || github.event.release.tag_name }}
         run: |
-          if [ "$REF_TYPE" != "tag" ]; then
-            echo "Only release tags are published; run this workflow on a tag such as v2.0.0"
-            exit 1
-          fi
           VERSION="v$(node -p "require('./package.json').version")"
           if [ "$VERSION" != "$TAG" ]; then
             echo "Release tag $TAG does not match package.json $VERSION"
@@ -36,8 +64,7 @@ jobs:
       - run: npm install -g npm@latest
       - run: npm ci
       - run: npm run build
-      # Uses npm trusted publishing (OIDC): no NPM_TOKEN secret needed once the
-      # trusted publisher is configured on npmjs.com for this workflow file.
+      # Uses npm trusted publishing (OIDC) for this workflow file, so no NPM_TOKEN secret.
       # The version is only staged: a maintainer approves it with 2FA on npmjs.com
       # (or `npm stage approve <id>`) before it goes live.
       - run: npm stage publish --provenance --access public

@@ -34,6 +34,7 @@ export function mapEntry(entry: XmlNode, generateId: (word: string) => string): 
         return [];
     }
 
+    const categories = children(child(entry, "categories"), "category").map(textOf).filter((category) => !!category);
     const types: WordType[] = [];
     for (const microStructure of children(entry, "microStructure")) {
         const partOfSpeechNode = child(microStructure, "partOfSpeech");
@@ -50,6 +51,7 @@ export function mapEntry(entry: XmlNode, generateId: (word: string) => string): 
                 audio: `${lodKey.toLowerCase()}.m4a`,
             },
             meanings: descendants(microStructure, "meaning").map((meaning) => mapMeaning(partOfSpeech, meaning)),
+            ...(categories.length > 0 ? { categories } : {}),
         });
     }
 
