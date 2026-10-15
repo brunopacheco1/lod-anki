@@ -145,3 +145,6 @@ A deck with all A1 words needs no word list:
 If such a deck comes out empty, run `npx lod-anki update` to download LOD data that includes categories.
 
 When building the deck, put the words in lowercase. But if it is a noun, capitalize the first character, as it is in Luxembourgish.
+## Releasing
+
+In GitHub, open **Actions › Publish to npm › Run workflow**, pick `patch`, `minor` or `major`, and run it. The workflow bumps the version from the last release tag, commits it to `main`, tags it, creates the GitHub release, and stages the package on npm. Approve the staged version on npmjs.com (or with `npx npm@latest stage approve <id>`) to make it live.
