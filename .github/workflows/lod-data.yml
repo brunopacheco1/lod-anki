@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [claude/project-thread-y2iga6]
-    paths: [.github/workflows/lod-data.yml]
+    paths: [.github/workflows/lod-data.yml, scripts/inspect-lod.py]
 
 jobs:
   inspect:
@@ -24,15 +24,11 @@ jobs:
           find lod -maxdepth 2 | head -10
           echo "files: $(find lod -type f | wc -l)"
           du -sh lod
+      - uses: actions/checkout@v4
+        with:
+          path: repo
       - name: Print sample entries
-        run: |
-          cd lod
-          for id in moien1 haus1 goen1 schéin1 an1 well1 gär1 äddi1; do
-            f=$(find . -iname "${id}.xml" | head -1)
-            [ -n "$f" ] && { echo "===== $f"; cat "$f"; echo; }
-          done
-          echo "===== element names"
-          find . -name '*.xml' | head -3000 | xargs cat | grep -o '<[a-zA-Z][a-zA-Z0-9:_-]*' | sort | uniq -c | sort -rn | head -150
+        run: python3 repo/scripts/inspect-lod.py lod/new_lod-art.xml "Moien,Haus,goen,schéin,an,well,gär,Äddi,Auto,ech,ginn,sinn,hunn,Fra,Kand,séier,mat,awer,ouni,lafen,Bam"
       - uses: actions/upload-artifact@v4
         with:
           name: lod-dataset
