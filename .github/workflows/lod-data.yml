@@ -57,10 +57,9 @@ jobs:
       - name: Package
         run: |
           (cd out && zip -qr ../lod.zip lod/words)
-          (cd out/decks && zip -qr ../../decks.zip . -x build.log)
-          ls -la lod.zip decks.zip
+          mkdir apkg && find out/decks -name '*.apkg' -exec cp {} apkg/ \;
+          ls -la lod.zip apkg
           echo "audio files: $(find out/lod/audios -type f 2>/dev/null | wc -l)"
-          find out/decks -name '*english.apkg' -exec ls -la {} +
 
       - name: Upload build artifacts
         if: github.ref != 'refs/heads/main'
@@ -69,17 +68,24 @@ jobs:
           name: lod-data
           path: |
             lod.zip
-            decks.zip
+            apkg/*.apkg
 
+      # Each deck is its own release asset, so people download only the decks they want.
       - name: Publish the lod-data release
         if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES="LOD words for lod-anki and ready-made decks, built from ${{ steps.dataset.outputs.title }} (published ${{ steps.dataset.outputs.modified }}) of the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) (CC0)."
+          NOTES="LOD words for lod-anki and ready-made Anki decks (one \`.apkg\` per deck and language), built from ${{ steps.dataset.outputs.title }} (published ${{ steps.dataset.outputs.modified }}) of the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) (CC0)."
           if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
             gh release create "$RELEASE_TAG" --title "LOD data" --notes "$NOTES" --prerelease --latest=false --target "$GITHUB_SHA"
           else
             gh release edit "$RELEASE_TAG" --notes "$NOTES"
           fi
-          gh release upload "$RELEASE_TAG" lod.zip decks.zip --clobber
+          gh release upload "$RELEASE_TAG" lod.zip apkg/*.apkg --clobber
+          # Remove assets that this build no longer produces, such as the old decks.zip.
+          gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' | while read -r asset; do
+            if [ "$asset" != "lod.zip" ] && [ ! -f "apkg/$asset" ]; then
+              gh release delete-asset "$RELEASE_TAG" "$asset" --yes
+            fi
+          done

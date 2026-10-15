@@ -60,7 +60,20 @@ The data is rebuilt every month from the [LOD linguistic dataset](https://data.p
 
 Re-importing a deck you exported again later updates the existing cards in Anki instead of adding duplicates, so your review progress is kept.
 
-> Just want ready-made decks for the *Schwätzt dir Lëtzebuergesch?* books? Download `decks.zip` from the [lod-data release](https://github.com/brunopacheco1/lod-anki/releases/tag/lod-data) and import the `.apkg` files into Anki.
+### Ready-made decks
+
+Just want to start learning? Download a deck and double-click it to import it into Anki. Each one comes in four card languages:
+
+| Deck | Download |
+| --- | --- |
+| Every LOD word of level A1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_portugues.apkg) |
+| Every LOD word of level A2 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a1_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A2 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a2_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a2_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a2_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_a2_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* B1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_b1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_b1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_b1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_b1_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A1 to B1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesh_portugues.apkg) |
+
+Decks by word type (nouns, verbs, adjectives, adverbs) are on the [lod-data release](https://github.com/brunopacheco1/lod-anki/releases/tag/lod-data) too. They are rebuilt every month with the latest LOD data.
 
 ### Commands
 

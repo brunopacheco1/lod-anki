@@ -16,6 +16,8 @@ DECKS=(
   schwatzt_dir_letzebuergesh/per_word_type/verbs.json
   schwatzt_dir_letzebuergesh/per_word_type/adjectives.json
   schwatzt_dir_letzebuergesh/per_word_type/adverbs.json
+  lod_levels/a1.json
+  lod_levels/a2.json
 )
 
 mkdir -p "$OUTPUT"
