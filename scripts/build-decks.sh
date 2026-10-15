@@ -8,14 +8,14 @@ OUTPUT="$2"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 DECKS=(
-  schwatzt_dir_letzebuergesh/per_book/schwatzt_dir_letzebuergesh.json
-  schwatzt_dir_letzebuergesh/per_book/a1.json
-  schwatzt_dir_letzebuergesh/per_book/a2.json
-  schwatzt_dir_letzebuergesh/per_book/b1.json
-  schwatzt_dir_letzebuergesh/per_word_type/nouns.json
-  schwatzt_dir_letzebuergesh/per_word_type/verbs.json
-  schwatzt_dir_letzebuergesh/per_word_type/adjectives.json
-  schwatzt_dir_letzebuergesh/per_word_type/adverbs.json
+  schwatzt_dir_letzebuergesch/per_book/schwatzt_dir_letzebuergesch.json
+  schwatzt_dir_letzebuergesch/per_book/a1.json
+  schwatzt_dir_letzebuergesch/per_book/a2.json
+  schwatzt_dir_letzebuergesch/per_book/b1.json
+  schwatzt_dir_letzebuergesch/per_word_type/nouns.json
+  schwatzt_dir_letzebuergesch/per_word_type/verbs.json
+  schwatzt_dir_letzebuergesch/per_word_type/adjectives.json
+  schwatzt_dir_letzebuergesch/per_word_type/adverbs.json
   lod_levels/a1.json
   lod_levels/a2.json
 )
