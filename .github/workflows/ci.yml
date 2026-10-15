@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node }}
-      - run: npm install
+      - run: npm ci
       - run: npm run build
-      - run: npm run test:unit
+      - run: npm test
       - name: Smoke test the packed CLI from a clean folder
         run: |
           npm pack --pack-destination "$RUNNER_TEMP"
@@ -26,3 +26,6 @@ jobs:
           npm init -y > /dev/null
           npm install "$RUNNER_TEMP"/lod-anki-*.tgz
           npx lod-anki --help
+          echo '{"name":"Smoke","fileName":"smoke","types":[],"languages":["EN"],"flashcards":["Kand","basic:Moien;Hello"]}' > deck.json
+          LOD_ANKI_CACHE="$RUNNER_TEMP/cache" npx lod-anki export deck.json
+          test -s smoke_english.apkg
