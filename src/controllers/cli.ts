@@ -1,80 +1,94 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { Command } from "commander";
-import { injectable, inject } from "inversify";
 import kleur from "kleur";
 import figlet from "figlet";
-import { TYPES } from "../services/types";
-import { LodContentExtractor } from "../services/extractors/lod-content-extractor";
-import * as fs from "fs";
-import * as path from "path";
 import { Deck } from "../model/word";
-import { DeckExporter } from "../services/exporters/deck-exporter";
 import { CONSTANTS } from "../model/constants";
-const pkg = require("../../package.json");
+import { DeckExporter } from "../services/exporters/deck-exporter";
+import { extractLodContent } from "../services/extractors/lod-content-extractor";
+import { cachedDataDirectory, downloadLodData, hasWords } from "../services/lod-data";
 
-@injectable()
+const MINIMUM_ARG_SIZE = 2;
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..", "package.json")).toString()) as { version: string };
+
 export class Cli {
 
-    private readonly _MINIMUM_ARG_SIZE = 2;
+    constructor(private readonly deckExporter: DeckExporter) { }
 
-    constructor(
-        @inject(TYPES.LodContentExtractor) private readonly lodContentExtractor: LodContentExtractor,
-        @inject(TYPES.DeckExporter) private readonly deckExporter: DeckExporter) { }
-
-    public main(argv: string[]): void {
-        console.log(
-            kleur.red(
-                figlet.textSync("LOD to Anki", { horizontalLayout: "full" }),
-            ),
-        );
+    public async main(argv: string[]): Promise<void> {
+        console.log(kleur.red(figlet.textSync("LOD to Anki", { horizontalLayout: "full" })));
 
         const command = new Command();
 
         command.option("-o, --output <directory>", "The output directory", process.cwd());
-        command.option("-d, --data <directory>", "The extracted LOD data folder (default: ./lod)");
+        command.option("-d, --data <directory>", "The extracted LOD data folder (default: ./lod, or downloaded automatically)");
 
         command.version(pkg.version, "-v, --version")
             .usage("<command> [options]");
 
         command.command("extract <lodDump>")
             .description("extract words definitions from LOD dump file")
-            .action(async (lodDump: any) => {
-                const lodDumpFile = path.resolve(lodDump);
-                await this.lodContentExtractor.extract(lodDumpFile, command.opts().output);
+            .action(async (lodDump: string) => {
+                await extractLodContent(path.resolve(lodDump), command.opts().output);
             });
 
         command.command("export <deck>")
             .description("export deck into Anki apkg format")
-            .action(async (deckPath: any) => {
+            .action(async (deckPath: string) => {
                 const deckFile = path.resolve(deckPath);
                 if (!fs.existsSync(deckFile)) {
                     this.fail(`Deck file not found: ${deckFile}`);
                 }
-                const dataDirectory = this.resolveDataDirectory(command.opts().data, command.opts().output);
-                const deck: Deck = JSON.parse(fs.readFileSync(deckFile).toString());
+                const dataDirectory = await this.resolveDataDirectory(command.opts().data, command.opts().output);
+                const deck = JSON.parse(fs.readFileSync(deckFile).toString()) as Deck;
                 await this.deckExporter.export(deck, command.opts().output, dataDirectory);
             });
 
-        command.parse(argv);
+        command.command("update")
+            .description("download the latest extracted LOD data")
+            .action(async () => {
+                const data: string | undefined = command.opts().data;
+                await this.download(data ? path.resolve(data) : cachedDataDirectory());
+            });
 
-        if (argv.length <= this._MINIMUM_ARG_SIZE) {
+        if (argv.length <= MINIMUM_ARG_SIZE) {
             command.help();
         }
+        await command.parseAsync(argv);
     }
 
-    private resolveDataDirectory(data: string | undefined, output: string): string {
-        const candidates = data
-            ? [path.resolve(data), path.resolve(data, CONSTANTS.DATA_FOLDER)]
-            : [path.resolve(output, CONSTANTS.DATA_FOLDER), path.resolve(CONSTANTS.DATA_FOLDER)];
-        const found = candidates.find((candidate) => fs.existsSync(path.join(candidate, CONSTANTS.WORDS_FOLDER)));
-        if (!found) {
-            this.fail([
-                "LOD data not found. Looked for a 'words' folder in:",
-                ...[...new Set(candidates)].map((candidate) => `  - ${candidate}`),
-                "Download and extract the LOD data (see README), then either run lod-anki from the folder",
-                "that contains the 'lod' folder, or pass its location with --data <path/to/lod>.",
-            ].join("\n"));
+    private async resolveDataDirectory(data: string | undefined, output: string): Promise<string> {
+        if (data) {
+            const candidates = [path.resolve(data), path.resolve(data, CONSTANTS.DATA_FOLDER)];
+            const found = candidates.find(hasWords);
+            if (!found) {
+                this.fail([
+                    "LOD data not found. Looked for a 'words' folder in:",
+                    ...[...new Set(candidates)].map((candidate) => `  - ${candidate}`),
+                    "Pass the folder that contains 'words' with --data, or leave --data out to download the data automatically.",
+                ].join("\n"));
+            }
+            return found;
         }
-        return found!;
+
+        const local = [path.resolve(output, CONSTANTS.DATA_FOLDER), path.resolve(CONSTANTS.DATA_FOLDER)].find(hasWords);
+        if (local) {
+            return local;
+        }
+        const cached = cachedDataDirectory();
+        if (!hasWords(cached)) {
+            await this.download(cached);
+        }
+        return cached;
+    }
+
+    private async download(dataDirectory: string): Promise<void> {
+        try {
+            await downloadLodData(dataDirectory);
+        } catch (error) {
+            this.fail(`${error instanceof Error ? error.message : error}\nDownload lod.zip yourself (see README) and pass its 'lod' folder with --data.`);
+        }
     }
 
     private fail(message: string): never {

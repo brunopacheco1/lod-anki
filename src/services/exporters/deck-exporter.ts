@@ -1,62 +1,58 @@
-import { inject, injectable } from "inversify";
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { AnkiExport } from "anki-apkg-export";
 import { Deck } from "../../model/word";
-import { TYPES } from "../types";
-import { BasicCardExporter } from "./basic-card-exporter";
-import { ClozeCardExporter } from "./cloze-card-exporter";
+import { label } from "../label-provider";
+import { basicCard, Card, clozeCard } from "./custom-cards";
 import { LodContentExporter } from "./lod-content-exporter";
-import { LabelProvider } from "../label-provider";
-const initSqlJs = require("sql.js");
-const { default: AnkiExport } = require("anki-apkg-export/dist/exporter");
-const { default: createTemplate } = require("anki-apkg-export/dist/template");
 
+const LEFT_ALIGNED = (html: string) => `<div style="text-align: left">${html}</div>`;
 
-export interface DeckExporter {
-    export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void>;
-}
+/** Exports a deck definition into one Anki package per language. */
+export class DeckExporter {
 
-@injectable()
-export class DeckExporterImpl implements DeckExporter {
-
-    constructor(
-        @inject(TYPES.LodContentExporter) private readonly lodContentExporter: LodContentExporter,
-        @inject(TYPES.BasicCardExporter) private readonly basicCardExporter: BasicCardExporter,
-        @inject(TYPES.ClozeCardExporter) private readonly clozeCardExporter: ClozeCardExporter,
-        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
-    ) { }
+    constructor(private readonly lodContentExporter: LodContentExporter) { }
 
     public async export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void> {
-        await this.lodContentExporter.prefetchAudio(deck.flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
+        const flashcards = [...new Set(deck.flashcards)];
+        await this.lodContentExporter.prefetchAudio(flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
         for (const language of deck.languages) {
-            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, deck.types, dataDirectory);
-            await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
-        }
-    }
-
-    private async generateAnki(flashcards: string[], deckName: string, language: string, types: string[], dataDirectory: string): Promise<any> {
-        const sql = await initSqlJs({});
-        const apkg = new AnkiExport(`${deckName} - ${this.labelProvider.get("LANGUAGE", language)}`, {
-            template: createTemplate(),
-            sql
-        });
-        const uniqueFlashcards = [...new Set(flashcards)];
-        for (const flashcard of uniqueFlashcards) {
-            if (flashcard.startsWith("basic:")) {
-                this.basicCardExporter.export(apkg, flashcard);
-            } else if (flashcard.startsWith("cloze:")) {
-                this.clozeCardExporter.export(apkg, flashcard);
-            } else {
-                await this.lodContentExporter.export(apkg, language, flashcard, types || [], dataDirectory);
+            const deckFile = path.join(outputDirectory, `${deck.fileName}_${label("LANGUAGE_FILENAME", language)}.apkg`);
+            const apkg = await AnkiExport.create(`${deck.name} - ${label("LANGUAGE", language)}`);
+            try {
+                await this.addCards(apkg, flashcards, language, deck.types || [], dataDirectory);
+                fs.writeFileSync(deckFile, await apkg.save());
+            } finally {
+                apkg.close();
             }
         }
-
-        return apkg;
     }
 
-    private async saveAnkiToFile(fileName: string, language: string, apkg: any, outputDirectory: string): Promise<void> {
-        const zip = await apkg.save();
-        const deckFile = path.join(outputDirectory, `${fileName}_${this.labelProvider.get("LANGUAGE_FILENAME", language)}.apkg`);
-        fs.writeFileSync(deckFile, zip, "binary");
+    private async addCards(apkg: AnkiExport, flashcards: string[], language: string, types: string[], dataDirectory: string): Promise<void> {
+        const media = new Set<string>();
+        for (const flashcard of flashcards) {
+            if (flashcard.startsWith("basic:") || flashcard.startsWith("cloze:")) {
+                const card: Card = flashcard.startsWith("basic:") ? basicCard(flashcard) : clozeCard(flashcard);
+                this.addCard(apkg, flashcard, card);
+                continue;
+            }
+            const card = await this.lodContentExporter.buildCard(language, flashcard, types, dataDirectory);
+            if (!card) {
+                continue;
+            }
+            for (const audio of card.media.filter((it) => !media.has(it.name))) {
+                apkg.addMedia(audio.name, fs.readFileSync(audio.file));
+                media.add(audio.name);
+            }
+            this.addCard(apkg, flashcard, card, { noteId: card.noteId, tags: card.tags });
+        }
+    }
+
+    private addCard(apkg: AnkiExport, flashcard: string, card: Card, options?: { noteId: string, tags: string[] }): void {
+        try {
+            apkg.addCard(LEFT_ALIGNED(card.front), LEFT_ALIGNED(card.back), options);
+        } catch (error) {
+            console.error(`Skipped ${flashcard}: ${error instanceof Error ? error.message : error}`);
+        }
     }
 }

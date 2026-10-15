@@ -1,143 +1,117 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { Word, WordType, WordUsageExample } from "../../model/word";
-import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
-import { NounExporter } from "./noun-exporter";
-import { VerbExporter } from "./verb-exporter";
-import { WordIdGenerator } from "../word-id-generator";
 import { CONSTANTS } from "../../model/constants";
-import { BaseLodWordExporter } from "./base-lod-word-exporter";
-import { LabelProvider } from "../label-provider";
+import { wordId } from "../word-id-generator";
+import { label } from "../label-provider";
 import { AudioProvider } from "../audio-provider";
-
-export interface LodContentExporter {
-    export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void>;
-    prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void>;
-}
+import { Card } from "./custom-cards";
+import { wordTypeHeader } from "./word-headers";
 
 const PARALLEL_DOWNLOADS = 8;
 
-@injectable()
-export class LodContentExporterImpl implements LodContentExporter {
+export interface LodCard extends Card {
+    /** Stable key of the note, so re-importing an updated deck updates the card instead of duplicating it. */
+    noteId: string,
+    tags: string[],
+    /** Audio files (name and local path) the card plays. */
+    media: { name: string, file: string }[]
+}
 
-    constructor(
-        @inject(TYPES.WordIdGenerator) private readonly keyGenerator: WordIdGenerator,
-        @inject(TYPES.BaseLodWordExporter) private readonly baseLodWordExporter: BaseLodWordExporter,
-        @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
-        @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter,
-        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
-        @inject(TYPES.AudioProvider) private readonly audioProvider: AudioProvider,
-    ) { }
+/** Builds cards for LOD words from the extracted LOD data. */
+export class LodContentExporter {
 
+    constructor(private readonly audioProvider: AudioProvider) { }
 
+    /** Downloads the audio of all words in parallel, so building the cards only reads local files. */
     public async prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void> {
-        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
         const audios = new Set<string>();
         for (const flashcard of flashcards) {
-            const wordFile = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER, `${this.keyGenerator.generate(flashcard)}.json`);
-            if (fs.existsSync(wordFile)) {
-                const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
-                word.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
-            }
+            const word = this.readWord(flashcard, dataDirectory);
+            word?.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
         }
         const queue = [...audios];
+        const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
         const worker = async () => {
             for (let audio = queue.shift(); audio; audio = queue.shift()) {
-                await this.audioProvider.get(audio, lodAudiosFolder);
+                await this.audioProvider.get(audio, audiosFolder);
             }
         };
         await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
     }
 
-    public async export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void> {
-        const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
-        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
-
-        const wordId = this.keyGenerator.generate(flashcard);
-        const wordFile = path.join(wordsFolder, `${wordId}.json`);
-        if (!fs.existsSync(wordFile)) {
+    /** Builds the card of a word, or returns undefined when the word is unknown or has none of `types`. */
+    public async buildCard(language: string, flashcard: string, types: string[], dataDirectory: string): Promise<LodCard | undefined> {
+        const word = this.readWord(flashcard, dataDirectory);
+        if (!word) {
             console.error(`${flashcard} not found!`);
-            return;
+            return undefined;
         }
 
-        const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
+        const selectedTypes = word.types.filter((type) => types.length === 0 || types.includes(type.type));
+        if (selectedTypes.length === 0) {
+            return undefined;
+        }
 
-        let flashcardBack = "<div style=\"text-align: left\">";
-        let shouldAddCard = false;
-        for (const type of word.types) {
-            if (types.length !== 0 && !types.includes(type.type)) {
-                continue;
-            }
-            shouldAddCard = true;
-            
-            flashcardBack += "<div style=\"margin-bottom: 25px;\">";
-
-            if (!!type.details.audio) {
-                const audioFile = await this.audioProvider.get(type.details.audio, lodAudiosFolder);
+        const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
+        const media: LodCard["media"] = [];
+        let back = "";
+        for (const type of selectedTypes) {
+            if (type.details.audio) {
+                const audioFile = await this.audioProvider.get(type.details.audio, audiosFolder);
                 if (audioFile) {
-                    apkg.addMedia(type.details.audio, fs.readFileSync(audioFile));
+                    media.push({ name: type.details.audio, file: audioFile });
                 } else {
                     type.details.audio = undefined;
                 }
             }
-
-            switch (type.type) {
-                case "noun": flashcardBack += this.nounExporter.rerieveWordTypeHeader(language, word, type); break;
-                case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
-                case "preposition":
-                case "conjunction":
-                case "numeral":
-                case "adjective":
-                case "adverb": flashcardBack += this.baseLodWordExporter.rerieveWordTypeHeader(language, word, type); break;
-            }
-            flashcardBack += this.retrieveTranslationContent(language, type);
-            flashcardBack += "</div>";
+            back += `<div style="margin-bottom: 25px;">${wordTypeHeader(language, word, type)}${this.translationContent(language, type)}</div>`;
         }
-        flashcardBack += "</div>";
 
-        if(shouldAddCard) {
-            apkg.addCard(`<div style="text-align: left">${word.word}</div>`, flashcardBack);
-        }
+        return {
+            front: word.word,
+            back,
+            noteId: `lod:${word.word}`,
+            tags: [...new Set(selectedTypes.map((type) => type.type))],
+            media,
+        };
     }
 
-    private retrieveTranslationContent(language: string, type: WordType): string {
+    private readWord(flashcard: string, dataDirectory: string): Word | undefined {
+        const wordFile = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER, `${wordId(flashcard)}.json`);
+        if (!fs.existsSync(wordFile)) {
+            return undefined;
+        }
+        return JSON.parse(fs.readFileSync(wordFile).toString()) as Word;
+    }
+
+    private translationContent(language: string, type: WordType): string {
         if (type.meanings.length === 0) {
             return "";
         }
 
-        let content = `<ol>`;
+        let content = "<ol>";
         for (const meaning of type.meanings) {
-            const translation = meaning.translations.find(it => it.language === language);
-            if (!!translation?.translation) {
-                let polyLex = "";
-                if (!!meaning.polyLex) {
-                    polyLex = `<span style="color: #b00c12;">${meaning.polyLex}</span><br>`;
-                }
-
-                let complement = "";
-                if (!!translation.complement) {
-                    complement = ` [${translation.complement}]`;
-                }
-
-                let examples = "";
-                if (!!meaning.examples && meaning.examples.length > 0) {
-                    examples = `<br><span style="font-size: 85%; color: #595959;">${this.labelProvider.get("EXAMPLE", language)}</span><br>${meaning.examples.map(it => this.buildExample(it, language)).join("<br>")}`;
-                }
-
-                content += `<li>${polyLex}${translation.translation}${complement}${examples}</li>`;
+            const translation = meaning.translations.find((it) => it.language === language);
+            if (!translation?.translation) {
+                continue;
             }
+            const polyLex = meaning.polyLex ? `<span style="color: #b00c12;">${meaning.polyLex}</span><br>` : "";
+            const complement = translation.complement ? ` [${translation.complement}]` : "";
+            let examples = "";
+            if (meaning.examples && meaning.examples.length > 0) {
+                examples = `<br><span style="font-size: 85%; color: #595959;">${label("EXAMPLE", language)}</span><br>${meaning.examples.map((it) => this.example(it, language)).join("<br>")}`;
+            }
+            content += `<li>${polyLex}${translation.translation}${complement}${examples}</li>`;
         }
-        content += `</ol>`;
-        return content;
+        return `${content}</ol>`;
     }
 
-    private buildExample(example: WordUsageExample, language: string): string {
-        let usages = example.usage.split(" ")
-            .filter(it => it !== "ALLG")
-            .map(it => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${this.labelProvider.get(it + "_USAGE", language)}</span> `)
+    private example(example: WordUsageExample, language: string): string {
+        const usages = example.usage.split(" ")
+            .filter((it) => it !== "ALLG")
+            .map((it) => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${label(`${it}_USAGE`, language)}</span> `)
             .join(" ");
-
-        return `${usages || ""}${example.example}`;
+        return `${usages}${example.example}`;
     }
 }

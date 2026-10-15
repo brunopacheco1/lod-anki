@@ -1,32 +1,18 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
-        "module": "commonjs",
-        "lib": [
-            "ES6",
-            "ES2015",
-            "ESNext"
-        ],
-        "types": [
-            "reflect-metadata",
-            "node"
-        ],
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "types": ["node"],
         "outDir": "lib",
-        "rootDir": "src",
+        "rootDir": ".",
         "strict": true,
-        "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "importHelpers": true,
+        "skipLibCheck": true,
         "removeComments": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "moduleResolution": "node"
+        "noEmit": true
     },
-    "exclude": [
-        "node_modules",
-        "lib",
-        "tests",
-        "templates"
-    ]
+    "include": ["src", "tests", "vitest.config.mts"]
 }

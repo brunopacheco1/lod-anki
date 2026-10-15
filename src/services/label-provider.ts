@@ -1,28 +1,18 @@
-import { injectable } from "inversify";
-const deLabels = require("../resources/de-labels.json");
-const ptLabels = require("../resources/pt-labels.json");
-const frLabels = require("../resources/fr-labels.json");
-const enLabels = require("../resources/en-labels.json");
+import deLabels from "../resources/de-labels.json";
+import enLabels from "../resources/en-labels.json";
+import frLabels from "../resources/fr-labels.json";
+import ptLabels from "../resources/pt-labels.json";
 
-export interface LabelProvider {
-    get(label: string, language: string): string;
-}
+type Labels = { [label: string]: string };
 
-@injectable()
-export class LabelProviderImpl implements LabelProvider {
-
-    public get(label: string, language: string = "en"): string {
-        let value;
-        switch (language.toLowerCase()) {
-            case "all": value = deLabels[label]; break;
-            case "po": value = ptLabels[label]; break;
-            case "fr": value = frLabels[label]; break;
-            case "en":
-            default: value = enLabels[label]; break;
-        }
-        if (!!value) {
-            return value;
-        }
-        return label;
+/** Returns the translation of a label for a deck language, or the label itself when there is none. */
+export function label(key: string, language = "en"): string {
+    let labels: Labels;
+    switch (language.toLowerCase()) {
+        case "all": labels = deLabels; break;
+        case "po": labels = ptLabels; break;
+        case "fr": labels = frLabels; break;
+        default: labels = enLabels; break;
     }
+    return labels[key] || key;
 }
