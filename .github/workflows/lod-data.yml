@@ -50,9 +50,10 @@ jobs:
 
       - name: Check lod.lu links used on cards
         run: |
-          for url in https://lod.lu/uploads/AAC/kand1.m4a https://lod.lu/artikel/KAND1 "https://www.lod.lu/?KAND1"; do
-            echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type} %{redirect_url}' "$url")"
+          for url in https://lod.lu/uploads/AAC/kand1.m4a https://lod.lu/artikel/KAND1; do
+            echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$url")"
           done
+          node -e 'require("https").get("https://lod.lu/uploads/AAC/kand1.m4a", r => console.log("node https.get ->", r.statusCode, r.headers["content-type"], r.headers.location || ""))'
 
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
@@ -62,9 +63,8 @@ jobs:
           (cd out && zip -qr ../lod.zip lod/words)
           (cd out/decks && zip -qr ../../decks.zip . -x build.log)
           ls -la lod.zip decks.zip
-          echo "audio files: $(ls out/lod/audios | wc -l) ($(du -sh out/lod/audios | cut -f1))"
+          echo "audio files: $(find out/lod/audios -type f 2>/dev/null | wc -l)"
           find out/decks -name '*english.apkg' -exec ls -la {} +
-          unzip -l "$(find out/decks -name 'a1*english.apkg' | head -1)" | tail -3
 
       - name: Upload build artifacts
         if: github.ref != 'refs/heads/main'

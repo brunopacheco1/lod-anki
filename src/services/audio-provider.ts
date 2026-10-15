@@ -6,6 +6,8 @@ import * as path from "path";
 const LOD_AUDIO_URL = "https://lod.lu/uploads/AAC";
 const HTTP_OK = 200;
 const TIMEOUT_MS = 15000;
+const MAX_REDIRECTS = 3;
+const USER_AGENT = "lod-anki (https://github.com/brunopacheco1/lod-anki)";
 
 export interface AudioProvider {
     /**
@@ -44,11 +46,18 @@ export class AudioProviderImpl implements AudioProvider {
         }
     }
 
-    private download(url: string): Promise<Buffer | undefined> {
+    private download(url: string, redirects = MAX_REDIRECTS): Promise<Buffer | undefined> {
         return new Promise((resolve, reject) => {
-            const request = https.get(url, { timeout: TIMEOUT_MS }, (response) => {
+            const request = https.get(url, { timeout: TIMEOUT_MS, headers: { "User-Agent": USER_AGENT } }, (response) => {
+                const location = response.headers.location;
+                if (location && response.statusCode && response.statusCode >= 300 && response.statusCode < 400 && redirects > 0) {
+                    response.resume();
+                    resolve(this.download(new URL(location, url).toString(), redirects - 1));
+                    return;
+                }
                 if (response.statusCode !== HTTP_OK) {
                     response.resume();
+                    console.warn(`Audio not available at ${url} (HTTP ${response.statusCode})`);
                     resolve(undefined);
                     return;
                 }
