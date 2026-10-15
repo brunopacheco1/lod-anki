@@ -20,7 +20,7 @@ export class Cli {
     public async main(argv: string[]): Promise<void> {
         console.log(kleur.red(figlet.textSync("LOD to Anki", { horizontalLayout: "full" })));
 
-        const command = new Command();
+        const command = new Command("lod-anki");
 
         command.option("-o, --output <directory>", "The output directory", process.cwd());
         command.option("-d, --data <directory>", "The extracted LOD data folder (default: ./lod, or downloaded automatically)");
