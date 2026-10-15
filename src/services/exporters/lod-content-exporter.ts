@@ -87,6 +87,7 @@ export class LodContentExporterImpl implements LodContentExporter {
                 case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
                 case "preposition":
                 case "conjunction":
+                case "numeral":
                 case "adjective":
                 case "adverb": flashcardBack += this.baseLodWordExporter.rerieveWordTypeHeader(language, word, type); break;
             }

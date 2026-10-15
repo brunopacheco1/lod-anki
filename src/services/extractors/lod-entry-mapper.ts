@@ -9,6 +9,7 @@ const WORD_TYPES: { [partOfSpeech: string]: string } = {
     ADV: "adverb",
     PREP: "preposition",
     CONJ: "conjunction",
+    NB: "numeral",
 };
 
 // LOD language codes mapped to the language keys used by deck files.

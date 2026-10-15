@@ -6,8 +6,8 @@ lod-anki is a command line tool that allows you to import data from the [Luxembo
 
 ## Features
 
-- Import data from LOD.lu into Anki decks.
-- Map `noun`, `verb`, `preposition`, `conjunction`, `adjective`, and `adverb` to words dataset.
+- Import data from LOD.lu into Anki decks, with pronunciations and examples.
+- Map `noun`, `verb`, `preposition`, `conjunction`, `adjective`, `adverb`, and `numeral` to words dataset.
 - Export words into Anki flashcards.
 
 ## Quick start
@@ -27,14 +27,17 @@ It should print a version number such as `v22.x.x`.
 ### 2. Get the LOD data
 
 1. Create a folder for your decks, for example `lux-decks` in your home folder.
-2. Download the [LOD data file](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0) and extract it **inside that folder**. You should end up with:
+2. Download the [LOD data file](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/lod.zip) and extract it **inside that folder**. You should end up with:
 
 ```text
 lux-decks/
 └── lod/
-    ├── audios/
     └── words/
 ```
+
+The data is rebuilt every month from the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) published by the Zenter fir d'Lëtzebuerger Sprooch (CC0). Pronunciations are downloaded from [lod.lu](https://lod.lu) the first time a word is exported and kept in `lod/audios`, so you need an internet connection when you export.
+
+> Just want ready-made decks for the *Schwätzt dir Lëtzebuergesch?* books? Download `decks.zip` from the [lod-data release](https://github.com/brunopacheco1/lod-anki/releases/tag/lod-data) and import the `.apkg` files into Anki.
 
 ### 3. Write a deck file
 
@@ -101,7 +104,7 @@ The deck file is a JSON file, with the following schema:
 - fileName: It is the file name. It will be concatenated with the language, to avoid duplicity;
 - flashcards: The collection of words in Luxembourgish you want to export;
 - languages: The collection of languages you want to export to. The possible values are: ALL (German), EN (English), FR (French), and PO (Portuguese);
-- types: The collection of word types you want to export. `lod-anki` will filter the flashcards (or words), and export only the ones matching the types in this list. This field is optional. `noun`, `verb`, `preposition`, `conjunction`, `adjective`, and `adverb` are supported by this tool.
+- types: The collection of word types you want to export. `lod-anki` will filter the flashcards (or words), and export only the ones matching the types in this list. This field is optional. `noun`, `verb`, `preposition`, `conjunction`, `adjective`, `adverb`, and `numeral` are supported by this tool.
 
 Below you can see an example:
 

@@ -16,7 +16,7 @@ export class VerbExporterImpl implements VerbExporter {
     }
 
     public rerieveWordTypeHeader(language: string, word: Word, type: WordType): string {
-        let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a> ${this.labelProvider.get(type.type.toUpperCase(), language)}`;
+        let content = `<b><a href="https://lod.lu/artikel/${type.lodKey}">${word.word}</a> ${this.labelProvider.get(type.type.toUpperCase(), language)}`;
         const forms: string[] = [];
         if (!!type.details.auxiliaryVerb) {
             forms.push(`${this.labelProvider.get("AUXILIARY_VERB", language)} <span style="color: #b00c12;">${type.details.auxiliaryVerb.toLowerCase()}</span>`);

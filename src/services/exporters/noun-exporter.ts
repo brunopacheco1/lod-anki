@@ -16,7 +16,7 @@ export class NounExporterImpl implements NounExporter {
     }
 
     public rerieveWordTypeHeader(language: string, word: Word, type: WordType): string {
-        let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a>`;
+        let content = `<b><a href="https://lod.lu/artikel/${type.lodKey}">${word.word}</a>`;
         let typeStr = this.labelProvider.get(type.type.toUpperCase(), language);
         if (type.details.nounCategory === "NOM-PROPRE") {
             typeStr = this.labelProvider.get("PROPER_NOUN", language);
