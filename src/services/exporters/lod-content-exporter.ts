@@ -9,9 +9,10 @@ import { WordIdGenerator } from "../word-id-generator";
 import { CONSTANTS } from "../../model/constants";
 import { BaseLodWordExporter } from "./base-lod-word-exporter";
 import { LabelProvider } from "../label-provider";
+import { AudioProvider } from "../audio-provider";
 
 export interface LodContentExporter {
-    export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): void;
+    export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void>;
 }
 
 @injectable()
@@ -22,11 +23,12 @@ export class LodContentExporterImpl implements LodContentExporter {
         @inject(TYPES.BaseLodWordExporter) private readonly baseLodWordExporter: BaseLodWordExporter,
         @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
         @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter,
-        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
+        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
+        @inject(TYPES.AudioProvider) private readonly audioProvider: AudioProvider,
     ) { }
 
 
-    public export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): void {
+    public async export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void> {
         const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
         const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
 
@@ -50,7 +52,12 @@ export class LodContentExporterImpl implements LodContentExporter {
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
 
             if (!!type.details.audio) {
-                apkg.addMedia(`${type.details.audio}`, fs.readFileSync(path.join(lodAudiosFolder, `${type.details.audio}`)));
+                const audioFile = await this.audioProvider.get(type.details.audio, lodAudiosFolder);
+                if (audioFile) {
+                    apkg.addMedia(type.details.audio, fs.readFileSync(audioFile));
+                } else {
+                    type.details.audio = undefined;
+                }
             }
 
             switch (type.type) {
@@ -91,7 +98,7 @@ export class LodContentExporterImpl implements LodContentExporter {
                 }
 
                 let examples = "";
-                if (!!meaning.examples) {
+                if (!!meaning.examples && meaning.examples.length > 0) {
                     examples = `<br><span style="font-size: 85%; color: #595959;">${this.labelProvider.get("EXAMPLE", language)}</span><br>${meaning.examples.map(it => this.buildExample(it, language)).join("<br>")}`;
                 }
 

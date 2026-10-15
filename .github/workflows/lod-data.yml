@@ -1,35 +1,81 @@
 name: LOD data
 
+# Builds lod-anki's word data from the latest LOD linguistic dataset on data.public.lu,
+# rebuilds the ready-made decks, and publishes both on the "lod-data" GitHub release.
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 3 * *" # monthly; the dataset is published roughly monthly
   push:
     branches: [claude/project-thread-y2iga6]
-    paths: [.github/workflows/lod-data.yml, scripts/inspect-lod.py]
+    paths: [.github/workflows/lod-data.yml, scripts/build-decks.sh]
+
+permissions:
+  contents: write
+
+env:
+  DATASET_API: https://data.public.lu/api/1/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/
+  RELEASE_TAG: lod-data
 
 jobs:
-  inspect:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Find the latest LOD linguistic dataset
-        id: latest
-        run: |
-          curl -sSf https://data.public.lu/api/1/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/ > dataset.json
-          jq -r '.resources[] | [.last_modified, .title, .url] | @tsv' dataset.json | sort -r | head -5
-          URL=$(jq -r '[.resources[] | select(.title | test("new-lod-art"))] | sort_by(.last_modified) | last | .url' dataset.json)
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-      - name: Download and unpack
-        run: |
-          curl -sSfL -o lod.zip "${{ steps.latest.outputs.url }}"
-          mkdir lod && unzip -q lod.zip -d lod
-          find lod -maxdepth 2 | head -10
-          echo "files: $(find lod -type f | wc -l)"
-          du -sh lod
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          path: repo
-      - name: Print sample entries
-        run: python3 repo/scripts/inspect-lod.py lod/new_lod-art.xml "Moien,Haus,goen,schéin,an,well,gär,Äddi,Auto,ech,ginn,sinn,hunn,Fra,Kand,séier,mat,awer,ouni,lafen,Bam"
-      - uses: actions/upload-artifact@v4
+          node-version: 22
+      - run: npm install
+      - run: npm run build
+
+      - name: Download the latest LOD dataset
+        id: dataset
+        run: |
+          curl -sSf "$DATASET_API" > dataset.json
+          read -r MODIFIED TITLE URL < <(jq -r '[.resources[] | select(.title | test("new-lod-art"))] | sort_by(.last_modified) | last | [.last_modified, .title, .url] | @tsv' dataset.json)
+          echo "Using $TITLE ($MODIFIED)"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          echo "modified=${MODIFIED%%T*}" >> "$GITHUB_OUTPUT"
+          curl -sSfL -o dataset.zip "$URL"
+          mkdir dataset && unzip -q dataset.zip -d dataset
+          echo "xml=$(find dataset -name '*.xml' | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract words
+        run: node lib/index.js extract "${{ steps.dataset.outputs.xml }}" -o out
+
+      - name: Check lod.lu links used on cards
+        run: |
+          for url in https://lod.lu/uploads/AAC/kand1.m4a https://lod.lu/artikel/KAND1 "https://www.lod.lu/?KAND1"; do
+            echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type} %{redirect_url}' "$url")"
+          done
+
+      - name: Build ready-made decks
+        run: scripts/build-decks.sh out/lod out/decks
+
+      - name: Package
+        run: |
+          (cd out && zip -qr ../lod.zip lod/words)
+          (cd out/decks && zip -qr ../../decks.zip . -x build.log)
+          ls -la lod.zip decks.zip
+
+      - name: Upload build artifacts
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
         with:
-          name: lod-dataset
-          path: lod.zip
+          name: lod-data
+          path: |
+            lod.zip
+            decks.zip
+
+      - name: Publish the lod-data release
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="LOD words for lod-anki and ready-made decks, built from ${{ steps.dataset.outputs.title }} (published ${{ steps.dataset.outputs.modified }}) of the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) (CC0)."
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --title "LOD data" --notes "$NOTES" --prerelease --latest=false --target "$GITHUB_SHA"
+          else
+            gh release edit "$RELEASE_TAG" --notes "$NOTES"
+          fi
+          gh release upload "$RELEASE_TAG" lod.zip decks.zip --clobber

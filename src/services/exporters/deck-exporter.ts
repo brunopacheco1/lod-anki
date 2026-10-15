@@ -46,7 +46,7 @@ export class DeckExporterImpl implements DeckExporter {
             } else if (flashcard.startsWith("cloze:")) {
                 this.clozeCardExporter.export(apkg, flashcard);
             } else {
-                this.lodContentExporter.export(apkg, language, flashcard, types || [], dataDirectory);
+                await this.lodContentExporter.export(apkg, language, flashcard, types || [], dataDirectory);
             }
         }
 

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lod>
+  <entry id="KAND1">
+    <lemma>Kand</lemma>
+    <ipa>kɑnt</ipa>
+    <microStructure>
+      <partOfSpeech gen="N">SUBST</partOfSpeech>
+      <inflection type="plural">
+        <form>Kanner</form>
+      </inflection>
+      <grammaticalUnit>
+        <meaning id="KAND1UNI1" video="734329693">
+          <number>1</number>
+          <targetLanguage lang="de">
+            <translation>Kind</translation>
+            <semanticClarifier>unmittelbarer Nachkomme</semanticClarifier>
+          </targetLanguage>
+          <targetLanguage lang="fr">
+            <translation>enfant</translation>
+            <semanticClarifier>descendant</semanticClarifier>
+          </targetLanguage>
+          <targetLanguage lang="en">
+            <translation>child</translation>
+            <semanticClarifier>son, daughter</semanticClarifier>
+          </targetLanguage>
+          <targetLanguage lang="pt">
+            <translation>filho</translation>
+            <translation>filha</translation>
+            <semanticClarifier>descendente</semanticClarifier>
+          </targetLanguage>
+          <targetLanguage lang="nl">
+            <translation>kind</translation>
+          </targetLanguage>
+          <examples count="2+">
+            <example id="a3961445e7315f7a9c657fb1397e3237">
+              <text>
+                <word>eis</word>
+                <word>Noperen</word>
+                <word>hu</word>
+                <word>véier</word>
+                <inflectedHeadword>Kanner</inflectedHeadword>
+                <word>,</word>
+                <word>zwee</word>
+                <word>Jongen</word>
+              </text>
+            </example>
+            <example id="d557f295b3eb28cf449ae8670b63e618">
+              <text>
+                <attribute>EGS</attribute>
+                <word>hien</word>
+                <word>huet</word>
+                <word>kee</word>
+                <inflectedHeadword>Kand</inflectedHeadword>
+                <word>a</word>
+                <word>kee</word>
+                <word>Kënn!</word>
+              </text>
+              <gloss>
+                <word>hie</word>
+                <word>brauch</word>
+                <word>keng</word>
+                <word>Verantwortung</word>
+              </gloss>
+            </example>
+          </examples>
+        </meaning>
+      </grammaticalUnit>
+    </microStructure>
+    <categories>
+      <category>A1</category>
+    </categories>
+  </entry>
+  <entry id="LAFEN1">
+    <lemma nRuleForm="lafe">lafen</lemma>
+    <microStructure>
+      <partOfSpeech>VRB</partOfSpeech>
+      <auxiliaryVerb>sinn</auxiliaryVerb>
+      <pastParticiple>gelaf</pastParticiple>
+      <grammaticalUnit>
+        <grammaticalInformation>intransitiv</grammaticalInformation>
+        <meaning id="LAFEN1UNI2">
+          <number>1</number>
+          <targetLanguage lang="en">
+            <translation>to run</translation>
+            <semanticClarifier>to flow</semanticClarifier>
+          </targetLanguage>
+          <examples count="1">
+            <example id="2c71b92a01fb7f7808352420ecc7f8f0">
+              <text>
+                <word>d'</word>
+                <word>Waasser</word>
+                <inflectedHeadword>leeft</inflectedHeadword>
+                <word>ëmmer</word>
+                <word>de</word>
+                <word>Bierg</word>
+                <word>of</word>
+              </text>
+            </example>
+          </examples>
+        </meaning>
+        <meaning id="LAFEN1UNI9">
+          <number>2</number>
+          <secondaryHeadword>lafen an</secondaryHeadword>
+          <grammaticalInformation>mam Akkusativ</grammaticalInformation>
+          <targetLanguage lang="en">
+            <translation>to flow into</translation>
+            <translation>to merge with</translation>
+          </targetLanguage>
+          <synonyms count="1">
+            <synonym>fléissen</synonym>
+          </synonyms>
+        </meaning>
+      </grammaticalUnit>
+    </microStructure>
+  </entry>
+  <entry id="MAT1">
+    <lemma>mat</lemma>
+    <microStructure>
+      <partOfSpeech>PREP</partOfSpeech>
+      <grammaticalUnit>
+        <grammaticalInformation>mam Dativ</grammaticalInformation>
+        <meaning id="MAT1UNI1">
+          <number>1</number>
+          <grammaticalInformation>mam Dativ</grammaticalInformation>
+          <targetLanguage lang="en">
+            <translation>with</translation>
+          </targetLanguage>
+        </meaning>
+      </grammaticalUnit>
+    </microStructure>
+  </entry>
+  <entry id="MAT2">
+    <lemma>mat</lemma>
+    <microStructure>
+      <partOfSpeech>ADV</partOfSpeech>
+      <grammaticalUnit>
+        <meaning id="MAT2UNI1">
+          <targetLanguage lang="en">
+            <translation>too</translation>
+          </targetLanguage>
+        </meaning>
+      </grammaticalUnit>
+    </microStructure>
+  </entry>
+  <entry id="MOIEN1">
+    <lemma nRuleForm="Moie">Moien</lemma>
+    <microStructure>
+      <partOfSpeech gen="M">SUBST</partOfSpeech>
+      <grammaticalUnit>
+        <meaning id="MOIEN1UNI2">
+          <inflection type="plural">
+            <form>Moienter</form>
+          </inflection>
+          <targetLanguage lang="en">
+            <translation>morning</translation>
+          </targetLanguage>
+        </meaning>
+      </grammaticalUnit>
+    </microStructure>
+  </entry>
+  <entry id="ACH1">
+    <lemma>ach</lemma>
+    <microStructure>
+      <partOfSpeech>INTERJ</partOfSpeech>
+    </microStructure>
+  </entry>
+</lod>

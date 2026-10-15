@@ -18,6 +18,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
       - run: npm run build
+      - run: npm run test:unit
       - name: Smoke test the packed CLI from a clean folder
         run: |
           npm pack --pack-destination "$RUNNER_TEMP"

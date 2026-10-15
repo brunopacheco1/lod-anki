@@ -20,8 +20,8 @@ export class NounExporterImpl implements NounExporter {
         let typeStr = this.labelProvider.get(type.type.toUpperCase(), language);
         if (type.details.nounCategory === "NOM-PROPRE") {
             typeStr = this.labelProvider.get("PROPER_NOUN", language);
-        } else {
-            typeStr = this.labelProvider.get(`${type.details.nounGender!.toUpperCase()}_${type.type.toUpperCase()}`, language);
+        } else if (!!type.details.nounGender) {
+            typeStr = this.labelProvider.get(`${type.details.nounGender.toUpperCase()}_${type.type.toUpperCase()}`, language);
         }
         if (type.details.nounGender === "INDEF") {
             typeStr += ` (${this.labelProvider.get("NO_SINGULAR", language)})`;
@@ -33,8 +33,9 @@ export class NounExporterImpl implements NounExporter {
             content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
         if (!!type.details.audio) {
-            content += ` [sound:${type.details.audio}]</b>`;
+            content += ` [sound:${type.details.audio}]`;
         }
+        content += "</b>";
         return content;
     }
 }
