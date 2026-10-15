@@ -1,13 +1,13 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "@services/types";
-import { FileWriter } from "@services/file-writer";
+import { TYPES } from "../types";
+import { FileWriter } from "../file-writer";
 import * as xml2js from "xml2js";
 import * as fs from "fs";
 import * as path from "path";
-import { CONSTANTS } from "@model/constants";
-import { NounExtractor } from "@services/extractors/noun-extractor";
-import { Word } from "@model/word";
-import { VerbExtractor } from "@services/extractors/verb-extractor";
+import { CONSTANTS } from "../../model/constants";
+import { NounExtractor } from "./noun-extractor";
+import { Word } from "../../model/word";
+import { VerbExtractor } from "./verb-extractor";
 import { PrepositionExtractor } from "./preposition-extractor";
 import { BaseLodWordExtractor } from "./base-lod-word-extractor";
 import * as https from "https";
@@ -29,7 +29,8 @@ export class LodContentExtractorImpl implements LodContentExtractor {
     ) { }
 
     public async extract(lodDumpFile: string, outputDirectory: string): Promise<void> {
-        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
+        const dataDirectory = path.join(outputDirectory, CONSTANTS.DATA_FOLDER);
+        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
         const extractedWords = new Map<string, Word>();
         const lodKeysToWords = new Map<string, string>();
         const parser = new xml2js.Parser({ attrkey: "attributes", explicitChildren: true, preserveChildrenOrder: true });
@@ -71,7 +72,7 @@ export class LodContentExtractorImpl implements LodContentExtractor {
                 }
             }
 
-            const wordsJsonFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
+            const wordsJsonFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
             for (const word of extractedWords.values()) {
                 for (const type of word.types) {
                     if (!!type.details.variationOfLodKey) {

@@ -1,24 +1,23 @@
 #!/usr/bin/env node
 import "reflect-metadata";
-import "module-alias/register";
 import { Container } from "inversify";
-import { Cli } from "@controllers/cli";
-import { TYPES } from "@services/types";
-import { LodContentExtractor, LodContentExtractorImpl } from "@services/extractors/lod-content-extractor";
-import { FileWriter, FileWriterImpl } from "@services/file-writer";
-import { WordIdGenerator, WordIdGeneratorImpl } from "@services/word-id-generator";
-import { NounExtractor, NounExtractorImpl } from "@services/extractors/noun-extractor";
-import { VerbExtractor, VerbExtractorImpl } from "@services/extractors/verb-extractor";
-import { DeckExporter, DeckExporterImpl } from "@services/exporters/deck-exporter";
-import { LabelProvider, LabelProviderImpl } from "@services/label-provider";
-import { BasicCardExporter, BasicCardExporterImpl } from "@services/exporters/basic-card-exporter";
-import { ClozeCardExporter, ClozeCardExporterImpl } from "@services/exporters/cloze-card-exporter";
-import { NounExporter, NounExporterImpl } from "@services/exporters/noun-exporter";
-import { VerbExporter, VerbExporterImpl } from "@services/exporters/verb-exporter";
-import { LodContentExporter, LodContentExporterImpl } from "@services/exporters/lod-content-exporter";
-import { PrepositionExtractor, PrepositionExtractorImpl } from "@services/extractors/preposition-extractor";
-import { BaseLodWordExtractor, BaseLodWordExtractorImpl } from "@services/extractors/base-lod-word-extractor";
-import { BaseLodWordExporter, BaseLodWordExporterImpl } from "@services/exporters/base-lod-word-exporter";
+import { Cli } from "./controllers/cli";
+import { TYPES } from "./services/types";
+import { LodContentExtractor, LodContentExtractorImpl } from "./services/extractors/lod-content-extractor";
+import { FileWriter, FileWriterImpl } from "./services/file-writer";
+import { WordIdGenerator, WordIdGeneratorImpl } from "./services/word-id-generator";
+import { NounExtractor, NounExtractorImpl } from "./services/extractors/noun-extractor";
+import { VerbExtractor, VerbExtractorImpl } from "./services/extractors/verb-extractor";
+import { DeckExporter, DeckExporterImpl } from "./services/exporters/deck-exporter";
+import { LabelProvider, LabelProviderImpl } from "./services/label-provider";
+import { BasicCardExporter, BasicCardExporterImpl } from "./services/exporters/basic-card-exporter";
+import { ClozeCardExporter, ClozeCardExporterImpl } from "./services/exporters/cloze-card-exporter";
+import { NounExporter, NounExporterImpl } from "./services/exporters/noun-exporter";
+import { VerbExporter, VerbExporterImpl } from "./services/exporters/verb-exporter";
+import { LodContentExporter, LodContentExporterImpl } from "./services/exporters/lod-content-exporter";
+import { PrepositionExtractor, PrepositionExtractorImpl } from "./services/extractors/preposition-extractor";
+import { BaseLodWordExtractor, BaseLodWordExtractorImpl } from "./services/extractors/base-lod-word-extractor";
+import { BaseLodWordExporter, BaseLodWordExporterImpl } from "./services/exporters/base-lod-word-exporter";
 
 export function init(): Cli {
     const container: Container = new Container();

@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+      - run: npm run build
+      - name: Smoke test the packed CLI from a clean folder
+        run: |
+          npm pack --pack-destination "$RUNNER_TEMP"
+          mkdir "$RUNNER_TEMP/smoke" && cd "$RUNNER_TEMP/smoke"
+          npm init -y > /dev/null
+          npm install "$RUNNER_TEMP"/lod-anki-*.tgz
+          npx lod-anki --help

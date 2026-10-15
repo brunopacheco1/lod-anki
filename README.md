@@ -10,20 +10,78 @@ lod-anki is a command line tool that allows you to import data from the [Luxembo
 - Map `noun`, `verb`, `preposition`, `conjunction`, `adjective`, and `adverb` to words dataset.
 - Export words into Anki flashcards.
 
-## Installation
+## Quick start
 
-Install the command line, running the following command.
+You don't need to be a programmer. You need about 10 minutes and a terminal (the "Terminal" app on macOS, "PowerShell" on Windows).
+
+### 1. Install Node.js
+
+Download the **LTS** version from [nodejs.org](https://nodejs.org/) and install it like any other app. To check it worked, open a new terminal and run:
 
 ```shell
-npm i -g lod-anki
+node -v
 ```
 
-## Usage
+It should print a version number such as `v22.x.x`.
 
-1. Download and extract the [file](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0).
-2. Navigate to the root folder where the zip file was extracted.
-3. Prepare your deck file (see below).
-4. Run ```lod-anki export <deckFile>```.
+### 2. Get the LOD data
+
+1. Create a folder for your decks, for example `lux-decks` in your home folder.
+2. Download the [LOD data file](https://www.dropbox.com/s/ussujs7ryrnt6et/lod.zip?dl=0) and extract it **inside that folder**. You should end up with:
+
+```text
+lux-decks/
+└── lod/
+    ├── audios/
+    └── words/
+```
+
+### 3. Write a deck file
+
+In the same `lux-decks` folder, create a file named `deck.json` with the words you want to learn (see [How to build a deck file](#how-to-build-a-deck-file)):
+
+```json
+{
+    "name": "Greeting in Luxembourgish",
+    "fileName": "greeting_in_luxembourgish",
+    "flashcards": ["Äddi", "Moien"],
+    "languages": ["EN"]
+}
+```
+
+### 4. Create the Anki deck
+
+In the terminal, go to your folder and run lod-anki:
+
+```shell
+cd lux-decks
+npx lod-anki export deck.json
+```
+
+`npx` downloads and runs lod-anki for you, so there is nothing to install globally. This creates `greeting_in_luxembourgish_english.apkg`. Double-click it (or use **File > Import** in Anki) to add the deck.
+
+### Options
+
+| Option | Description |
+| --- | --- |
+| `-d, --data <directory>` | Where the extracted `lod` folder is, if you don't run lod-anki next to it. |
+| `-o, --output <directory>` | Where to write the `.apkg` files. Defaults to the current folder. |
+
+For example: `npx lod-anki export deck.json --data ~/Downloads/lod`.
+
+### Prefer a global install?
+
+```shell
+npm install -g lod-anki
+lod-anki export deck.json
+```
+
+If this fails with `EACCES: permission denied`, your npm is not allowed to write to its global folder. Use `npx` as above, or install Node.js through a version manager such as [nvm](https://github.com/nvm-sh/nvm), which avoids the problem.
+
+### Troubleshooting
+
+- **`LOD data not found`**: lod-anki could not find the `lod` folder. Run the command from the folder that contains `lod`, or pass `--data <path/to/lod>`.
+- **`<word> not found!`**: that word is not in the LOD data. Check the spelling and capitalisation (nouns start with a capital letter).
 
 ## Contributing
 

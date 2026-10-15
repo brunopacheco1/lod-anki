@@ -1,6 +1,6 @@
-import { Word, WordMeaning, WordTranslation, WordTypeDetails, WordUsageExample } from "@model/word";
-import { TYPES } from "@services/types";
-import { WordIdGenerator } from "@services/word-id-generator";
+import { Word, WordMeaning, WordTranslation, WordTypeDetails, WordUsageExample } from "../../model/word";
+import { TYPES } from "../types";
+import { WordIdGenerator } from "../word-id-generator";
 import { inject, injectable } from "inversify";
 
 export interface BaseLodWordExtractor {

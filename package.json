@@ -1,6 +1,6 @@
 {
   "name": "lod-anki",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Export words to Anki dictionaries",
   "main": "./lib/index.js",
   "bin": {
@@ -67,16 +67,15 @@
     "figlet": "^1.5.2",
     "inversify": "^6.0.1",
     "kleur": "^4.1.4",
-    "module-alias": "^2.2.2",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.2",
     "sql.js": "^1.6.2",
     "tslib": "^2.3.1",
     "xml2js": "^0.4.23"
   },
-  "_moduleAliases": {
-    "@services": "lib/services",
-    "@model": "lib/model",
-    "@controllers": "lib/controllers",
-    "@resources": "lib/resources"
+  "files": [
+    "lib"
+  ],
+  "engines": {
+    "node": ">=18"
   }
 }

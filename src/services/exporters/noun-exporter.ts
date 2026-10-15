@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { Word, WordType } from "@model/word";
-import { TYPES } from "@services/types";
-import { LabelProvider } from "@services/label-provider";
+import { Word, WordType } from "../../model/word";
+import { TYPES } from "../types";
+import { LabelProvider } from "../label-provider";
 import { BaseLodWordExporter } from "./base-lod-word-exporter";
 
 export interface NounExporter extends BaseLodWordExporter {

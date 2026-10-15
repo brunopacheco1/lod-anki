@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { WordMeaning, WordTypeDetails } from "@model/word";
-import { TYPES } from "@services/types";
-import { WordIdGenerator } from "@services/word-id-generator";
+import { WordMeaning, WordTypeDetails } from "../../model/word";
+import { TYPES } from "../types";
+import { WordIdGenerator } from "../word-id-generator";
 import { BaseLodWordExtractor, BaseLodWordExtractorImpl } from "./base-lod-word-extractor";
 
 export interface VerbExtractor extends BaseLodWordExtractor {
