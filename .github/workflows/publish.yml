@@ -1,14 +1,8 @@
 name: Publish to npm
 
 on:
-  # Release button: Actions > Publish to npm > Run workflow, then pick major, minor or patch.
+  # Release button: Actions > Publish to npm > Run workflow. It releases the version in package.json on main.
   workflow_dispatch:
-    inputs:
-      bump:
-        description: Which part of the version to increase
-        type: choice
-        options: [patch, minor, major]
-        default: patch
   # A release published by hand on GitHub (tag vX.Y.Z matching package.json) also publishes.
   release:
     types: [published]
@@ -22,7 +16,7 @@ concurrency:
 
 jobs:
   release:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,36 +24,18 @@ jobs:
       tag: ${{ steps.release.outputs.tag }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          ref: main
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-      - name: Tag and release the next version
+      - name: Tag and release the version in package.json
         id: release
         env:
-          BUMP: ${{ inputs.bump }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          LAST=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
-          NEXT=$(node -e '
-            const [major, minor, patch] = process.argv[1].split(".").map(Number);
-            const bump = process.argv[2];
-            console.log(bump === "major" ? `${major + 1}.0.0` : bump === "minor" ? `${major}.${minor + 1}.0` : `${major}.${minor}.${patch + 1}`);
-          ' "${LAST#v}" "$BUMP")
-          echo "Releasing v$NEXT (previous release ${LAST:-none})"
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          npm version "$NEXT" --no-git-tag-version --allow-same-version
-          if ! git diff --quiet; then
-            git commit -am "Release v$NEXT"
+          TAG="v$(node -p "require('./package.json').version")"
+          if gh release view "$TAG" >/dev/null 2>&1 || git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null; then
+            echo "::error::$TAG is already released. Bump the version in package.json first (npm version patch|minor|major --no-git-tag-version)."
+            exit 1
           fi
-          git tag "v$NEXT"
-          git push origin HEAD:main "v$NEXT"
-          gh release create "v$NEXT" --title "v$NEXT" --generate-notes --verify-tag
-          echo "tag=v$NEXT" >> "$GITHUB_OUTPUT"
+          gh release create "$TAG" --title "$TAG" --generate-notes --target "$GITHUB_SHA"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
   publish:
     needs: release

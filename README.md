@@ -147,4 +147,6 @@ If such a deck comes out empty, run `npx lod-anki update` to download LOD data t
 When building the deck, put the words in lowercase. But if it is a noun, capitalize the first character, as it is in Luxembourgish.
 ## Releasing
 
-In GitHub, open **Actions › Publish to npm › Run workflow**, pick `patch`, `minor` or `major`, and run it. The workflow bumps the version from the last release tag, commits it to `main`, tags it, creates the GitHub release, and stages the package on npm. Approve the staged version on npmjs.com (or with `npx npm@latest stage approve <id>`) to make it live.
+1. Bump the version in a pull request: `npm version patch|minor|major --no-git-tag-version`, then commit `package.json` and `package-lock.json`.
+2. After it is merged, open **Actions › Publish to npm › Run workflow** on `main`. It tags the version from `package.json`, creates the GitHub release, and stages the package on npm. It stops if that version is already released.
+3. Approve the staged version on npmjs.com (or with `npx npm@latest stage approve <id>`) to make it live.
