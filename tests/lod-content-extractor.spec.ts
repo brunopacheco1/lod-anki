@@ -73,6 +73,11 @@ describe("LOD entry mapping", () => {
         expect(map(entries, "MOIEN1")[0].types[0].details.plural).toBe("Moienter");
     });
 
+    it("keeps the categories of an entry on each of its word types", () => {
+        expect(map(entries, "KAND1")[0].types[0].categories).toEqual(["A1", "FAMILL"]);
+        expect(map(entries, "LAFEN1")[0].types[0].categories).toBeUndefined();
+    });
+
     it("skips word types that cannot be exported", () => {
         expect(map(entries, "ACH1")).toEqual([]);
     });

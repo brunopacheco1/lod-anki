@@ -1,8 +1,10 @@
 export interface Deck {
     name: string,
     fileName: string,
-    types: string[],
-    flashcards: string[],
+    types?: string[],
+    /** LOD categories such as CEFR levels (A1) or topics (FAMILL); without flashcards, the deck holds every word in them. */
+    categories?: string[],
+    flashcards?: string[],
     languages: string[]
 }
 
@@ -16,7 +18,9 @@ export interface WordType {
     type: string,
     lodKey: string,
     details: WordTypeDetails,
-    meanings: WordMeaning[]
+    meanings: WordMeaning[],
+    /** LOD categories of the entry, such as CEFR levels (A1) and topics (FAMILL). */
+    categories?: string[]
 }
 
 export interface WordTypeDetails {
