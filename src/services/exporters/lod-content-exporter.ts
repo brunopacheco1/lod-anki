@@ -1,18 +1,22 @@
 import * as fs from "fs";
 import * as path from "path";
-import { Word, WordType, WordUsageExample } from "@model/word";
+import { Word, WordType, WordUsageExample } from "../../model/word";
 import { inject, injectable } from "inversify";
-import { TYPES } from "@services/types";
-import { NounExporter } from "@services/exporters/noun-exporter";
-import { VerbExporter } from "@services/exporters/verb-exporter";
-import { WordIdGenerator } from "@services/word-id-generator";
-import { CONSTANTS } from "@model/constants";
+import { TYPES } from "../types";
+import { NounExporter } from "./noun-exporter";
+import { VerbExporter } from "./verb-exporter";
+import { WordIdGenerator } from "../word-id-generator";
+import { CONSTANTS } from "../../model/constants";
 import { BaseLodWordExporter } from "./base-lod-word-exporter";
-import { LabelProvider } from "@services/label-provider";
+import { LabelProvider } from "../label-provider";
+import { AudioProvider } from "../audio-provider";
 
 export interface LodContentExporter {
-    export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void;
+    export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void>;
+    prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void>;
 }
+
+const PARALLEL_DOWNLOADS = 8;
 
 @injectable()
 export class LodContentExporterImpl implements LodContentExporter {
@@ -22,13 +26,33 @@ export class LodContentExporterImpl implements LodContentExporter {
         @inject(TYPES.BaseLodWordExporter) private readonly baseLodWordExporter: BaseLodWordExporter,
         @inject(TYPES.NounExporter) private readonly nounExporter: NounExporter,
         @inject(TYPES.VerbExporter) private readonly verbExporter: VerbExporter,
-        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider
+        @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
+        @inject(TYPES.AudioProvider) private readonly audioProvider: AudioProvider,
     ) { }
 
 
-    public export(apkg: any, language: string, flashcard: string, types: string[], outputDirectory: string): void {
-        const wordsFolder = path.join(outputDirectory, CONSTANTS.WORDS_FOLDER);
-        const lodAudiosFolder = path.join(outputDirectory, CONSTANTS.AUDIOS_FOLDER);
+    public async prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void> {
+        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
+        const audios = new Set<string>();
+        for (const flashcard of flashcards) {
+            const wordFile = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER, `${this.keyGenerator.generate(flashcard)}.json`);
+            if (fs.existsSync(wordFile)) {
+                const word: Word = JSON.parse(fs.readFileSync(wordFile).toString());
+                word.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
+            }
+        }
+        const queue = [...audios];
+        const worker = async () => {
+            for (let audio = queue.shift(); audio; audio = queue.shift()) {
+                await this.audioProvider.get(audio, lodAudiosFolder);
+            }
+        };
+        await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
+    }
+
+    public async export(apkg: any, language: string, flashcard: string, types: string[], dataDirectory: string): Promise<void> {
+        const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
+        const lodAudiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
 
         const wordId = this.keyGenerator.generate(flashcard);
         const wordFile = path.join(wordsFolder, `${wordId}.json`);
@@ -50,7 +74,12 @@ export class LodContentExporterImpl implements LodContentExporter {
             flashcardBack += "<div style=\"margin-bottom: 25px;\">";
 
             if (!!type.details.audio) {
-                apkg.addMedia(`${type.details.audio}`, fs.readFileSync(path.join(lodAudiosFolder, `${type.details.audio}`)));
+                const audioFile = await this.audioProvider.get(type.details.audio, lodAudiosFolder);
+                if (audioFile) {
+                    apkg.addMedia(type.details.audio, fs.readFileSync(audioFile));
+                } else {
+                    type.details.audio = undefined;
+                }
             }
 
             switch (type.type) {
@@ -58,6 +87,7 @@ export class LodContentExporterImpl implements LodContentExporter {
                 case "verb": flashcardBack += this.verbExporter.rerieveWordTypeHeader(language, word, type); break;
                 case "preposition":
                 case "conjunction":
+                case "numeral":
                 case "adjective":
                 case "adverb": flashcardBack += this.baseLodWordExporter.rerieveWordTypeHeader(language, word, type); break;
             }
@@ -91,7 +121,7 @@ export class LodContentExporterImpl implements LodContentExporter {
                 }
 
                 let examples = "";
-                if (!!meaning.examples) {
+                if (!!meaning.examples && meaning.examples.length > 0) {
                     examples = `<br><span style="font-size: 85%; color: #595959;">${this.labelProvider.get("EXAMPLE", language)}</span><br>${meaning.examples.map(it => this.buildExample(it, language)).join("<br>")}`;
                 }
 

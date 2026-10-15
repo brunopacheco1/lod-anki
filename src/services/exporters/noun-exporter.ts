@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { Word, WordType } from "@model/word";
-import { TYPES } from "@services/types";
-import { LabelProvider } from "@services/label-provider";
+import { Word, WordType } from "../../model/word";
+import { TYPES } from "../types";
+import { LabelProvider } from "../label-provider";
 import { BaseLodWordExporter } from "./base-lod-word-exporter";
 
 export interface NounExporter extends BaseLodWordExporter {
@@ -16,12 +16,12 @@ export class NounExporterImpl implements NounExporter {
     }
 
     public rerieveWordTypeHeader(language: string, word: Word, type: WordType): string {
-        let content = `<b><a href="https://www.lod.lu/?${type.lodKey}">${word.word}</a>`;
+        let content = `<b><a href="https://lod.lu/artikel/${type.lodKey}">${word.word}</a>`;
         let typeStr = this.labelProvider.get(type.type.toUpperCase(), language);
         if (type.details.nounCategory === "NOM-PROPRE") {
             typeStr = this.labelProvider.get("PROPER_NOUN", language);
-        } else {
-            typeStr = this.labelProvider.get(`${type.details.nounGender!.toUpperCase()}_${type.type.toUpperCase()}`, language);
+        } else if (!!type.details.nounGender) {
+            typeStr = this.labelProvider.get(`${type.details.nounGender.toUpperCase()}_${type.type.toUpperCase()}`, language);
         }
         if (type.details.nounGender === "INDEF") {
             typeStr += ` (${this.labelProvider.get("NO_SINGULAR", language)})`;
@@ -33,8 +33,9 @@ export class NounExporterImpl implements NounExporter {
             content += ` - ${this.labelProvider.get(type.details.variationType!, language)} ${type.details.variationOf}`;
         }
         if (!!type.details.audio) {
-            content += ` [sound:${type.details.audio}]</b>`;
+            content += ` [sound:${type.details.audio}]`;
         }
+        content += "</b>";
         return content;
     }
 }

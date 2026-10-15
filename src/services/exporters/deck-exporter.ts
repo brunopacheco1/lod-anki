@@ -1,19 +1,19 @@
 import { inject, injectable } from "inversify";
 import * as fs from "fs";
 import * as path from "path";
-import { Deck } from "@model/word";
-import { TYPES } from "@services/types";
-import { BasicCardExporter } from "@services/exporters/basic-card-exporter";
-import { ClozeCardExporter } from "@services/exporters/cloze-card-exporter";
-import { LodContentExporter } from "@services/exporters/lod-content-exporter";
-import { LabelProvider } from "@services/label-provider";
+import { Deck } from "../../model/word";
+import { TYPES } from "../types";
+import { BasicCardExporter } from "./basic-card-exporter";
+import { ClozeCardExporter } from "./cloze-card-exporter";
+import { LodContentExporter } from "./lod-content-exporter";
+import { LabelProvider } from "../label-provider";
 const initSqlJs = require("sql.js");
 const { default: AnkiExport } = require("anki-apkg-export/dist/exporter");
 const { default: createTemplate } = require("anki-apkg-export/dist/template");
 
 
 export interface DeckExporter {
-    export(deck: Deck, outputDirectory: string): Promise<void>;
+    export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void>;
 }
 
 @injectable()
@@ -26,14 +26,15 @@ export class DeckExporterImpl implements DeckExporter {
         @inject(TYPES.LabelProvider) private readonly labelProvider: LabelProvider,
     ) { }
 
-    public async export(deck: Deck, outputDirectory: string): Promise<void> {
+    public async export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void> {
+        await this.lodContentExporter.prefetchAudio(deck.flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
         for (const language of deck.languages) {
-            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, deck.types, outputDirectory);
+            const apkg = await this.generateAnki(deck.flashcards, deck.name, language, deck.types, dataDirectory);
             await this.saveAnkiToFile(deck.fileName, language, apkg, outputDirectory);
         }
     }
 
-    private async generateAnki(flashcards: string[], deckName: string, language: string, types: string[], outputDirectory: string): Promise<any> {
+    private async generateAnki(flashcards: string[], deckName: string, language: string, types: string[], dataDirectory: string): Promise<any> {
         const sql = await initSqlJs({});
         const apkg = new AnkiExport(`${deckName} - ${this.labelProvider.get("LANGUAGE", language)}`, {
             template: createTemplate(),
@@ -46,7 +47,7 @@ export class DeckExporterImpl implements DeckExporter {
             } else if (flashcard.startsWith("cloze:")) {
                 this.clozeCardExporter.export(apkg, flashcard);
             } else {
-                this.lodContentExporter.export(apkg, language, flashcard, types || [], outputDirectory);
+                await this.lodContentExporter.export(apkg, language, flashcard, types || [], dataDirectory);
             }
         }
 

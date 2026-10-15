@@ -14,7 +14,7 @@ export class FileWriterImpl implements FileWriter {
     public write(outputDirectory: string, fileName: string, contentBase64: string): void {
         const outputDirectoryPath = path.join(outputDirectory, fileName);
         if (!fs.existsSync(outputDirectory)) {
-            fs.mkdirSync(outputDirectory);
+            fs.mkdirSync(outputDirectory, { recursive: true });
         }
         fs.writeFileSync(outputDirectoryPath, Buffer.from(contentBase64, "base64"));
     }

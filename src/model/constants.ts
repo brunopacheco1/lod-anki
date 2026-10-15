@@ -1,6 +1,7 @@
 const CONSTANTS = {
-    AUDIOS_FOLDER: "lod/audios",
-    WORDS_FOLDER: "lod/words"
+    DATA_FOLDER: "lod",
+    AUDIOS_FOLDER: "audios",
+    WORDS_FOLDER: "words",
 };
 
 export { CONSTANTS };

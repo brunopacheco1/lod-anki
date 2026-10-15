@@ -21,22 +21,7 @@
         "removeComments": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "moduleResolution": "node",
-        "baseUrl": "./src",
-        "paths": {
-            "@services/*": [
-                "services/*"
-            ],
-            "@model/*": [
-                "model/*"
-            ],
-            "@controllers/*": [
-                "controllers/*"
-            ],
-            "@resources/*": [
-                "resources/*"
-            ]
-        }
+        "moduleResolution": "node"
     },
     "exclude": [
         "node_modules",

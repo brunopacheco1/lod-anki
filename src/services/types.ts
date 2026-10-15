@@ -10,12 +10,9 @@ const TYPES = {
     NounExporter: Symbol.for("NounExporter"),
     VerbExporter: Symbol.for("VerbExporter"),
 
-    BaseLodWordExtractor: Symbol.for("BaseLodWordExtractor"),
     LodContentExtractor: Symbol.for("LodContentExtractor"),
-    NounExtractor: Symbol.for("NounExtractor"),
-    PrepositionExtractor: Symbol.for("PrepositionExtractor"),
-    VerbExtractor: Symbol.for("VerbExtractor"),
 
+    AudioProvider: Symbol.for("AudioProvider"),
     FileWriter: Symbol.for("FileWriter"),
     LabelProvider: Symbol.for("LabelProvider"),
     WordIdGenerator: Symbol.for("WordIdGenerator")

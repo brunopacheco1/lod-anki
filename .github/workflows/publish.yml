@@ -1,0 +1,32 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Check the release tag matches package.json
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "${{ github.event.release.tag_name }}" ]; then
+            echo "Release tag ${{ github.event.release.tag_name }} does not match package.json $VERSION"
+            exit 1
+          fi
+      - run: npm install -g npm@latest
+      - run: npm install
+      - run: npm run build
+      # Uses npm trusted publishing (OIDC): no NPM_TOKEN secret needed once the
+      # trusted publisher is configured on npmjs.com for this workflow file.
+      - run: npm publish --provenance --access public
