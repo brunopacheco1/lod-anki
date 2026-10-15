@@ -8,7 +8,7 @@ on:
     - cron: "0 6 3 * *" # monthly; the dataset is published roughly monthly
   push:
     branches: [claude/project-thread-y2iga6]
-    paths: [.github/workflows/lod-data.yml, scripts/build-decks.sh]
+    paths: [.github/workflows/lod-data.yml, scripts/build-decks.sh, src/**]
 
 permissions:
   contents: write

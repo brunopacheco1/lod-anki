@@ -25,7 +25,7 @@ for deck in "${DECKS[@]}"; do
   mkdir -p "$target"
   echo "::group::$deck"
   node "$ROOT/lib/index.js" export "$ROOT/decks/definitions/$deck" --data "$DATA" -o "$target" 2>&1 \
-    | grep -v -E '^ *[ _|/\\]+' | tee -a "$OUTPUT/build.log"
+    | { grep -v -E '^ *[ _|/\\]+' || true; } | tee -a "$OUTPUT/build.log"
   echo "::endgroup::"
 done
 
