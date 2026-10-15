@@ -62,6 +62,9 @@ jobs:
           (cd out && zip -qr ../lod.zip lod/words)
           (cd out/decks && zip -qr ../../decks.zip . -x build.log)
           ls -la lod.zip decks.zip
+          echo "audio files: $(ls out/lod/audios | wc -l) ($(du -sh out/lod/audios | cut -f1))"
+          find out/decks -name '*english.apkg' -exec ls -la {} +
+          unzip -l "$(find out/decks -name 'a1*english.apkg' | head -1)" | tail -3
 
       - name: Upload build artifacts
         if: github.ref != 'refs/heads/main'
