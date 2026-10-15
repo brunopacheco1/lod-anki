@@ -3,8 +3,9 @@ import * as path from "node:path";
 import { Command } from "commander";
 import kleur from "kleur";
 import figlet from "figlet";
-import { Deck } from "../model/word";
 import { CONSTANTS } from "../model/constants";
+import { Deck } from "../model/word";
+import { loadDeck } from "../services/deck-loader";
 import { DeckExporter } from "../services/exporters/deck-exporter";
 import { extractLodContent } from "../services/extractors/lod-content-extractor";
 import { cachedDataDirectory, downloadLodData, hasWords } from "../services/lod-data";
@@ -34,14 +35,21 @@ export class Cli {
             });
 
         command.command("export <deck>")
-            .description("export deck into Anki apkg format")
-            .action(async (deckPath: string) => {
+            .description("export a deck file (.json, or .txt with one word per line) into Anki apkg format")
+            .option("-l, --languages <codes>", "comma-separated card languages: ALL (German), EN, FR, PO (default: the deck's, or EN for a word list)")
+            .option("-n, --name <name>", "the deck name shown in Anki (default: the deck's, or the word list's file name)")
+            .action(async (deckPath: string, options: { languages?: string, name?: string }) => {
                 const deckFile = path.resolve(deckPath);
                 if (!fs.existsSync(deckFile)) {
                     this.fail(`Deck file not found: ${deckFile}`);
                 }
+                let deck: Deck;
+                try {
+                    deck = loadDeck(deckFile, options);
+                } catch (error) {
+                    this.fail(`Could not read ${deckFile}: ${error instanceof Error ? error.message : error}`);
+                }
                 const dataDirectory = await this.resolveDataDirectory(command.opts().data, command.opts().output);
-                const deck = JSON.parse(fs.readFileSync(deckFile).toString()) as Deck;
                 await this.deckExporter.export(deck, command.opts().output, dataDirectory);
             });
 

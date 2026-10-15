@@ -8,7 +8,7 @@ lod-anki is a command line tool that allows you to import data from the [Luxembo
 
 - Import data from LOD.lu into Anki decks, with pronunciations and examples.
 - Map `noun`, `verb`, `preposition`, `conjunction`, `adjective`, `adverb`, and `numeral` to words dataset.
-- Export words into Anki flashcards.
+- Export words into Anki flashcards, from a plain word list or a JSON deck file.
 
 ## Quick start
 
@@ -24,18 +24,16 @@ node -v
 
 It should print a version number such as `v22.12.0` or newer. lod-anki needs Node.js 22.12 or later.
 
-### 2. Write a deck file
+### 2. Write your word list
 
-Create a folder for your decks, for example `lux-decks` in your home folder. In it, create a file named `deck.json` with the words you want to learn (see [How to build a deck file](#how-to-build-a-deck-file)):
+Create a folder for your decks, for example `lux-decks` in your home folder. In it, create a plain text file named `greetings.txt` with the words you want to learn, one per line:
 
-```json
-{
-    "name": "Greeting in Luxembourgish",
-    "fileName": "greeting_in_luxembourgish",
-    "flashcards": ["Äddi", "Moien"],
-    "languages": ["EN"]
-}
+```text
+Äddi
+Moien
 ```
+
+Write words in lowercase, except nouns, which start with a capital letter as in Luxembourgish. Blank lines and lines starting with `#` are ignored.
 
 ### 3. Create the Anki deck
 
@@ -43,10 +41,18 @@ In the terminal, go to your folder and run lod-anki:
 
 ```shell
 cd lux-decks
-npx lod-anki export deck.json
+npx lod-anki export greetings.txt
 ```
 
-`npx` downloads and runs lod-anki for you, so there is nothing to install globally. This creates `greeting_in_luxembourgish_english.apkg`. Double-click it (or use **File > Import** in Anki) to add the deck.
+`npx` downloads and runs lod-anki for you, so there is nothing to install globally. This creates `greetings_english.apkg`. Double-click it (or use **File > Import** in Anki) to add the deck.
+
+Cards are in English unless you choose other languages, and the deck is named after the file unless you pass `--name`:
+
+```shell
+npx lod-anki export greetings.txt --languages EN,FR --name "Greetings"
+```
+
+For more control, such as filtering by word type or exporting a whole CEFR level, use a [deck file](#how-to-build-a-deck-file) instead.
 
 The first export downloads the LOD data (about 20 MB) and keeps it in your user cache folder (`~/.cache/lod-anki` on Linux, `~/Library/Caches/lod-anki` on macOS, `%LOCALAPPDATA%\lod-anki` on Windows). Pronunciations are downloaded from [lod.lu](https://lod.lu) the first time a word is exported and kept there too, so you need an internet connection when you export.
 
@@ -54,13 +60,26 @@ The data is rebuilt every month from the [LOD linguistic dataset](https://data.p
 
 Re-importing a deck you exported again later updates the existing cards in Anki instead of adding duplicates, so your review progress is kept.
 
-> Just want ready-made decks for the *Schwätzt dir Lëtzebuergesch?* books? Download `decks.zip` from the [lod-data release](https://github.com/brunopacheco1/lod-anki/releases/tag/lod-data) and import the `.apkg` files into Anki.
+### Ready-made decks
+
+Just want to start learning? Download a deck and double-click it to import it into Anki. Each one comes in four card languages:
+
+| Deck | Download |
+| --- | --- |
+| Every LOD word of level A1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a1_portugues.apkg) |
+| Every LOD word of level A2 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/letzebuergesch_lod_a2_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a1_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A2 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a2_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a2_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a2_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_a2_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* B1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_b1_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_b1_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_b1_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_b1_portugues.apkg) |
+| *Schwätzt dir Lëtzebuergesch?* A1 to B1 | [English](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_english.apkg) · [French](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_francais.apkg) · [German](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_deutsch.apkg) · [Portuguese](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/schwatzt_dir_letzebuergesch_portugues.apkg) |
+
+Decks by word type (nouns, verbs, adjectives, adverbs) are on the [lod-data release](https://github.com/brunopacheco1/lod-anki/releases/tag/lod-data) too. They are rebuilt every month with the latest LOD data.
 
 ### Commands
 
 | Command | Description |
 | --- | --- |
-| `export <deck>` | Creates one `.apkg` file per language of the deck file. |
+| `export <deck>` | Creates one `.apkg` file per language from a word list (`.txt`, one word per line) or a deck file (`.json`). |
 | `update` | Downloads the latest LOD data. |
 | `extract <lodDump>` | Builds the data yourself from the LOD XML dump into `<output>/lod`. |
 
@@ -70,23 +89,25 @@ Re-importing a deck you exported again later updates the existing cards in Anki 
 | --- | --- |
 | `-d, --data <directory>` | Use LOD data from this folder instead of the downloaded one, for example a [`lod.zip`](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/lod.zip) you extracted yourself. A `lod` folder next to where you run lod-anki is also picked up. |
 | `-o, --output <directory>` | Where to write the `.apkg` files. Defaults to the current folder. |
+| `-l, --languages <codes>` | `export` only. Card languages, comma separated: `ALL` (German), `EN`, `FR`, `PO` (Portuguese). Defaults to the deck file's languages, or `EN` for a word list. |
+| `-n, --name <name>` | `export` only. The deck name shown in Anki. Defaults to the deck file's name, or the word list's file name. |
 
 For example: `npx lod-anki export deck.json --data ~/Downloads/lod`. Set the `LOD_ANKI_CACHE` environment variable to keep the downloaded data somewhere else.
-
-### Prefer a global install?
-
-```shell
-npm install -g lod-anki
-lod-anki export deck.json
-```
-
-If this fails with `EACCES: permission denied`, your npm is not allowed to write to its global folder. Use `npx` as above, or install Node.js through a version manager such as [nvm](https://github.com/nvm-sh/nvm), which avoids the problem.
 
 ### Troubleshooting
 
 - **`Could not download the LOD data`**: check your internet connection. You can also download [`lod.zip`](https://github.com/brunopacheco1/lod-anki/releases/download/lod-data/lod.zip) yourself, extract it, and pass `--data <path/to/lod>`.
 - **`LOD data not found`**: the folder given with `--data` has no `words` folder. Point it at the extracted `lod` folder.
 - **`<word> not found!`**: that word is not in the LOD data. Check the spelling and capitalisation (nouns start with a capital letter).
+
+### Prefer a global install?
+
+```shell
+npm install -g lod-anki
+lod-anki export greetings.txt
+```
+
+If this fails with `EACCES: permission denied`, your npm is not allowed to write to its global folder. Use `npx` as above, or install Node.js through a version manager such as [nvm](https://github.com/nvm-sh/nvm), which avoids the problem.
 
 ## Contributing
 
