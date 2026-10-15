@@ -3,7 +3,7 @@ name: Publish to npm
 on:
   release:
     types: [published]
-  # Publishes the version in package.json on the chosen branch, e.g. to retry a release.
+  # Retries a release: run it on the release tag (e.g. v2.0.0), not on a branch.
   workflow_dispatch:
 
 permissions:
@@ -20,11 +20,17 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - name: Check the release tag matches package.json
-        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name || github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
         run: |
+          if [ "$REF_TYPE" != "tag" ]; then
+            echo "Only release tags are published; run this workflow on a tag such as v2.0.0"
+            exit 1
+          fi
           VERSION="v$(node -p "require('./package.json').version")"
-          if [ "$VERSION" != "${{ github.event.release.tag_name }}" ]; then
-            echo "Release tag ${{ github.event.release.tag_name }} does not match package.json $VERSION"
+          if [ "$VERSION" != "$TAG" ]; then
+            echo "Release tag $TAG does not match package.json $VERSION"
             exit 1
           fi
       - run: npm install -g npm@latest
