@@ -32,6 +32,7 @@ export class DeckExporter {
             const apkg = await AnkiExport.create(`${deck.name} - ${label("LANGUAGE", language)}`);
             try {
                 await this.addCards(apkg, flashcards, language, filter, dataDirectory, audio);
+                fs.mkdirSync(path.dirname(deckFile), { recursive: true });
                 fs.writeFileSync(deckFile, await apkg.save());
             } finally {
                 apkg.close();

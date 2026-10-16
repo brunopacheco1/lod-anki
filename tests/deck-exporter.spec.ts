@@ -66,7 +66,7 @@ describe("Deck exporter", () => {
         expect(Object.values(media)).toEqual(["kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
-        expect(kand.tags.split(" ").sort()).toEqual(["A1", "FAMILL", "noun"]);
+        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Topic::Family", "noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
 

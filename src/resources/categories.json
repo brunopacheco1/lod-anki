@@ -1,0 +1,561 @@
+{
+    "topic": {
+        "en": "Topic",
+        "de": "Thema",
+        "fr": "Thème",
+        "pt": "Tema"
+    },
+    "topics": {
+        "ADMIN": {
+            "en": "Administration",
+            "de": "Verwaltung",
+            "fr": "Administration",
+            "pt": "Administração"
+        },
+        "ANAT": {
+            "en": "Anatomy",
+            "de": "Anatomie",
+            "fr": "Anatomie",
+            "pt": "Anatomia"
+        },
+        "ARCHIT": {
+            "en": "Architecture",
+            "de": "Architektur",
+            "fr": "Architecture",
+            "pt": "Arquitetura"
+        },
+        "ASTRONOMIE": {
+            "en": "Astronomy",
+            "de": "Astronomie",
+            "fr": "Astronomie",
+            "pt": "Astronomia"
+        },
+        "AUTRE-DENOM-GEOG": {
+            "en": "Other place names",
+            "de": "Weitere geografische Namen",
+            "fr": "Autres noms géographiques",
+            "pt": "Outros nomes geográficos"
+        },
+        "AWUNNER": {
+            "en": "Inhabitants and nationalities",
+            "de": "Einwohner und Nationalitäten",
+            "fr": "Habitants et nationalités",
+            "pt": "Habitantes e nacionalidades"
+        },
+        "BERUFFSBEZEECHNUNG": {
+            "en": "Professions",
+            "de": "Berufe",
+            "fr": "Métiers",
+            "pt": "Profissões"
+        },
+        "BIOL": {
+            "en": "Biology",
+            "de": "Biologie",
+            "fr": "Biologie",
+            "pt": "Biologia"
+        },
+        "BLUMM": {
+            "en": "Flowers",
+            "de": "Blumen",
+            "fr": "Fleurs",
+            "pt": "Flores"
+        },
+        "BOT": {
+            "en": "Botany",
+            "de": "Botanik",
+            "fr": "Botanique",
+            "pt": "Botânica"
+        },
+        "CHEEMESCHT-ELEMENT": {
+            "en": "Chemical elements",
+            "de": "Chemische Elemente",
+            "fr": "Éléments chimiques",
+            "pt": "Elementos químicos"
+        },
+        "CHIM": {
+            "en": "Chemistry",
+            "de": "Chemie",
+            "fr": "Chimie",
+            "pt": "Química"
+        },
+        "CORONA": {
+            "en": "Coronavirus",
+            "de": "Coronavirus",
+            "fr": "Coronavirus",
+            "pt": "Coronavírus"
+        },
+        "DEIER": {
+            "en": "Animals",
+            "de": "Tiere",
+            "fr": "Animaux",
+            "pt": "Animais"
+        },
+        "ENGLESCHT-VERB": {
+            "en": "English verbs",
+            "de": "Englische Verben",
+            "fr": "Verbes anglais",
+            "pt": "Verbos ingleses"
+        },
+        "FAARF": {
+            "en": "Colours",
+            "de": "Farben",
+            "fr": "Couleurs",
+            "pt": "Cores"
+        },
+        "FAMILL": {
+            "en": "Family",
+            "de": "Familie",
+            "fr": "Famille",
+            "pt": "Família"
+        },
+        "FEIERDEEG": {
+            "en": "Public holidays",
+            "de": "Feiertage",
+            "fr": "Jours fériés",
+            "pt": "Feriados"
+        },
+        "FESCH": {
+            "en": "Fish",
+            "de": "Fische",
+            "fr": "Poissons",
+            "pt": "Peixes"
+        },
+        "FEST": {
+            "en": "Celebrations",
+            "de": "Feste",
+            "fr": "Fêtes",
+            "pt": "Festas"
+        },
+        "FILM": {
+            "en": "Film",
+            "de": "Film",
+            "fr": "Cinéma",
+            "pt": "Cinema"
+        },
+        "FRECHHEET": {
+            "en": "Insults",
+            "de": "Schimpfwörter",
+            "fr": "Insultes",
+            "pt": "Insultos"
+        },
+        "FRIEMWUERT": {
+            "en": "Loanwords",
+            "de": "Fremdwörter",
+            "fr": "Mots d'emprunt",
+            "pt": "Estrangeirismos"
+        },
+        "FUHRERSCHAIN": {
+            "en": "Driving licence",
+            "de": "Führerschein",
+            "fr": "Permis de conduire",
+            "pt": "Carta de condução"
+        },
+        "FUSSBALL": {
+            "en": "Football",
+            "de": "Fußball",
+            "fr": "Football",
+            "pt": "Futebol"
+        },
+        "GASTR": {
+            "en": "Gastronomy",
+            "de": "Gastronomie",
+            "fr": "Gastronomie",
+            "pt": "Gastronomia"
+        },
+        "GEDRENKS": {
+            "en": "Drinks",
+            "de": "Getränke",
+            "fr": "Boissons",
+            "pt": "Bebidas"
+        },
+        "GEFIER": {
+            "en": "Vehicles",
+            "de": "Fahrzeuge",
+            "fr": "Véhicules",
+            "pt": "Veículos"
+        },
+        "GEMEIS": {
+            "en": "Vegetables",
+            "de": "Gemüse",
+            "fr": "Légumes",
+            "pt": "Legumes"
+        },
+        "GEMENG": {
+            "en": "Municipalities of Luxembourg",
+            "de": "Luxemburger Gemeinden",
+            "fr": "Communes du Luxembourg",
+            "pt": "Municípios do Luxemburgo"
+        },
+        "GEOG": {
+            "en": "Geography",
+            "de": "Geografie",
+            "fr": "Géographie",
+            "pt": "Geografia"
+        },
+        "GEWASSER INTERNATIONAL": {
+            "en": "Seas and oceans",
+            "de": "Meere und Ozeane",
+            "fr": "Mers et océans",
+            "pt": "Mares e oceanos"
+        },
+        "GEWIERZ": {
+            "en": "Spices",
+            "de": "Gewürze",
+            "fr": "Épices",
+            "pt": "Especiarias"
+        },
+        "HAAPTSTAD": {
+            "en": "Capitals",
+            "de": "Hauptstädte",
+            "fr": "Capitales",
+            "pt": "Capitais"
+        },
+        "HALLOWEEN": {
+            "en": "Halloween",
+            "de": "Halloween",
+            "fr": "Halloween",
+            "pt": "Halloween"
+        },
+        "HORECA": {
+            "en": "Hotels and restaurants",
+            "de": "Hotels und Restaurants",
+            "fr": "Hôtellerie et restauration",
+            "pt": "Hotelaria e restauração"
+        },
+        "IESSEN": {
+            "en": "Food",
+            "de": "Essen",
+            "fr": "Nourriture",
+            "pt": "Comida"
+        },
+        "INFO": {
+            "en": "Computing",
+            "de": "Informatik",
+            "fr": "Informatique",
+            "pt": "Informática"
+        },
+        "JUR": {
+            "en": "Law",
+            "de": "Recht",
+            "fr": "Droit",
+            "pt": "Direito"
+        },
+        "KIERCHESPR": {
+            "en": "Church language",
+            "de": "Kirchensprache",
+            "fr": "Langage religieux",
+            "pt": "Linguagem religiosa"
+        },
+        "KLEEDUNGSSTECK": {
+            "en": "Clothing",
+            "de": "Kleidung",
+            "fr": "Vêtements",
+            "pt": "Vestuário"
+        },
+        "KLEESCHEN": {
+            "en": "Saint Nicholas",
+            "de": "Nikolaus",
+            "fr": "Saint-Nicolas",
+            "pt": "São Nicolau"
+        },
+        "KONSCHT": {
+            "en": "Art",
+            "de": "Kunst",
+            "fr": "Art",
+            "pt": "Arte"
+        },
+        "KRAUT": {
+            "en": "Herbs",
+            "de": "Kräuter",
+            "fr": "Herbes",
+            "pt": "Ervas"
+        },
+        "KRAUTGEWIERZ": {
+            "en": "Herbs and spices",
+            "de": "Kräuter und Gewürze",
+            "fr": "Herbes et épices",
+            "pt": "Ervas e especiarias"
+        },
+        "LANDW": {
+            "en": "Agriculture",
+            "de": "Landwirtschaft",
+            "fr": "Agriculture",
+            "pt": "Agricultura"
+        },
+        "LING": {
+            "en": "Linguistics",
+            "de": "Linguistik",
+            "fr": "Linguistique",
+            "pt": "Linguística"
+        },
+        "LITERATUR": {
+            "en": "Literature",
+            "de": "Literatur",
+            "fr": "Littérature",
+            "pt": "Literatura"
+        },
+        "MARKENNUMM": {
+            "en": "Brand names",
+            "de": "Markennamen",
+            "fr": "Noms de marque",
+            "pt": "Nomes de marcas"
+        },
+        "MATH": {
+            "en": "Mathematics",
+            "de": "Mathematik",
+            "fr": "Mathématiques",
+            "pt": "Matemática"
+        },
+        "MED": {
+            "en": "Medicine",
+            "de": "Medizin",
+            "fr": "Médecine",
+            "pt": "Medicina"
+        },
+        "METEO": {
+            "en": "Meteorology",
+            "de": "Meteorologie",
+            "fr": "Météorologie",
+            "pt": "Meteorologia"
+        },
+        "MILIT": {
+            "en": "Military",
+            "de": "Militär",
+            "fr": "Militaire",
+            "pt": "Militar"
+        },
+        "MOOSSEENHEET": {
+            "en": "Units of measurement",
+            "de": "Maßeinheiten",
+            "fr": "Unités de mesure",
+            "pt": "Unidades de medida"
+        },
+        "MOUNT": {
+            "en": "Months",
+            "de": "Monate",
+            "fr": "Mois",
+            "pt": "Meses"
+        },
+        "MUSEK": {
+            "en": "Music",
+            "de": "Musik",
+            "fr": "Musique",
+            "pt": "Música"
+        },
+        "MUSEKSINSTRUMENT": {
+            "en": "Musical instruments",
+            "de": "Musikinstrumente",
+            "fr": "Instruments de musique",
+            "pt": "Instrumentos musicais"
+        },
+        "NATURWESS": {
+            "en": "Natural sciences",
+            "de": "Naturwissenschaften",
+            "fr": "Sciences naturelles",
+            "pt": "Ciências naturais"
+        },
+        "NOM-D-ELEMENT-A-VAL-HIST": {
+            "en": "Historic sites",
+            "de": "Historische Stätten",
+            "fr": "Sites historiques",
+            "pt": "Locais históricos"
+        },
+        "NOM-D-ELEMENT-HYDROLOGIQUE": {
+            "en": "Rivers and lakes",
+            "de": "Flüsse und Seen",
+            "fr": "Cours d'eau et lacs",
+            "pt": "Rios e lagos"
+        },
+        "NOM-D-ELEVATION-DE-TERRAIN": {
+            "en": "Hills and mountains",
+            "de": "Berge und Hügel",
+            "fr": "Collines et montagnes",
+            "pt": "Colinas e montanhas"
+        },
+        "NOM-D-EVENEMENT": {
+            "en": "Events",
+            "de": "Veranstaltungen",
+            "fr": "Événements",
+            "pt": "Eventos"
+        },
+        "NOM-DE-COMMUNE": {
+            "en": "Municipality names",
+            "de": "Gemeindenamen",
+            "fr": "Noms de communes",
+            "pt": "Nomes de municípios"
+        },
+        "NOM-DE-FORET": {
+            "en": "Forests",
+            "de": "Wälder",
+            "fr": "Forêts",
+            "pt": "Florestas"
+        },
+        "NOM-DE-LIEU": {
+            "en": "Places in Luxembourg City",
+            "de": "Orte in der Stadt Luxemburg",
+            "fr": "Lieux de la ville de Luxembourg",
+            "pt": "Locais da cidade do Luxemburgo"
+        },
+        "NOM-DE-LOCALITE": {
+            "en": "Localities in Luxembourg",
+            "de": "Ortschaften in Luxemburg",
+            "fr": "Localités du Luxembourg",
+            "pt": "Localidades do Luxemburgo"
+        },
+        "NOM-DE-LOCALITE-NON-LUX": {
+            "en": "Localities abroad",
+            "de": "Ortschaften im Ausland",
+            "fr": "Localités à l'étranger",
+            "pt": "Localidades no estrangeiro"
+        },
+        "NOM-DE-PAYS": {
+            "en": "Countries",
+            "de": "Länder",
+            "fr": "Pays",
+            "pt": "Países"
+        },
+        "NOSS": {
+            "en": "Nuts",
+            "de": "Nüsse",
+            "fr": "Fruits à coque",
+            "pt": "Frutos secos"
+        },
+        "OLYMPIA": {
+            "en": "Olympic Games",
+            "de": "Olympische Spiele",
+            "fr": "Jeux olympiques",
+            "pt": "Jogos Olímpicos"
+        },
+        "ORNITHOLOGIE": {
+            "en": "Ornithology",
+            "de": "Ornithologie",
+            "fr": "Ornithologie",
+            "pt": "Ornitologia"
+        },
+        "PERSOUN": {
+            "en": "People",
+            "de": "Personen",
+            "fr": "Personnes",
+            "pt": "Pessoas"
+        },
+        "PHYSIK": {
+            "en": "Physics",
+            "de": "Physik",
+            "fr": "Physique",
+            "pt": "Física"
+        },
+        "PLANEIT": {
+            "en": "Planets",
+            "de": "Planeten",
+            "fr": "Planètes",
+            "pt": "Planetas"
+        },
+        "PLANTE": {
+            "en": "Plants",
+            "de": "Pflanzen",
+            "fr": "Plantes",
+            "pt": "Plantas"
+        },
+        "POL": {
+            "en": "Politics",
+            "de": "Politik",
+            "fr": "Politique",
+            "pt": "Política"
+        },
+        "PSYCH": {
+            "en": "Psychology",
+            "de": "Psychologie",
+            "fr": "Psychologie",
+            "pt": "Psicologia"
+        },
+        "RELIOUN": {
+            "en": "Religion",
+            "de": "Religion",
+            "fr": "Religion",
+            "pt": "Religião"
+        },
+        "SCHOUL": {
+            "en": "School",
+            "de": "Schule",
+            "fr": "École",
+            "pt": "Escola"
+        },
+        "SPILLPLAZ": {
+            "en": "Playground",
+            "de": "Spielplatz",
+            "fr": "Aire de jeux",
+            "pt": "Parque infantil"
+        },
+        "SPORT": {
+            "en": "Sport",
+            "de": "Sport",
+            "fr": "Sport",
+            "pt": "Desporto"
+        },
+        "TECH": {
+            "en": "Technology",
+            "de": "Technik",
+            "fr": "Technique",
+            "pt": "Tecnologia"
+        },
+        "THEATER": {
+            "en": "Theatre",
+            "de": "Theater",
+            "fr": "Théâtre",
+            "pt": "Teatro"
+        },
+        "UEBST": {
+            "en": "Fruit",
+            "de": "Obst",
+            "fr": "Fruits",
+            "pt": "Fruta"
+        },
+        "VULL": {
+            "en": "Birds",
+            "de": "Vögel",
+            "fr": "Oiseaux",
+            "pt": "Aves"
+        },
+        "VULLHEEFEG": {
+            "en": "Common birds",
+            "de": "Häufige Vögel",
+            "fr": "Oiseaux communs",
+            "pt": "Aves comuns"
+        },
+        "WARUNG": {
+            "en": "Currencies",
+            "de": "Währungen",
+            "fr": "Monnaies",
+            "pt": "Moedas"
+        },
+        "WIEDER": {
+            "en": "Weather",
+            "de": "Wetter",
+            "fr": "Météo",
+            "pt": "Tempo"
+        },
+        "WIRTSCHAFT": {
+            "en": "Economy",
+            "de": "Wirtschaft",
+            "fr": "Économie",
+            "pt": "Economia"
+        },
+        "WWA": {
+            "en": "Water",
+            "de": "Wasser",
+            "fr": "Eau",
+            "pt": "Água"
+        }
+    },
+    "hidden": [
+        "CHECKVIDEO",
+        "EINSILBER",
+        "EISES",
+        "GWS A1",
+        "GWS A2",
+        "KENG-SICH",
+        "LWS",
+        "NEANT",
+        "SOZED"
+    ]
+}
