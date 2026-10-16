@@ -4,7 +4,7 @@ import { AudioMode, Word, WordType, WordUsageExample } from "../../model/word";
 import { CONSTANTS } from "../../model/constants";
 import { wordId } from "../word-id-generator";
 import { label } from "../label-provider";
-import { categoryTag } from "../category-tags";
+import { categoryTag, wordTypeTag } from "../category-tags";
 import { AudioProvider } from "../audio-provider";
 import { Card } from "./custom-cards";
 import { wordTypeHeader } from "./word-headers";
@@ -109,7 +109,7 @@ export class LodContentExporter {
             front: word.word,
             back,
             noteId: `lod:${word.word}`,
-            tags: [...new Set(selectedTypes.flatMap((type) => [type.type, ...(type.categories || []).map((category) => categoryTag(category, language))]))]
+            tags: [...new Set(selectedTypes.flatMap((type) => [wordTypeTag(type.type, language), ...(type.categories || []).map((category) => categoryTag(category, language))]))]
                 .filter((tag): tag is string => !!tag),
             media,
         };

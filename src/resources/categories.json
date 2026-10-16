@@ -5,6 +5,56 @@
         "fr": "Thème",
         "pt": "Tema"
     },
+    "wordType": {
+        "en": "Word type",
+        "de": "Wortart",
+        "fr": "Nature",
+        "pt": "Classe gramatical"
+    },
+    "wordTypes": {
+        "noun": {
+            "en": "Noun",
+            "de": "Substantiv",
+            "fr": "Nom",
+            "pt": "Substantivo"
+        },
+        "verb": {
+            "en": "Verb",
+            "de": "Verb",
+            "fr": "Verbe",
+            "pt": "Verbo"
+        },
+        "adjective": {
+            "en": "Adjective",
+            "de": "Adjektiv",
+            "fr": "Adjectif",
+            "pt": "Adjetivo"
+        },
+        "adverb": {
+            "en": "Adverb",
+            "de": "Adverb",
+            "fr": "Adverbe",
+            "pt": "Advérbio"
+        },
+        "numeral": {
+            "en": "Numeral",
+            "de": "Numerale",
+            "fr": "Numéral",
+            "pt": "Numeral"
+        },
+        "preposition": {
+            "en": "Preposition",
+            "de": "Präposition",
+            "fr": "Préposition",
+            "pt": "Preposição"
+        },
+        "conjunction": {
+            "en": "Conjunction",
+            "de": "Konjunktion",
+            "fr": "Conjonction",
+            "pt": "Conjunção"
+        }
+    },
     "topics": {
         "ADMIN": {
             "en": "Administration",
