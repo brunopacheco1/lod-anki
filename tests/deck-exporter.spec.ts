@@ -133,4 +133,17 @@ describe("Deck exporter", () => {
         expect(notes[0].tags.split(" ").sort()).toEqual(["B1", "adverb"]);
         expect(notes[0].flds).not.toContain("MAT1");
     });
+
+    it("exports every word with online audio that streams from the mirror", async () => {
+        const output = fs.mkdtempSync(path.join(workDirectory, "out-"));
+        await exporter.export({ name: "All", fileName: "all", languages: ["EN"], allWords: true, audio: "online" }, output, dataDirectory);
+
+        const { notes, media } = await readPackage(path.join(output, "all_english.apkg"));
+        expect(notes).toHaveLength(fs.readdirSync(path.join(dataDirectory, "words")).length);
+        expect(Object.values(media)).toEqual([]);
+
+        const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
+        expect(kand.flds).toContain("<audio controls autoplay src=\"https://brunopacheco1.github.io/lod-anki/audio/kand1.mp3\"></audio>");
+        expect(kand.flds).not.toContain("[sound:");
+    });
 });

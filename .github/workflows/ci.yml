@@ -32,3 +32,5 @@ jobs:
           printf 'Kand\nbasic:Moien;Hello\n' > words.txt
           LOD_ANKI_CACHE="$RUNNER_TEMP/cache" npx lod-anki export words.txt --languages EN,FR
           test -s words_english.apkg && test -s words_francais.apkg
+          LOD_ANKI_CACHE="$RUNNER_TEMP/cache" npx lod-anki export words.txt --audio online --name Online
+          test -s words_english.apkg

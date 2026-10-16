@@ -38,7 +38,8 @@ export class Cli {
             .description("export a deck file (.json, or .txt with one word per line) into Anki apkg format")
             .option("-l, --languages <codes>", "comma-separated card languages: ALL (German), EN, FR, PO (default: the deck's, or EN for a word list)")
             .option("-n, --name <name>", "the deck name shown in Anki (default: the deck's, or the word list's file name)")
-            .action(async (deckPath: string, options: { languages?: string, name?: string }) => {
+            .option("-a, --audio <mode>", "offline puts the pronunciations in the deck; online streams them, so the deck is small but needs internet (default: the deck's, or offline)")
+            .action(async (deckPath: string, options: { languages?: string, name?: string, audio?: string }) => {
                 const deckFile = path.resolve(deckPath);
                 if (!fs.existsSync(deckFile)) {
                     this.fail(`Deck file not found: ${deckFile}`);

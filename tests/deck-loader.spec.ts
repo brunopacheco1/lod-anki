@@ -61,4 +61,12 @@ describe("deck loader", () => {
 
         expect(() => loadDeck(file)).toThrow("The deck has no languages");
     });
+
+    it("sets the audio mode and rejects unknown ones", () => {
+        const file = write("words.txt", "Moien\n");
+
+        expect(loadDeck(file).audio).toBeUndefined();
+        expect(loadDeck(file, { audio: "Online" }).audio).toBe("online");
+        expect(() => loadDeck(file, { audio: "stream" })).toThrow("Unknown audio mode stream");
+    });
 });

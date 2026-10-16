@@ -2,6 +2,7 @@ name: LOD data
 
 # Builds lod-anki's word data from the latest LOD linguistic dataset on data.public.lu,
 # rebuilds the ready-made decks, and publishes both on the "lod-data" GitHub release.
+# It also mirrors the lod.lu pronunciations as mp3 on GitHub Pages, for decks with online audio.
 on:
   workflow_dispatch:
   schedule:
@@ -21,7 +22,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180 # the first audio mirror run fetches every pronunciation
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -50,6 +51,34 @@ jobs:
           for url in https://lod.lu/uploads/AAC/kand1.m4a https://lod.lu/artikel/KAND1; do
             echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$url")"
           done
+
+      # Branch runs mirror only a few files, to test the pipeline without fetching everything from lod.lu.
+      - name: Restore the audio mirror
+        uses: actions/cache/restore@v6
+        with:
+          path: mirror
+          key: audio-mirror-${{ github.run_id }}
+          restore-keys: audio-mirror-
+
+      - name: Mirror audio as mp3
+        env:
+          MIRROR_LIMIT: ${{ github.ref != 'refs/heads/main' && '20' || '' }}
+        run: |
+          command -v ffmpeg > /dev/null || { sudo apt-get update -q && sudo apt-get install -yq ffmpeg; }
+          scripts/mirror-audio.sh out/lod mirror
+
+      - name: Save the audio mirror
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v6
+        with:
+          path: mirror
+          key: audio-mirror-${{ github.run_id }}
+
+      - name: Upload the audio mirror for GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: mirror
 
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
@@ -89,3 +118,19 @@ jobs:
               gh release delete-asset "$RELEASE_TAG" "$asset" --yes
             fi
           done
+
+  # Publishes the audio mirror at https://brunopacheco1.github.io/lod-anki/audio/<id>.mp3.
+  # Needs Settings > Pages > Source set to "GitHub Actions".
+  pages:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
