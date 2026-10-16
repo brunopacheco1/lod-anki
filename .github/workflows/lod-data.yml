@@ -2,7 +2,8 @@ name: LOD data
 
 # Builds lod-anki's word data from the latest LOD linguistic dataset on data.public.lu,
 # rebuilds the ready-made decks, and publishes both on the "lod-data" GitHub release.
-# It also mirrors the lod.lu pronunciations as mp3 on GitHub Pages, for decks with online audio.
+# Side by side, it mirrors the lod.lu pronunciations as mp3 on GitHub Pages, for decks with online audio;
+# the mirror is kept as one file on the "audio-mirror" release, so each run only fetches new pronunciations.
 on:
   workflow_dispatch:
   schedule:
@@ -14,15 +15,18 @@ permissions:
 env:
   DATASET_API: https://data.public.lu/api/1/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/
   RELEASE_TAG: lod-data
+  MIRROR_TAG: audio-mirror
 
 concurrency:
   group: lod-data-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  data:
     runs-on: ubuntu-latest
-    timeout-minutes: 180 # the first audio mirror run fetches every pronunciation
+    outputs:
+      title: ${{ steps.dataset.outputs.title }}
+      modified: ${{ steps.dataset.outputs.modified }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -52,52 +56,44 @@ jobs:
             echo "$url -> $(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$url")"
           done
 
-      # Branch runs mirror only a few files, to test the pipeline without fetching everything from lod.lu.
-      - name: Restore the audio mirror
-        uses: actions/cache/restore@v6
-        with:
-          path: mirror
-          key: audio-mirror-${{ github.run_id }}
-          restore-keys: audio-mirror-
+      - name: Package
+        run: (cd out && zip -qr ../lod.zip lod/words) && ls -la lod.zip
 
-      - name: Mirror audio as mp3
-        env:
-          MIRROR_LIMIT: ${{ github.ref != 'refs/heads/main' && '20' || '' }}
-        run: |
-          command -v ffmpeg > /dev/null || { sudo apt-get update -q && sudo apt-get install -yq ffmpeg; }
-          scripts/mirror-audio.sh out/lod mirror
-
-      - name: Save the audio mirror
-        if: github.ref == 'refs/heads/main'
-        uses: actions/cache/save@v6
+      - uses: actions/upload-artifact@v7
         with:
-          path: mirror
-          key: audio-mirror-${{ github.run_id }}
+          name: lod
+          path: lod.zip
 
-      - name: Upload the audio mirror for GitHub Pages
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v5
+  decks:
+    needs: data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          path: mirror
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/download-artifact@v8
+        with:
+          name: lod
+      - run: mkdir out && unzip -q lod.zip -d out
 
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
 
       - name: Package
         run: |
-          (cd out && zip -qr ../lod.zip lod/words)
           mkdir apkg && find out/decks -name '*.apkg' -exec cp {} apkg/ \;
-          ls -la lod.zip apkg
+          ls -la apkg
           echo "audio files: $(find out/lod/audios -type f 2>/dev/null | wc -l)"
 
       - name: Upload build artifacts
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7
         with:
-          name: lod-data
-          path: |
-            lod.zip
-            apkg/*.apkg
+          name: decks
+          path: apkg/*.apkg
 
       # Each deck is its own release asset, so people download only the decks they want.
       - name: Publish the lod-data release
@@ -105,7 +101,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          NOTES="LOD words for lod-anki and ready-made Anki decks (one \`.apkg\` per deck and language), built from ${{ steps.dataset.outputs.title }} (published ${{ steps.dataset.outputs.modified }}) of the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) (CC0)."
+          NOTES="LOD words for lod-anki and ready-made Anki decks (one \`.apkg\` per deck and language), built from ${{ needs.data.outputs.title }} (published ${{ needs.data.outputs.modified }}) of the [LOD linguistic dataset](https://data.public.lu/fr/datasets/letzebuerger-online-dictionnaire-lod-linguistesch-daten/) (CC0)."
           if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
             gh release create "$RELEASE_TAG" --title "LOD data" --notes "$NOTES" --prerelease --latest=false --target "$GITHUB_SHA"
           else
@@ -119,10 +115,66 @@ jobs:
             fi
           done
 
+  audio:
+    needs: data
+    runs-on: ubuntu-latest
+    timeout-minutes: 180 # a run without a previous mirror fetches every pronunciation (about an hour)
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: lod
+      - run: mkdir out && unzip -q lod.zip -d out
+
+      - name: Restore the audio mirror
+        id: restore
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release download "$MIRROR_TAG" -p audio-mirror.tar 2>/dev/null; then
+            tar -xf audio-mirror.tar && rm audio-mirror.tar
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Only for the first run with the release-based mirror; Actions caches expire after 7 days unused.
+      - name: Restore the audio mirror from the Actions cache
+        if: steps.restore.outputs.found != 'true'
+        uses: actions/cache/restore@v6
+        with:
+          path: mirror
+          key: audio-mirror-
+          restore-keys: audio-mirror-
+
+      # Branch runs mirror only a few files, to test the pipeline without fetching everything from lod.lu.
+      - name: Mirror audio as mp3
+        env:
+          MIRROR_LIMIT: ${{ github.ref != 'refs/heads/main' && '20' || '' }}
+        run: |
+          command -v ffmpeg > /dev/null || { sudo apt-get update -q && sudo apt-get install -yq ffmpeg; }
+          scripts/mirror-audio.sh out/lod mirror
+
+      - name: Save the audio mirror
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tar -cf audio-mirror.tar mirror
+          if ! gh release view "$MIRROR_TAG" > /dev/null 2>&1; then
+            gh release create "$MIRROR_TAG" --title "Audio mirror" --prerelease --latest=false --target "$GITHUB_SHA" \
+              --notes "Working copy of the mp3 pronunciations served on GitHub Pages, kept so the LOD data workflow only fetches new ones from lod.lu. Not meant for download."
+          fi
+          gh release upload "$MIRROR_TAG" audio-mirror.tar --clobber
+
+      - name: Upload the audio mirror for GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: mirror
+
   # Publishes the audio mirror at https://brunopacheco1.github.io/lod-anki/audio/<id>.mp3.
   # Needs Settings > Pages > Source set to "GitHub Actions".
   pages:
-    needs: build
+    needs: audio
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
