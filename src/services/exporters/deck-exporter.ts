@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { AnkiExport } from "anki-apkg-export";
-import { Deck } from "../../model/word";
+import { AudioMode, Deck } from "../../model/word";
 import { label } from "../label-provider";
 import { basicCard, Card, clozeCard } from "./custom-cards";
 import { LodContentExporter, WordFilter } from "./lod-content-exporter";
@@ -16,19 +16,22 @@ export class DeckExporter {
     public async export(deck: Deck, outputDirectory: string, dataDirectory: string): Promise<void> {
         const filter: WordFilter = { types: deck.types || [], categories: deck.categories || [] };
         const flashcards = [...new Set(deck.flashcards || [])];
-        if (!deck.flashcards && filter.categories.length > 0) {
+        const audio = deck.audio || "offline";
+        if (!deck.flashcards && (filter.categories.length > 0 || deck.allWords)) {
             flashcards.push(...this.lodContentExporter.listWords(filter.categories, dataDirectory));
-            console.log(`Found ${flashcards.length} words in ${filter.categories.join(", ")}`);
+            console.log(`Found ${flashcards.length} words in ${filter.categories.join(", ") || "LOD"}`);
             if (flashcards.length === 0) {
                 console.warn("No words found in these categories. Run 'lod-anki update' if your LOD data predates categories.");
             }
         }
-        await this.lodContentExporter.prefetchAudio(flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
+        if (audio === "offline") {
+            await this.lodContentExporter.prefetchAudio(flashcards.filter((flashcard) => !flashcard.includes(":")), dataDirectory);
+        }
         for (const language of deck.languages) {
             const deckFile = path.join(outputDirectory, `${deck.fileName}_${label("LANGUAGE_FILENAME", language)}.apkg`);
             const apkg = await AnkiExport.create(`${deck.name} - ${label("LANGUAGE", language)}`);
             try {
-                await this.addCards(apkg, flashcards, language, filter, dataDirectory);
+                await this.addCards(apkg, flashcards, language, filter, dataDirectory, audio);
                 fs.writeFileSync(deckFile, await apkg.save());
             } finally {
                 apkg.close();
@@ -36,7 +39,7 @@ export class DeckExporter {
         }
     }
 
-    private async addCards(apkg: AnkiExport, flashcards: string[], language: string, filter: WordFilter, dataDirectory: string): Promise<void> {
+    private async addCards(apkg: AnkiExport, flashcards: string[], language: string, filter: WordFilter, dataDirectory: string, audio: AudioMode): Promise<void> {
         const media = new Set<string>();
         for (const flashcard of flashcards) {
             if (flashcard.startsWith("basic:") || flashcard.startsWith("cloze:")) {
@@ -44,7 +47,7 @@ export class DeckExporter {
                 this.addCard(apkg, flashcard, card);
                 continue;
             }
-            const card = await this.lodContentExporter.buildCard(language, flashcard, filter, dataDirectory);
+            const card = await this.lodContentExporter.buildCard(language, flashcard, filter, dataDirectory, audio);
             if (!card) {
                 continue;
             }

@@ -1,6 +1,6 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { Word, WordType, WordUsageExample } from "../../model/word";
+import { AudioMode, Word, WordType, WordUsageExample } from "../../model/word";
 import { CONSTANTS } from "../../model/constants";
 import { wordId } from "../word-id-generator";
 import { label } from "../label-provider";
@@ -59,7 +59,7 @@ export class LodContentExporter {
         }
     }
 
-    /** Returns every word that has a word type in one of `categories`, sorted alphabetically. */
+    /** Returns every word that has a word type in one of `categories` (every word when empty), sorted alphabetically. */
     public listWords(categories: string[], dataDirectory: string): string[] {
         const wordsFolder = path.join(dataDirectory, CONSTANTS.WORDS_FOLDER);
         const words: string[] = [];
@@ -73,7 +73,7 @@ export class LodContentExporter {
     }
 
     /** Builds the card of a word, or returns undefined when the word is unknown or none of its types pass `filter`. */
-    public async buildCard(language: string, flashcard: string, filter: WordFilter, dataDirectory: string): Promise<LodCard | undefined> {
+    public async buildCard(language: string, flashcard: string, filter: WordFilter, dataDirectory: string, audio: AudioMode = "offline"): Promise<LodCard | undefined> {
         const word = this.readWord(flashcard, dataDirectory);
         if (!word) {
             console.error(`${flashcard} not found!`);
@@ -88,8 +88,10 @@ export class LodContentExporter {
         const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
         const media: LodCard["media"] = [];
         let back = "";
+        // Online audio plays the first pronunciation on its own, like Anki does with bundled audio.
+        let autoplay = audio === "online";
         for (const type of selectedTypes) {
-            if (type.details.audio) {
+            if (type.details.audio && audio === "offline") {
                 const audioFile = await this.audioProvider.get(type.details.audio, audiosFolder);
                 if (audioFile) {
                     media.push({ name: type.details.audio, file: audioFile });
@@ -97,7 +99,9 @@ export class LodContentExporter {
                     type.details.audio = undefined;
                 }
             }
-            back += `<div style="margin-bottom: 25px;">${wordTypeHeader(language, word, type)}${this.translationContent(language, type)}</div>`;
+            const header = wordTypeHeader(language, word, type, audio, autoplay && !!type.details.audio);
+            autoplay = autoplay && !type.details.audio;
+            back += `<div style="margin-bottom: 25px;">${header}${this.translationContent(language, type)}</div>`;
         }
 
         return {

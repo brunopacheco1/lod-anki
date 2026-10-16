@@ -1,21 +1,25 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { Deck } from "../model/word";
+import { AudioMode, Deck } from "../model/word";
 
 /** Deck languages, as written in deck files: ALL is German, PO is Portuguese. */
 export const LANGUAGES = ["ALL", "EN", "FR", "PO"];
 
 const DEFAULT_LANGUAGES = ["EN"];
 
+const AUDIO_MODES: AudioMode[] = ["offline", "online"];
+
 export interface DeckOptions {
     name?: string,
     /** Comma-separated deck languages, such as "EN,FR". */
-    languages?: string
+    languages?: string,
+    /** "offline" bundles the audio in the deck; "online" streams it. */
+    audio?: string
 }
 
 /**
  * Reads a deck from a `.json` deck file, or from a plain text file with one word per line
- * (blank lines and lines starting with # are skipped). Options override the file's name and languages.
+ * (blank lines and lines starting with # are skipped). Options override the file's name, languages and audio mode.
  */
 export function loadDeck(deckFile: string, options: DeckOptions = {}): Deck {
     const content = fs.readFileSync(deckFile).toString();
@@ -27,6 +31,12 @@ export function loadDeck(deckFile: string, options: DeckOptions = {}): Deck {
     }
     if (options.languages) {
         deck.languages = parseLanguages(options.languages);
+    }
+    if (options.audio) {
+        deck.audio = options.audio.toLowerCase() as AudioMode;
+    }
+    if (deck.audio && !AUDIO_MODES.includes(deck.audio)) {
+        throw new Error(`Unknown audio mode ${deck.audio}. Use ${AUDIO_MODES.join(" or ")}.`);
     }
     if (!deck.languages?.length) {
         throw new Error(`The deck has no languages. Add "languages" to the deck file or pass --languages (${LANGUAGES.join(", ")}).`);

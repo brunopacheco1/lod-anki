@@ -5,8 +5,14 @@ export interface Deck {
     /** LOD categories such as CEFR levels (A1) or topics (FAMILL); without flashcards, the deck holds every word in them. */
     categories?: string[],
     flashcards?: string[],
+    /** Without flashcards and categories, export every LOD word. */
+    allWords?: boolean,
+    /** "offline" (default) puts the audio files in the deck; "online" streams mp3 copies from the lod-anki audio mirror, so the deck is small but needs internet. */
+    audio?: AudioMode,
     languages: string[]
 }
+
+export type AudioMode = "offline" | "online";
 
 export interface Word {
     id: string,

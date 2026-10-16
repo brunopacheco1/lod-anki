@@ -10,7 +10,7 @@ coverage/
 *.tsbuildinfo
 
 # Local LOD data and exported decks
-lod/
+/lod/
 *.apkg
 
 .env
