@@ -12,9 +12,9 @@ export class AudioProvider {
 
     /**
      * Returns the local path of an LOD audio file, downloading it into `audiosFolder` when it is
-     * not there yet, or undefined when it is not available.
+     * not there yet, or undefined when it is not available. `url` defaults to the word pronunciations on lod.lu.
      */
-    public async get(fileName: string, audiosFolder: string): Promise<string | undefined> {
+    public async get(fileName: string, audiosFolder: string, url = `${LOD_AUDIO_URL}/${encodeURIComponent(fileName)}`): Promise<string | undefined> {
         const audioFile = path.join(audiosFolder, fileName);
         if (fs.existsSync(audioFile)) {
             return audioFile;
@@ -23,7 +23,7 @@ export class AudioProvider {
             return undefined;
         }
         try {
-            const content = await download(`${LOD_AUDIO_URL}/${encodeURIComponent(fileName)}`, TIMEOUT_MS);
+            const content = await download(url, TIMEOUT_MS);
             if (!content) {
                 this.unavailable.add(fileName);
                 return undefined;

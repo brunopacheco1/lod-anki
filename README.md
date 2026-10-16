@@ -94,7 +94,7 @@ Decks by word type (nouns, verbs, adjectives, adverbs) are on the [lod-data rele
 | `-o, --output <directory>` | Where to write the `.apkg` files. Defaults to the current folder. |
 | `-l, --languages <codes>` | `export` only. Card languages, comma separated: `ALL` (German), `EN`, `FR`, `PO` (Portuguese). Defaults to the deck file's languages, or `EN` for a word list. |
 | `-n, --name <name>` | `export` only. The deck name shown in Anki. Defaults to the deck file's name, or the word list's file name. |
-| `-a, --audio <mode>` | `export` only. `offline` (default) puts the pronunciations in the deck. `online` streams them while you review, so the deck is much smaller but needs internet. Example sentences have a 🔈 button that streams their recording from lod.lu in both modes. |
+| `-a, --audio <mode>` | `export` only. `offline` (default) puts the pronunciations in the deck. `online` streams them while you review, so the deck is much smaller but needs internet. Example sentences have a 🔈 button that plays their recording, bundled in `offline` decks and streamed in `online` ones. |
 
 For example: `npx lod-anki export deck.json --data ~/Downloads/lod`. Set the `LOD_ANKI_CACHE` environment variable to keep the downloaded data somewhere else.
 

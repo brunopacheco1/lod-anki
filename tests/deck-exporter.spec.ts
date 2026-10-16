@@ -55,6 +55,7 @@ describe("Deck exporter", () => {
         dataDirectory = path.join(workDirectory, "lod");
         fs.mkdirSync(path.join(dataDirectory, "audios"));
         fs.writeFileSync(path.join(dataDirectory, "audios", "kand1.m4a"), "fake audio");
+        fs.writeFileSync(path.join(dataDirectory, "audios", "_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg"), "fake example audio");
     });
 
     it("exports LOD words, custom cards and their audio", async () => {
@@ -63,13 +64,15 @@ describe("Deck exporter", () => {
 
         const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
         expect(notes).toHaveLength(4);
-        expect(Object.values(media)).toEqual(["kand1.m4a"]);
+        expect(Object.values(media).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg", "kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
         expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Register::Colloquial", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
         expect(kand.flds).toContain("new Audio('https://lod.lu/uploads/examples/OGG/a3/a3961445e7315f7a9c657fb1397e3237.ogg').play()");
+        // Bundled when downloaded, streamed from lod.lu otherwise.
+        expect(kand.flds).toContain("new Audio('_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg').play()");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
         expect(mat.tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb", "LOD::Word_type::Preposition"]);
@@ -114,7 +117,7 @@ describe("Deck exporter", () => {
 
         const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
         expect(notes).toHaveLength(1);
-        expect(Object.values(media)).toEqual(["kand1.m4a"]);
+        expect(Object.values(media).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg", "kand1.m4a"]);
     });
 
     it("exports every word in the deck's categories when it lists no flashcards", async () => {

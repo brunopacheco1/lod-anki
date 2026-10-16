@@ -7,7 +7,7 @@ import { label } from "../label-provider";
 import { categoryTag, registerTag, wordTypeTag } from "../category-tags";
 import { AudioProvider } from "../audio-provider";
 import { Card } from "./custom-cards";
-import { exampleAudioUrl, wordTypeHeader } from "./word-headers";
+import { exampleAudioFile, exampleAudioUrl, wordTypeHeader } from "./word-headers";
 
 const PARALLEL_DOWNLOADS = 8;
 
@@ -38,18 +38,27 @@ export class LodContentExporter {
 
     /** Downloads the audio of all words in parallel, so building the cards only reads local files. */
     public async prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void> {
-        const audios = new Set<string>();
+        // File name and download URL of each pronunciation and example recording.
+        const audios = new Map<string, string | undefined>();
         for (const flashcard of flashcards) {
-            const word = this.readWord(flashcard, dataDirectory);
-            word?.types.filter((type) => !!type.details.audio).forEach((type) => audios.add(type.details.audio!));
+            for (const type of this.readWord(flashcard, dataDirectory)?.types || []) {
+                if (type.details.audio) {
+                    audios.set(type.details.audio, undefined);
+                }
+                for (const example of type.meanings.flatMap((meaning) => meaning.examples || [])) {
+                    if (example.id) {
+                        audios.set(exampleAudioFile(example.id), exampleAudioUrl(example.id));
+                    }
+                }
+            }
         }
         const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
-        const queue = [...audios].filter((audio) => !fs.existsSync(path.join(audiosFolder, audio)));
+        const queue = [...audios].filter(([audio]) => !fs.existsSync(path.join(audiosFolder, audio)));
         const cached = audios.size - queue.length;
         let downloaded = 0;
         const worker = async () => {
-            for (let audio = queue.shift(); audio; audio = queue.shift()) {
-                if (await this.audioProvider.get(audio, audiosFolder)) {
+            for (let next = queue.shift(); next; next = queue.shift()) {
+                if (await this.audioProvider.get(next[0], audiosFolder, next[1])) {
                     downloaded++;
                 }
             }
@@ -102,7 +111,7 @@ export class LodContentExporter {
             }
             const header = wordTypeHeader(language, word, type, audio, autoplay && !!type.details.audio);
             autoplay = autoplay && !type.details.audio;
-            back += `<div style="margin-bottom: 25px;">${header}${this.translationContent(language, type)}</div>`;
+            back += `<div style="margin-bottom: 25px;">${header}${this.translationContent(language, type, audio, audiosFolder, media)}</div>`;
         }
 
         return {
@@ -135,7 +144,7 @@ export class LodContentExporter {
         return JSON.parse(fs.readFileSync(wordFile).toString()) as Word;
     }
 
-    private translationContent(language: string, type: WordType): string {
+    private translationContent(language: string, type: WordType, audio: AudioMode, audiosFolder: string, media: LodCard["media"]): string {
         if (type.meanings.length === 0) {
             return "";
         }
@@ -150,22 +159,36 @@ export class LodContentExporter {
             const complement = translation.complement ? ` [${translation.complement}]` : "";
             let examples = "";
             if (meaning.examples && meaning.examples.length > 0) {
-                examples = `<br><span style="font-size: 85%; color: #595959;">${label("EXAMPLE", language)}</span><br>${meaning.examples.map((it) => this.example(it, language)).join("<br>")}`;
+                examples = `<br><span style="font-size: 85%; color: #595959;">${label("EXAMPLE", language)}</span><br>${meaning.examples.map((it) => this.example(it, language, audio, audiosFolder, media)).join("<br>")}`;
             }
             content += `<li>${polyLex}${translation.translation}${complement}${examples}</li>`;
         }
         return `${content}</ol>`;
     }
 
-    private example(example: WordUsageExample, language: string): string {
+    private example(example: WordUsageExample, language: string, audio: AudioMode, audiosFolder: string, media: LodCard["media"]): string {
         const usages = example.usage.split(" ")
             .filter((it) => it !== "ALLG")
             .map((it) => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${label(`${it}_USAGE`, language)}</span> `)
             .join(" ");
-        // A small play button streams the recording, so a card with many examples stays tidy and the deck small.
-        const play = example.id
-            ? ` <a href="#" style="text-decoration: none;" onclick="new Audio('${exampleAudioUrl(example.id)}').play(); return false;">&#128264;</a>`
-            : "";
-        return `${usages}${example.example}${play}`;
+        return `${usages}${example.example}${this.examplePlayButton(example, audio, audiosFolder, media)}`;
+    }
+
+    /**
+     * A small play button keeps a card with many examples tidy, and unlike [sound:] it does not autoplay.
+     * Offline decks bundle the recording; online decks, and recordings that could not be downloaded, stream it from lod.lu.
+     */
+    private examplePlayButton(example: WordUsageExample, audio: AudioMode, audiosFolder: string, media: LodCard["media"]): string {
+        if (!example.id) {
+            return "";
+        }
+        let source = exampleAudioUrl(example.id);
+        const name = exampleAudioFile(example.id);
+        const file = path.join(audiosFolder, name);
+        if (audio === "offline" && fs.existsSync(file)) {
+            media.push({ name, file });
+            source = name;
+        }
+        return ` <a href="#" style="text-decoration: none;" onclick="new Audio('${source}').play(); return false;">&#128264;</a>`;
     }
 }

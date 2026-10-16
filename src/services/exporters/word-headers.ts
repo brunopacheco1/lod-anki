@@ -11,6 +11,11 @@ export function mirroredAudioUrl(audio: string): string {
     return `${AUDIO_MIRROR_URL}/${encodeURIComponent(audio.replace(/\.m4a$/i, ".mp3"))}`;
 }
 
+/** Name of the bundled recording of an example; Anki's media check keeps files starting with "_", which cards only reference from a script. */
+export function exampleAudioFile(id: string): string {
+    return `_lod_example_${id}.ogg`;
+}
+
 /** Returns the lod.lu recording of an example sentence; Anki's audio player can play its ogg version. */
 export function exampleAudioUrl(id: string): string {
     return `https://lod.lu/uploads/examples/OGG/${id.slice(0, 2)}/${id}.ogg`;
