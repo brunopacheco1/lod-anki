@@ -1,9 +1,11 @@
 import categories from "../resources/categories.json";
 
 type LabelLanguage = "de" | "en" | "fr" | "pt";
+type Labels = { [code: string]: { [language in LabelLanguage]: string } };
 
 const LEVEL = /^[ABC][12]$/;
-const topics: { [code: string]: { [language in LabelLanguage]: string } } = categories.topics;
+const topics: Labels = categories.topics;
+const wordTypes: Labels = categories.wordTypes;
 const hidden = new Set(categories.hidden);
 
 function labelLanguage(language: string): LabelLanguage {
@@ -13,6 +15,11 @@ function labelLanguage(language: string): LabelLanguage {
         case "fr": return "fr";
         default: return "en";
     }
+}
+
+/** Builds a hierarchical Anki tag such as "LOD::Topic::Animals"; Anki tags cannot contain spaces. */
+function tag(...parts: string[]): string {
+    return ["LOD", ...parts].map((part) => part.replace(/\s+/g, "_")).join("::");
 }
 
 /**
@@ -27,7 +34,11 @@ export function categoryTag(category: string, language: string): string | undefi
         return undefined;
     }
     const lang = labelLanguage(language);
-    // Anki tags cannot contain spaces.
-    const topic = (topics[category]?.[lang] || category).replace(/\s+/g, "_");
-    return `LOD::${categories.topic[lang]}::${topic}`;
+    return tag(categories.topic[lang], topics[category]?.[lang] || category);
+}
+
+/** Returns the Anki tag of a word type in the deck language, such as "LOD::Word_type::Noun". */
+export function wordTypeTag(type: string, language: string): string {
+    const lang = labelLanguage(language);
+    return tag(categories.wordType[lang], wordTypes[type]?.[lang] || type);
 }

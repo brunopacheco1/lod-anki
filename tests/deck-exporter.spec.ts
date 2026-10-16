@@ -66,12 +66,12 @@ describe("Deck exporter", () => {
         expect(Object.values(media)).toEqual(["kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
-        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Topic::Family", "noun"]);
+        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
-        expect(mat.tags.split(" ").sort()).toEqual(["B1", "adverb", "preposition"]);
+        expect(mat.tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb", "LOD::Word_type::Preposition"]);
         expect(mat.flds).not.toContain("[sound:");
 
         const cloze = notes.find((note) => note.flds.includes("[...]"))!;
@@ -130,7 +130,7 @@ describe("Deck exporter", () => {
 
         const { notes } = await readPackage(path.join(output, "b1_english.apkg"));
         expect(notes).toHaveLength(1);
-        expect(notes[0].tags.split(" ").sort()).toEqual(["B1", "adverb"]);
+        expect(notes[0].tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb"]);
         expect(notes[0].flds).not.toContain("MAT1");
     });
 
