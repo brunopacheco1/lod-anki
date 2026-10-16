@@ -110,9 +110,11 @@ function mapExample(example: XmlNode): WordUsageExample {
     if (gloss) {
         sentence += ` (${gloss})`;
     }
+    const id = example.attributes["id"];
     return {
         usage: attributes.length > 0 ? attributes.join(" ") : "ALLG",
         example: sentence,
+        ...(id ? { id } : {}),
     };
 }
 

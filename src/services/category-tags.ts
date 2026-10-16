@@ -1,4 +1,5 @@
 import categories from "../resources/categories.json";
+import { label } from "./label-provider";
 
 type LabelLanguage = "de" | "en" | "fr" | "pt";
 type Labels = { [code: string]: { [language in LabelLanguage]: string } };
@@ -41,4 +42,10 @@ export function categoryTag(category: string, language: string): string | undefi
 export function wordTypeTag(type: string, language: string): string {
     const lang = labelLanguage(language);
     return tag(categories.wordType[lang], wordTypes[type]?.[lang] || type);
+}
+
+/** Returns the Anki tag of a register (usage flag of an example such as EGS), such as "LOD::Register::Colloquial". */
+export function registerTag(usage: string, language: string): string {
+    const name = label(`${usage}_USAGE`, language);
+    return tag(categories.register[labelLanguage(language)], name.charAt(0).toUpperCase() + name.slice(1));
 }

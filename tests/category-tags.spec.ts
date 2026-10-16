@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { categoryTag, wordTypeTag } from "../src/services/category-tags";
+import { categoryTag, registerTag, wordTypeTag } from "../src/services/category-tags";
 
 describe("Category tags", () => {
     it("keeps CEFR levels as they are", () => {
@@ -28,5 +28,12 @@ describe("Category tags", () => {
         expect(wordTypeTag("verb", "FR")).toBe("LOD::Nature::Verbe");
         expect(wordTypeTag("adjective", "ALL")).toBe("LOD::Wortart::Adjektiv");
         expect(wordTypeTag("adverb", "PO")).toBe("LOD::Classe_gramatical::Advérbio");
+    });
+
+    it("labels registers in the deck language", () => {
+        expect(registerTag("EGS", "EN")).toBe("LOD::Register::Colloquial");
+        expect(registerTag("VULG", "FR")).toBe("LOD::Registre::Vulgaire");
+        expect(registerTag("IRON", "ALL")).toBe("LOD::Register::Ironisch");
+        expect(registerTag("KANNERSPROOCH", "PO")).toBe("LOD::Registo::Infantil");
     });
 });

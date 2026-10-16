@@ -4,10 +4,10 @@ import { AudioMode, Word, WordType, WordUsageExample } from "../../model/word";
 import { CONSTANTS } from "../../model/constants";
 import { wordId } from "../word-id-generator";
 import { label } from "../label-provider";
-import { categoryTag, wordTypeTag } from "../category-tags";
+import { categoryTag, registerTag, wordTypeTag } from "../category-tags";
 import { AudioProvider } from "../audio-provider";
 import { Card } from "./custom-cards";
-import { wordTypeHeader } from "./word-headers";
+import { exampleAudioUrl, wordTypeHeader } from "./word-headers";
 
 const PARALLEL_DOWNLOADS = 8;
 
@@ -109,10 +109,22 @@ export class LodContentExporter {
             front: word.word,
             back,
             noteId: `lod:${word.word}`,
-            tags: [...new Set(selectedTypes.flatMap((type) => [wordTypeTag(type.type, language), ...(type.categories || []).map((category) => categoryTag(category, language))]))]
-                .filter((tag): tag is string => !!tag),
+            tags: this.tags(selectedTypes, language),
             media,
         };
+    }
+
+    /** Word type, level, topic and register tags of the selected word types, in the deck language. */
+    private tags(types: WordType[], language: string): string[] {
+        const tags = types.flatMap((type) => [
+            wordTypeTag(type.type, language),
+            ...(type.categories || []).map((category) => categoryTag(category, language)),
+            ...type.meanings.flatMap((meaning) => meaning.examples || [])
+                .flatMap((example) => example.usage.split(" "))
+                .filter((usage) => usage !== "ALLG")
+                .map((usage) => registerTag(usage, language)),
+        ]);
+        return [...new Set(tags.filter((tag): tag is string => !!tag))];
     }
 
     private readWord(flashcard: string, dataDirectory: string): Word | undefined {
@@ -150,6 +162,10 @@ export class LodContentExporter {
             .filter((it) => it !== "ALLG")
             .map((it) => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${label(`${it}_USAGE`, language)}</span> `)
             .join(" ");
-        return `${usages}${example.example}`;
+        // A small play button streams the recording, so a card with many examples stays tidy and the deck small.
+        const play = example.id
+            ? ` <a href="#" style="text-decoration: none;" onclick="new Audio('${exampleAudioUrl(example.id)}').play(); return false;">&#128264;</a>`
+            : "";
+        return `${usages}${example.example}${play}`;
     }
 }

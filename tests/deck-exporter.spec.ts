@@ -66,9 +66,10 @@ describe("Deck exporter", () => {
         expect(Object.values(media)).toEqual(["kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
-        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
+        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Register::Colloquial", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
+        expect(kand.flds).toContain("new Audio('https://lod.lu/uploads/examples/OGG/a3/a3961445e7315f7a9c657fb1397e3237.ogg').play()");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
         expect(mat.tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb", "LOD::Word_type::Preposition"]);

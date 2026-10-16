@@ -11,6 +11,12 @@
         "fr": "Nature",
         "pt": "Classe gramatical"
     },
+    "register": {
+        "en": "Register",
+        "de": "Register",
+        "fr": "Registre",
+        "pt": "Registo"
+    },
     "wordTypes": {
         "noun": {
             "en": "Noun",
