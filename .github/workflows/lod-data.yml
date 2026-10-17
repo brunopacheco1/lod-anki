@@ -79,6 +79,10 @@ jobs:
           name: lod
       - run: mkdir out && unzip -q lod.zip -d out
 
+      # The bundled audio is converted to small mp3 files.
+      - name: Install ffmpeg
+        run: command -v ffmpeg > /dev/null || { sudo apt-get update -q && sudo apt-get install -yq ffmpeg; }
+
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
 

@@ -5,6 +5,7 @@ import { CONSTANTS } from "../../model/constants";
 import { wordId } from "../word-id-generator";
 import { label } from "../label-provider";
 import { categoryTag, registerTag, wordTypeTag } from "../category-tags";
+import { AudioConverter } from "../audio-converter";
 import { AudioProvider } from "../audio-provider";
 import { Card } from "./custom-cards";
 import { exampleAudioFile, exampleAudioUrl, wordTypeHeader } from "./word-headers";
@@ -26,6 +27,11 @@ export interface LodCard extends Card {
     media: { name: string, file: string }[]
 }
 
+/** Name of the mp3 that ffmpeg makes from a downloaded recording, such as kand1.mp3 for kand1.m4a. */
+function mp3Name(audio: string): string {
+    return audio.replace(/\.(m4a|ogg)$/i, ".mp3");
+}
+
 function matches(type: WordType, filter: WordFilter): boolean {
     return (filter.types.length === 0 || filter.types.includes(type.type))
         && (filter.categories.length === 0 || (type.categories || []).some((category) => filter.categories.includes(category)));
@@ -34,9 +40,12 @@ function matches(type: WordType, filter: WordFilter): boolean {
 /** Builds cards for LOD words from the extracted LOD data. */
 export class LodContentExporter {
 
-    constructor(private readonly audioProvider: AudioProvider) { }
+    constructor(private readonly audioProvider: AudioProvider, private readonly audioConverter = new AudioConverter()) { }
 
-    /** Downloads the audio of all words in parallel, so building the cards only reads local files. */
+    /**
+     * Downloads the audio of all words and their examples in parallel, so building the cards only reads local files.
+     * With ffmpeg installed, the recordings are converted to small mp3 files, which keeps offline decks smaller.
+     */
     public async prefetchAudio(flashcards: string[], dataDirectory: string): Promise<void> {
         // File name and download URL of each pronunciation and example recording.
         const audios = new Map<string, string | undefined>();
@@ -53,7 +62,8 @@ export class LodContentExporter {
             }
         }
         const audiosFolder = path.join(dataDirectory, CONSTANTS.AUDIOS_FOLDER);
-        const queue = [...audios].filter(([audio]) => !fs.existsSync(path.join(audiosFolder, audio)));
+        const isCached = (audio: string) => fs.existsSync(path.join(audiosFolder, audio)) || fs.existsSync(path.join(audiosFolder, mp3Name(audio)));
+        const queue = [...audios].filter(([audio]) => !isCached(audio));
         const cached = audios.size - queue.length;
         let downloaded = 0;
         const worker = async () => {
@@ -67,6 +77,30 @@ export class LodContentExporter {
         if (audios.size > 0) {
             console.log(`Audio: ${downloaded} downloaded, ${cached} already cached, ${audios.size - cached - downloaded} unavailable`);
         }
+        await this.convertToMp3([...audios.keys()], audiosFolder);
+    }
+
+    private async convertToMp3(audios: string[], audiosFolder: string): Promise<void> {
+        const pending = audios.filter((audio) => fs.existsSync(path.join(audiosFolder, audio)) && !fs.existsSync(path.join(audiosFolder, mp3Name(audio))));
+        if (pending.length === 0) {
+            return;
+        }
+        if (!this.audioConverter.isAvailable()) {
+            console.log("Install ffmpeg to make the bundled audio smaller; it is bundled as downloaded from lod.lu for now.");
+            return;
+        }
+        let converted = 0;
+        const worker = async () => {
+            for (let audio = pending.shift(); audio; audio = pending.shift()) {
+                const input = path.join(audiosFolder, audio);
+                if (await this.audioConverter.toMp3(input, path.join(audiosFolder, mp3Name(audio)))) {
+                    fs.rmSync(input);
+                    converted++;
+                }
+            }
+        };
+        await Promise.all(Array.from({ length: PARALLEL_DOWNLOADS }, worker));
+        console.log(`Audio: ${converted} files converted to mp3`);
     }
 
     /** Returns every word that has a word type in one of `categories` (every word when empty), sorted alphabetically. */
@@ -102,8 +136,12 @@ export class LodContentExporter {
         let autoplay = audio === "online";
         for (const type of selectedTypes) {
             if (type.details.audio && audio === "offline") {
-                const audioFile = await this.audioProvider.get(type.details.audio, audiosFolder);
+                const mp3 = mp3Name(type.details.audio);
+                const audioFile = fs.existsSync(path.join(audiosFolder, mp3))
+                    ? path.join(audiosFolder, mp3)
+                    : await this.audioProvider.get(type.details.audio, audiosFolder);
                 if (audioFile) {
+                    type.details.audio = path.basename(audioFile);
                     media.push({ name: type.details.audio, file: audioFile });
                 } else {
                     type.details.audio = undefined;
@@ -183,11 +221,14 @@ export class LodContentExporter {
             return "";
         }
         let source = exampleAudioUrl(example.id);
-        const name = exampleAudioFile(example.id);
-        const file = path.join(audiosFolder, name);
-        if (audio === "offline" && fs.existsSync(file)) {
-            media.push({ name, file });
-            source = name;
+        if (audio === "offline") {
+            // Prefer the small mp3 made with ffmpeg, then lod.lu's ogg.
+            const name = [mp3Name(exampleAudioFile(example.id)), exampleAudioFile(example.id)]
+                .find((candidate) => fs.existsSync(path.join(audiosFolder, candidate)));
+            if (name) {
+                media.push({ name, file: path.join(audiosFolder, name) });
+                source = name;
+            }
         }
         return ` <a href="#" style="text-decoration: none;" onclick="new Audio('${source}').play(); return false;">&#128264;</a>`;
     }
