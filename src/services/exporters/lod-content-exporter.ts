@@ -27,6 +27,12 @@ export interface LodCard extends Card {
     media: { name: string, file: string }[]
 }
 
+/** Writes a LOD example as a sentence, such as "D'Waasser leeft ëmmer de Bierg of." for "d'Waasser leeft ëmmer de Bierg of". */
+function asSentence(example: string): string {
+    const sentence = example.charAt(0).toLocaleUpperCase("lb") + example.slice(1);
+    return /[.!?…:]$/.test(sentence) ? sentence : `${sentence}.`;
+}
+
 /** Name of the mp3 that ffmpeg makes from a downloaded recording, such as kand1.mp3 for kand1.m4a. */
 function mp3Name(audio: string): string {
     return audio.replace(/\.(m4a|ogg)$/i, ".mp3");
@@ -197,7 +203,7 @@ export class LodContentExporter {
             const complement = translation.complement ? ` [${translation.complement}]` : "";
             let examples = "";
             if (meaning.examples && meaning.examples.length > 0) {
-                examples = `<br><span style="font-size: 85%; color: #595959;">${label("EXAMPLE", language)}</span><br>${meaning.examples.map((it) => this.example(it, language, audio, audiosFolder, media)).join("<br>")}`;
+                examples = `<br><span style="font-size: 85%; color: #595959;">${label("EXAMPLE", language)}</span>${meaning.examples.map((it) => this.example(it, language, audio, audiosFolder, media)).join("")}`;
             }
             content += `<li>${polyLex}${translation.translation}${complement}${examples}</li>`;
         }
@@ -209,7 +215,9 @@ export class LodContentExporter {
             .filter((it) => it !== "ALLG")
             .map((it) => `<span style="color: #595959; padding-left: 2px; padding-right: 2px; border-style: solid; border-color: #A4A4A4; border-width: thin; font-size: 90%;">${label(`${it}_USAGE`, language)}</span> `)
             .join(" ");
-        return `${usages}${example.example}${this.examplePlayButton(example, audio, audiosFolder, media)}`;
+        const gloss = example.gloss ? `<br><span style="font-size: 85%; color: #595959;">${example.gloss}</span>` : "";
+        // Each example is its own block, so long examples do not run into each other.
+        return `<div style="margin-bottom: 8px;">${usages}${asSentence(example.example)}${this.examplePlayButton(example, audio, audiosFolder, media)}${gloss}</div>`;
     }
 
     /**

@@ -93,6 +93,10 @@ describe("Deck exporter", () => {
         expect(kand.flds).toContain("new Audio('https://lod.lu/uploads/examples/OGG/a3/a3961445e7315f7a9c657fb1397e3237.ogg').play()");
         // Bundled when downloaded, streamed from lod.lu otherwise.
         expect(kand.flds).toContain("new Audio('_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg').play()");
+        // Examples read as sentences, each on its own line, with the gloss of an idiom below it.
+        expect(kand.flds).toContain(">Eis Noperen hu véier Kanner, zwee Jongen. <a href");
+        expect(kand.flds).toContain("</span> Hien huet kee Kand a kee Kënn! <a href");
+        expect(kand.flds).toContain("<br><span style=\"font-size: 85%; color: #595959;\">hie brauch keng Verantwortung</span></div>");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
         expect(mat.tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb", "LOD::Word_type::Preposition"]);

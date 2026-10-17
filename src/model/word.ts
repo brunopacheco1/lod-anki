@@ -55,6 +55,8 @@ export interface WordMeaning {
 export interface WordUsageExample {
     usage: string,
     example: string,
+    /** Plain-language explanation of an idiomatic example. */
+    gloss?: string,
     /** LOD id of the example, which names its recording on lod.lu. */
     id?: string
 }

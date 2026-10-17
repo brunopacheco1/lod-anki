@@ -105,15 +105,12 @@ function mapMeaning(partOfSpeech: string, meaning: XmlNode): WordMeaning {
 function mapExample(example: XmlNode): WordUsageExample {
     const text = child(example, "text");
     const attributes = children(text, "attribute").map(textOf);
-    let sentence = joinWords(text);
     const gloss = joinWords(child(example, "gloss"));
-    if (gloss) {
-        sentence += ` (${gloss})`;
-    }
     const id = example.attributes["id"];
     return {
         usage: attributes.length > 0 ? attributes.join(" ") : "ALLG",
-        example: sentence,
+        example: joinWords(text),
+        ...(gloss ? { gloss } : {}),
         ...(id ? { id } : {}),
     };
 }
