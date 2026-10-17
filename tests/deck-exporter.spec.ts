@@ -5,6 +5,7 @@ import JSZip from "jszip";
 import initSqlJs from "sql.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import { Deck, Word } from "../src/model/word";
+import { AudioConverter } from "../src/services/audio-converter";
 import { AudioProvider } from "../src/services/audio-provider";
 import { DeckExporter } from "../src/services/exporters/deck-exporter";
 import { LodContentExporter } from "../src/services/exporters/lod-content-exporter";
@@ -18,6 +19,25 @@ class LocalAudioProvider extends AudioProvider {
     public override async get(fileName: string, audiosFolder: string): Promise<string | undefined> {
         const audioFile = path.join(audiosFolder, fileName);
         return fs.existsSync(audioFile) ? audioFile : undefined;
+    }
+}
+
+/** Pretends ffmpeg is missing, so recordings are bundled as downloaded. */
+class NoAudioConverter extends AudioConverter {
+    public override isAvailable(): boolean {
+        return false;
+    }
+}
+
+/** Pretends to be ffmpeg by copying the recording to the mp3 name. */
+class FakeAudioConverter extends AudioConverter {
+    public override isAvailable(): boolean {
+        return true;
+    }
+
+    public override async toMp3(input: string, output: string): Promise<boolean> {
+        fs.copyFileSync(input, output);
+        return true;
     }
 }
 
@@ -40,7 +60,7 @@ async function readPackage(apkgFile: string): Promise<{ notes: Note[], media: { 
 describe("Deck exporter", () => {
     let workDirectory: string;
     let dataDirectory: string;
-    const exporter = new DeckExporter(new LodContentExporter(new LocalAudioProvider()));
+    const exporter = new DeckExporter(new LodContentExporter(new LocalAudioProvider(), new NoAudioConverter()));
     const deck: Deck = {
         name: "Test",
         fileName: "test",
@@ -55,6 +75,7 @@ describe("Deck exporter", () => {
         dataDirectory = path.join(workDirectory, "lod");
         fs.mkdirSync(path.join(dataDirectory, "audios"));
         fs.writeFileSync(path.join(dataDirectory, "audios", "kand1.m4a"), "fake audio");
+        fs.writeFileSync(path.join(dataDirectory, "audios", "_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg"), "fake example audio");
     });
 
     it("exports LOD words, custom cards and their audio", async () => {
@@ -63,12 +84,19 @@ describe("Deck exporter", () => {
 
         const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
         expect(notes).toHaveLength(4);
-        expect(Object.values(media)).toEqual(["kand1.m4a"]);
+        expect(Object.values(media).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg", "kand1.m4a"]);
 
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
-        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
+        expect(kand.tags.split(" ").sort()).toEqual(["A1", "LOD::Register::Colloquial", "LOD::Topic::Family", "LOD::Word_type::Noun"]);
         expect(kand.flds).toContain("[sound:kand1.m4a]");
         expect(kand.flds).toContain("https://lod.lu/artikel/KAND1");
+        expect(kand.flds).toContain("new Audio('https://lod.lu/uploads/examples/OGG/a3/a3961445e7315f7a9c657fb1397e3237.ogg').play()");
+        // Bundled when downloaded, streamed from lod.lu otherwise.
+        expect(kand.flds).toContain("new Audio('_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg').play()");
+        // Examples read as sentences, each on its own line, with the gloss of an idiom below it.
+        expect(kand.flds).toContain(">Eis Noperen hu véier Kanner, zwee Jongen. <a href");
+        expect(kand.flds).toContain("</span> Hien huet kee Kand a kee Kënn! <a href");
+        expect(kand.flds).toContain("<br><span style=\"font-size: 85%; color: #595959;\">hie brauch keng Verantwortung</span></div>");
 
         const mat = notes.find((note) => note.flds.includes(">mat<"))!;
         expect(mat.tags.split(" ").sort()).toEqual(["B1", "LOD::Word_type::Adverb", "LOD::Word_type::Preposition"]);
@@ -113,7 +141,7 @@ describe("Deck exporter", () => {
 
         const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
         expect(notes).toHaveLength(1);
-        expect(Object.values(media)).toEqual(["kand1.m4a"]);
+        expect(Object.values(media).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.ogg", "kand1.m4a"]);
     });
 
     it("exports every word in the deck's categories when it lists no flashcards", async () => {
@@ -145,5 +173,19 @@ describe("Deck exporter", () => {
         const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
         expect(kand.flds).toContain("<audio controls autoplay src=\"https://brunopacheco1.github.io/lod-anki/audio/kand1.mp3\"></audio>");
         expect(kand.flds).not.toContain("[sound:");
+    });
+    it("bundles mp3 made from the downloaded recordings when ffmpeg is installed", async () => {
+        const mp3Data = fs.mkdtempSync(path.join(workDirectory, "mp3-"));
+        fs.cpSync(dataDirectory, mp3Data, { recursive: true });
+        const output = fs.mkdtempSync(path.join(workDirectory, "out-"));
+        await new DeckExporter(new LodContentExporter(new LocalAudioProvider(), new FakeAudioConverter())).export(deck, output, mp3Data);
+
+        const { notes, media } = await readPackage(path.join(output, "test_english.apkg"));
+        expect(Object.values(media).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.mp3", "kand1.mp3"]);
+        const kand = notes.find((note) => note.flds.includes(">Kand<"))!;
+        expect(kand.flds).toContain("[sound:kand1.mp3]");
+        expect(kand.flds).toContain("new Audio('_lod_example_d557f295b3eb28cf449ae8670b63e618.mp3').play()");
+        // The originals are replaced, so the audio cache keeps only the small files.
+        expect(fs.readdirSync(path.join(mp3Data, "audios")).sort()).toEqual(["_lod_example_d557f295b3eb28cf449ae8670b63e618.mp3", "kand1.mp3"]);
     });
 });

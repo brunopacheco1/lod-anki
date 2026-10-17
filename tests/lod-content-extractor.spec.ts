@@ -46,8 +46,8 @@ describe("LOD entry mapping", () => {
         expect(meaning.translations).toContainEqual({ language: "PO", translation: "filho, filha", complement: "descendente" });
         expect(meaning.translations).toContainEqual({ language: "NL", translation: "kind", complement: undefined });
         expect(meaning.examples).toEqual([
-            { usage: "ALLG", example: "eis Noperen hu véier Kanner, zwee Jongen" },
-            { usage: "EGS", example: "hien huet kee Kand a kee Kënn! (hie brauch keng Verantwortung)" },
+            { usage: "ALLG", example: "eis Noperen hu véier Kanner, zwee Jongen", id: "a3961445e7315f7a9c657fb1397e3237" },
+            { usage: "EGS", example: "hien huet kee Kand a kee Kënn!", gloss: "hie brauch keng Verantwortung", id: "d557f295b3eb28cf449ae8670b63e618" },
         ]);
     });
 

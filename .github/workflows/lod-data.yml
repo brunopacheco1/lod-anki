@@ -79,6 +79,10 @@ jobs:
           name: lod
       - run: mkdir out && unzip -q lod.zip -d out
 
+      # The bundled audio is converted to small mp3 files.
+      - name: Install ffmpeg
+        run: command -v ffmpeg > /dev/null || { sudo apt-get update -q && sudo apt-get install -yq ffmpeg; }
+
       - name: Build ready-made decks
         run: scripts/build-decks.sh out/lod out/decks
 
@@ -94,6 +98,18 @@ jobs:
         with:
           name: decks
           path: apkg/*.apkg
+
+      # A small deck to try a branch's cards in Anki without downloading every deck.
+      - name: Build a sample deck
+        if: github.ref != 'refs/heads/main'
+        run: node lib/index.js export decks/definitions/schwatzt_dir_letzebuergesch/per_book/a1_kapitel_1.json --data out/lod -l EN -o sample
+
+      - name: Upload the sample deck
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: sample-deck
+          path: sample/*.apkg
 
       # Each deck is its own release asset, so people download only the decks they want.
       - name: Publish the lod-data release
